@@ -1,9 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>me.sgray.template</groupId>
+    <groupId>me.spigot.tgbridge</groupId>
     <artifactId>tg-bridge</artifactId>
-    <!-- Version is used in plugin.yml -->
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>tg-bridge</name>
@@ -11,7 +10,7 @@
 
     <licenses>
         <license>
-            <name>Zlib License</name>
+            <name>Some License</name>
             <url>http://opensource.org/licenses/Zlib</url>
             <comments></comments>
         </license>
@@ -19,15 +18,14 @@
 
     <developers>
         <developer>
-                <name>Fulcanelly</name>
+            <name>fulcanelly</name>
         </developer>
     </developers>
 
     <properties>
 
         <maven.compiler.source>1.13</maven.compiler.source>
-        <!--  Author and MainClass are used in plugin.yml -->
-        <author>SGray</author>
+        <author>fulcanelly</author>
         <mainClass>tgbridge.TgBridge</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -60,7 +58,6 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <!-- Keeping filtering at true here reduces plugin.yml redundancy! -->
                 <filtering>true</filtering>
                 <includes>
                     <include>plugin.yml</include>
@@ -68,7 +65,6 @@
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
-                <!-- Keep filtering at false for other resources to prevent bad magic -->
                 <filtering>false</filtering>
                 <excludes>
                     <exclude>**/*.java</exclude>
