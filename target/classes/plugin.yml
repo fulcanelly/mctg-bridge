@@ -1,0 +1,8 @@
+name: tg-bridge
+version: 0.1
+description: bridge of tg and minecraft chat
+author: SGray
+website: ${url}
+api-version: 1.13
+
+main: tgbridge.TgBridge
