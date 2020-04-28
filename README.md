@@ -1,12 +1,12 @@
 # mctg-bridge
 
-MCTG-bridge is lightweight plugin for a chat bridge between the telegram group and the minecraft chat.
+MCTG-bridge is lightweight plugin that creates a chat bridge between a telegram chatroom and a minecraft chat.
 
 ### how to setup 
 
 1) Compile `mvn clean install`
 2) Copy .jar file from `target` folder file to the server's plugins folder.
-3) Configure plugin by adding directory named `tg-bridge` in plugins folder of the server and create there `config.json` file with such content:
+3) Configure plugin by adding directory named `tg-bridge` to the plugins folder of the server and create a `config.json` file with the following:
 ```json
 {
   "api_token": "token of telegram bot",
@@ -14,6 +14,6 @@ MCTG-bridge is lightweight plugin for a chat bridge between the telegram group a
 }
 
 ```
-After that, you have to reload your server, and bot should start to work.
+After that, you have to reload your server, and the bot should work.
 
 
