@@ -2,13 +2,15 @@ package tgbridge.listeners;
 
 import org.bukkit.event.Listener;
 
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.EventHandler;
+
 import tgbridge.tapi.TGBot;
 
 public class ActionListener implements Listener {
@@ -25,9 +27,13 @@ public class ActionListener implements Listener {
     }
 
     @EventHandler
-    void onPlayerJoing(AsyncPlayerPreLoginEvent event) {
-        String name = event.getName();
-        String text = String.format("%s join the server", name);
+    void onPlayerJoing(PlayerJoinEvent event) {
+        String text = String.format(
+            "*%s* join the server", 
+            event
+            .getPlayer()
+            .getName()
+        );
         send(text);
     }
 
@@ -36,20 +42,25 @@ public class ActionListener implements Listener {
         String name = event
             .getPlayer()
             .getName();
-        String text = String.format("%s left the server", name);
+        String text = String.format("*%s* left the server", name);
         send(text);
     }
-
+    
     @EventHandler
     void onDeath(PlayerDeathEvent event) {
         send(event.getDeathMessage());
     }
 
     @EventHandler
+    void onAchivement(PlayerAdvancementDoneEvent event) {
+       // send(event.getAdvancement().toString());
+    }
+
+    @EventHandler
     void onChatEvent(AsyncPlayerChatEvent event) {
         String playerName = event.getPlayer().getName();
         String message = event.getMessage();
-        String text = String.format("<%s> %s", playerName, message);
+        String text = String.format("*<%s>* %s", playerName, message);
         send(text);
     }
 }
