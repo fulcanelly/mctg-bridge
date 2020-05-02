@@ -1,29 +1,42 @@
 package tgbridge.tapi;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import tgbridge.TgBridge;
 import tgbridge.utils.UsefulStuff;
+import tgbridge.utils.events.detector.EventDetectorManager;
+import tgbridge.utils.events.pipe.EventPipe;
 
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 import java.io.*;
 import java.util.stream.Collectors;
 
-interface Bot {
-    public Message sendMessage(Long chat_id, String text, Long reply_to_message_id);
-}
+public class TGBot {
 
-public class TGBot implements Bot {
     String apiToken;
+    EventDetectorManager detector;
+    long last_update_id = -1;
 
     public TGBot(String apiToken) {
+        detector = new EventDetectorManager(epipe);
         this.apiToken = apiToken;
     }
+    
+    static public void setEventPipe(EventPipe pipe) {
+        epipe = pipe;
+    }
         
+    static public EventPipe epipe;
     static final String empty_answer = new JSONObject().toString();
+    
+    public EventDetectorManager getDetectorManager() {
+        return detector;
+    }
 
     private enum Method {
         SEND,
@@ -101,6 +114,7 @@ public class TGBot implements Bot {
         String page = new MethodCaller(Method.SEND)
             .put("chat_id", chat_id.toString())
             .put("text", text)
+            .put("parse_mode", "Markdown")
             .call();
         return parseResponse(page);
     }
@@ -109,6 +123,7 @@ public class TGBot implements Bot {
         String page = new MethodCaller(Method.SEND)
             .put("chat_id", chat_id.toString())
             .put("text", text)
+            .put("parse_mode", "Markdown")
             .put("reply_to_message_id", reply_to_message_id.toString())
             .call();
         return parseResponse(page);
@@ -143,35 +158,48 @@ public class TGBot implements Bot {
         public void run(JSONObject message);
     }
 
-    public void getLastMessages(Answerer onMsg) {
+    public JSONArray getUpdates() {
         JSONObject last = loadLast();
 
         JSONArray updates = (JSONArray)last.get("result"); 
 
         if(updates == null) {
-            return;
+            return new JSONArray();
+        } 
+
+        return updates;
+    }
+
+    boolean updateLast(JSONObject update) {
+        long current = (long)update.get("update_id");
+
+        if(last_update_id == current) {
+            return true;
         }
 
-        for(Object update_obj: updates) {
-            JSONObject update = (JSONObject)update_obj;
-            
-            setOffset((long)update.get("update_id") + 1);
+        last_update_id = current;
+        
+        setOffset(current + 1l);
+        return false;
+    }
 
-            Object message = update.get("message");
-            //"edited_message"
-            if(message != null) {
-                onMsg.run((JSONObject)message);
+    public void start() {
+        new TgBridge.BScheduler(() -> {
+            for(Object updateObject: getUpdates()) {
+                JSONObject update = (JSONObject)updateObject;
+                this.updateLast(update);
+                detector.handle(update);
             }
-        }
+        }).schedule(0, 30L);
     }
 
     public void setOffset(Long offset) {
-        new MethodCaller(Method.UPDATES)
-            .put("offset", offset.toString())
-            .call();
+       // new Thread(() -> 
+            new MethodCaller(Method.UPDATES)
+                .put("offset", offset.toString())
+                .call()
+        //)
+        ;
     }
 
-    public static interface Listeners {
-      //  to do
-    }
 };

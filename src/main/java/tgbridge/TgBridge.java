@@ -12,13 +12,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import tgbridge.listeners.ActionListener;
-import tgbridge.tapi.CommandMatcher;
+import tgbridge.listeners.TelegramListener;
+import tgbridge.tapi.Action;
+import tgbridge.tapi.CommandManager;
 import tgbridge.tapi.Message;
 import tgbridge.tapi.TGBot;
+import tgbridge.tapi.events.MessageEvent;
 import tgbridge.utils.ConfigLoader;
+import tgbridge.utils.events.pipe.EventPipe;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class TgBridge extends JavaPlugin {
+
     static TgBridge instance = null;
+    public String username = null;
+    public TGBot bot = null;
+    public CommandManager commandManager = null;
+    public EventPipe tgpipe = null;
 
     public TgBridge() {
         instance = this;
@@ -28,7 +38,7 @@ public class TgBridge extends JavaPlugin {
         return instance;
     }
 
-    class BScheduler extends BukkitRunnable {
+    static public class BScheduler extends BukkitRunnable {
         Runnable runnable;
 
         public BScheduler(Runnable r) {
@@ -40,7 +50,7 @@ public class TgBridge extends JavaPlugin {
         }
 
         public void schedule(long delay, long period) {
-            runTaskTimerAsynchronously(TgBridge.this, delay, period);
+            runTaskTimerAsynchronously(TgBridge.getInstance(), delay, period);
         }
     }
 
@@ -48,8 +58,7 @@ public class TgBridge extends JavaPlugin {
     public void onDisable() {
     }
     
-    public String getMemory()
-    {
+    public String getMemory() {
         final long mb = 1024*1024;
         Runtime rtime = Runtime.getRuntime();
         
@@ -60,8 +69,7 @@ public class TgBridge extends JavaPlugin {
         return String.format("Memory usage: %d MB / %d MB ", usedMemory, totalMemory);
     }
 
-    public String getUptime()
-    {
+    public String getUptime() {
         long jvmUpTime = ManagementFactory
             .getRuntimeMXBean()
             .getUptime();
@@ -78,28 +86,11 @@ public class TgBridge extends JavaPlugin {
         return String.format("Uptime : %dh %dm %ds", hours, minutes, seconds);
     }
 
-    private TGBot bot;
-
-    public List<String> getOnlineList()
-    {
+    public List<String> getOnlineList() {
         return Bukkit.getOnlinePlayers()
             .stream()
             .map((one) -> one.getName())
             .collect(Collectors.toList());
-    }
-
-    interface LocalAnswerer {
-        void run(Message msg);
-    }
-
-    void enableBot(LocalAnswerer answerer) {
-        Message.setBot(bot);
-        
-        new BScheduler(() -> 
-            bot.getLastMessages(json -> 
-                answerer.run(new Message(json))
-            )
-        ).schedule(0L, 30L);
     }
 
     final String template = 
@@ -115,10 +106,25 @@ public class TgBridge extends JavaPlugin {
             .disablePlugin(plugin);
     }
 
+    Action getListCmdHandler() {
+        String emptyServerMessage = "Server unfortunately is empty :c";
+
+        return msg -> {
+            List<String> nick_names = getOnlineList();
+            String result = nick_names.size() > 0 ? 
+                "Online players: " + String.join("\n", nick_names) :
+                emptyServerMessage;
+            msg.reply(result);
+        };
+    }
+
     @Override
     public void onEnable() {
+
         ConfigLoader cLoader = new ConfigLoader("config.json");
-        
+
+        //to do: make it shorter
+        //BEGIN
         if(!!!cLoader.load()) {
             System.out.println("TgBridge.onEnable(): cant load config file.");
             turnOff();
@@ -139,28 +145,61 @@ public class TgBridge extends JavaPlugin {
             turnOff();
             return;
         }
+        //END
+
+        tgpipe = new EventPipe();
+        TGBot.setEventPipe(tgpipe);
 
         bot = new TGBot(token);
 
+
+        //order of adding detecors is important
+        bot.getDetectorManager()
+            .addDetector(MessageEvent.detector);
+            
+        tgpipe
+            .registerListener(new TelegramListener(this));
+
         try {
-            String username = bot
+            username = bot
                 .getMe()
                 .getUsername();
-            CommandMatcher.setUsername(username);
-
         } catch(Exception e) {
             System.out.println("Could not find this bot");
             turnOff();
             return;
         }
 
+        Message.setBot(bot);
+        CommandManager.setUsername(username);
+        commandManager = new CommandManager();
+        
+        commandManager
+            .addCommand("ping", msg -> msg.reply("pong"))
+            .addCommand("memory", msg -> msg.reply(getMemory()))
+            .addCommand("list", getListCmdHandler())
+            .addCommand("chat_id", msg -> {
+                String chat_id = msg
+                    .getChat()
+                    .getId()
+                    .toString();
+        
+                msg.reply(chat_id);
+            })
+            .addCommand("uptime", msg -> msg.reply(getUptime()));
+            
 
         cLoader.getApiToken();
 
         getServer()
             .getPluginManager()
             .registerEvents(new ActionListener(bot, chat), this);
+        
+        
+        bot.start();
 
+
+/*
         enableBot(msg -> {
 
             if(msg.isText()) {
@@ -204,9 +243,39 @@ public class TgBridge extends JavaPlugin {
                             .getFrom()
                             .getName();
                             
-                        String answer = String.format(template, name, text);
-                        
-                        Bukkit.broadcastMessage(answer);
+                       // String answer = String.format(template, name, text);
+                        Message replied = msg.getReplyTo();
+                        if(replied != null) {
+                           // System.out.println("replied: " + replied.msg.toJSONString());
+                           // System.out.println("from: " + replied.getFrom());
+
+                            String answer = String.format(
+                                ChatColor.BLUE + "[tg]" + ChatColor.YELLOW + "[%s]", name
+                            );
+
+                            TextComponent message = new TextComponent(answer);
+
+                            TextComponent reply = new TextComponent(ChatColor.GRAY + "(in reply to)");
+                            reply.setHoverEvent( 
+                                new HoverEvent( 
+                                    HoverEvent.Action.SHOW_TEXT, 
+                                    new ComponentBuilder(replied.getFrom().getName() + " " + replied.getText()).create() 
+                                ) 
+                            );
+                            message.addExtra(reply);
+                            message.addExtra(new TextComponent(ChatColor.RESET + ": " + msg.getText()));
+
+                            Bukkit
+                                .spigot()
+                                .broadcast(message);
+
+                        } else {
+                            String answer = String.format(template, name, text);
+
+                            Bukkit.broadcastMessage(answer);
+                        }
+
+
                     break;
                     
                 }
@@ -224,6 +293,7 @@ public class TgBridge extends JavaPlugin {
                 Bukkit.broadcastMessage(answer);
             }
         });
+        */
     }
 }
 
