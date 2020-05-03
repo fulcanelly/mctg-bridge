@@ -1,5 +1,6 @@
 package me.fulcanelly.tgbridge;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.Calendar;
 import java.util.Date;
@@ -119,12 +120,15 @@ public class TgBridge extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (!new File(getDataFolder(), "config.json").exists()) {
+            saveResource("config.json", false);
+        }
 
         ConfigLoader cLoader = new ConfigLoader("config.json");
 
         //to do: make it shorter
         //BEGIN
-        if(!!!cLoader.load()) {
+        if(!cLoader.load()) {
             System.out.println("TgBridge.onEnable(): cant load config file.");
             turnOff();
             return;
