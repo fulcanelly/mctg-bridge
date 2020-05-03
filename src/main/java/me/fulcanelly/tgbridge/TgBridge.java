@@ -1,5 +1,6 @@
-package tgbridge;
+package me.fulcanelly.tgbridge;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,16 +12,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import tgbridge.listeners.ActionListener;
-import tgbridge.listeners.TelegramListener;
-import tgbridge.tapi.Action;
-import tgbridge.tapi.CommandManager;
-import tgbridge.tapi.Message;
-import tgbridge.tapi.TGBot;
-import tgbridge.tapi.events.MessageEvent;
-import tgbridge.utils.ConfigLoader;
-import tgbridge.utils.events.pipe.EventPipe;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.fulcanelly.tgbridge.listeners.ActionListener;
+import me.fulcanelly.tgbridge.listeners.TelegramListener;
+import me.fulcanelly.tgbridge.tapi.Action;
+import me.fulcanelly.tgbridge.tapi.CommandManager;
+import me.fulcanelly.tgbridge.tapi.Message;
+import me.fulcanelly.tgbridge.tapi.TGBot;
+import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
+import me.fulcanelly.tgbridge.utils.ConfigLoader;
+import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 public class TgBridge extends JavaPlugin {
 
@@ -120,19 +120,22 @@ public class TgBridge extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (!new File(getDataFolder(), "config.json").exists()) {
+            saveResource("config.json", false);
+        }
 
         ConfigLoader cLoader = new ConfigLoader("config.json");
 
         //to do: make it shorter
         //BEGIN
-        if(!!!cLoader.load()) {
+        if(!cLoader.load()) {
             System.out.println("TgBridge.onEnable(): cant load config file.");
             turnOff();
             return;
         }
 
         String token = cLoader.getApiToken();
-        String chat = cLoader.getPinedChat();
+        String chat = cLoader.getPinnedChat();
 
         if(token == null) {
             System.out.println("Can't load bot API token");

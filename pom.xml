@@ -1,18 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>me.spigot.tgbridge</groupId>
+    <groupId>me.fulcanelly</groupId>
     <artifactId>tg-bridge</artifactId>
     <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>tg-bridge</name>
-    <description>bridge of tg and minecraft chat</description>
+    <description>A bridge between Telegram group and Minecraft chat</description>
 
     <licenses>
         <license>
             <name>Some License</name>
             <url>http://opensource.org/licenses/Zlib</url>
-            <comments></comments>
         </license>
     </licenses>
 
@@ -23,12 +22,9 @@
     </developers>
 
     <properties>
-
-        <maven.compiler.source>1.13</maven.compiler.source>
         <author>fulcanelly</author>
-        <mainClass>tgbridge.TgBridge</mainClass>
+        <mainClass>me.fulcanelly.tgbridge.TgBridge</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
     </properties>
 
     <dependencies>
@@ -37,7 +33,6 @@
             <artifactId>spigot-api</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
@@ -59,15 +54,11 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-                <includes>
-                    <include>plugin.yml</include>
-                </includes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/*.java</exclude>
                     <exclude>plugin.yml</exclude>
                 </excludes>
             </resource>
@@ -75,7 +66,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>

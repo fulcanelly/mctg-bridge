@@ -1,4 +1,4 @@
-package tgbridge.tapi;
+package me.fulcanelly.tgbridge.tapi;
 
 import java.util.ArrayList;
 import java.util.List;

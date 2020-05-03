@@ -1,11 +1,11 @@
-package tgbridge.utils.events.detector;
+package me.fulcanelly.tgbridge.utils.events.detector;
 
-import java.util.List;
-import java.util.ArrayList;
-
+import me.fulcanelly.tgbridge.utils.events.pipe.EventObject;
+import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import org.json.simple.JSONObject;
 
-import tgbridge.utils.events.pipe.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventDetectorManager {
 
@@ -33,11 +33,11 @@ public class EventDetectorManager {
 
     public void handle(JSONObject update) {
         detectors.stream()
-        .forEach(detector -> {
-            event = detector.is_it(update);
-            if(event != null) {
-                pipe.emit(event);
-            }
-        });
+                .forEach(detector -> {
+                    event = detector.is_it(update);
+                    if (event != null) {
+                        pipe.emit(event);
+                    }
+                });
     }
 }

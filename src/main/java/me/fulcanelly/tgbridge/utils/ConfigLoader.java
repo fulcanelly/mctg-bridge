@@ -1,17 +1,18 @@
-package tgbridge.utils;
+package me.fulcanelly.tgbridge.utils;
+
+import org.bukkit.Bukkit;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
 public class ConfigLoader {
-    
+
     JSONObject data;
     final String fileName;
-    
+
     public ConfigLoader(String fileName) {
         data = new JSONObject();
         this.fileName = fileName;
@@ -30,15 +31,15 @@ public class ConfigLoader {
     }
 
     public boolean load() {
-        if(! checkDir("./plugins/tg-bridge")) {
+        if (!checkDir("./plugins/tg-bridge")) {
             return false;
         }
 
         try {
             FileReader reader = new FileReader("./plugins/tg-bridge/" + fileName);
-            Object data = new JSONParser().parse(reader); 
-            this.data = (JSONObject)data;
-        } catch (Throwable e){
+            Object data = new JSONParser().parse(reader);
+            this.data = (JSONObject) data;
+        } catch (Throwable e) {
             e.printStackTrace();
             //save();
         }
@@ -46,24 +47,25 @@ public class ConfigLoader {
     }
 
     public void save() {
-        try{
-            PrintWriter pw = new PrintWriter("./plugins/tg-bridge/" + fileName); 
-            pw.write(this.data.toJSONString()); 
-            pw.flush(); 
-            pw.close();         
-        } catch (Exception e) {
-        }
-    } 
+        try {
+            PrintWriter pw = new PrintWriter("./plugins/tg-bridge/" + fileName);
+            pw.write(this.data.toJSONString());
+            pw.flush();
+            pw.close();
+        } catch (Exception ignored) {
 
-    private <T>T get(String key) {
-        return (T)data.get(key);
+        }
+    }
+
+    private <T> T get(String key) {
+        return (T) data.get(key);
     }
 
     public String getApiToken() {
         return get("api_token");
     }
 
-    public String getPinedChat() {
+    public String getPinnedChat() {
         return get("chat_id");
     }
 
