@@ -1,4 +1,4 @@
-package tgbridge.utils;
+package me.fulcanelly.tgbridge.utils;
 
 import java.util.Map;
 

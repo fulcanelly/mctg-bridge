@@ -1,4 +1,4 @@
-package tgbridge.utils.events.pipe;
+package me.fulcanelly.tgbridge.utils.events.pipe;
 
 import java.lang.annotation.*;
 

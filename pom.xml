@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>me.spigot.tgbridge</groupId>
+    <groupId>me.fulcanelly</groupId>
     <artifactId>tg-bridge</artifactId>
     <version>0.2</version>
     <packaging>jar</packaging>
@@ -24,7 +24,7 @@
     <properties>
         <maven.compiler.source>1.13</maven.compiler.source>
         <author>fulcanelly</author>
-        <mainClass>tgbridge.TgBridge</mainClass>
+        <mainClass>me.fulcanelly.tgbridge.TgBridge</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
