@@ -1,8 +1,9 @@
-package tgbridge.listeners;
+package me.fulcanelly.tgbridge.listeners;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import me.fulcanelly.tgbridge.TgBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -10,12 +11,11 @@ import org.bukkit.command.ConsoleCommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import tgbridge.TgBridge;
-import tgbridge.tapi.Message;
-import tgbridge.tapi.events.CommandEvent;
-import tgbridge.tapi.events.MessageEvent;
-import tgbridge.utils.events.pipe.EventHandler;
-import tgbridge.utils.events.pipe.Listener;
+import me.fulcanelly.tgbridge.tapi.Message;
+import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
+import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
+import me.fulcanelly.tgbridge.utils.events.pipe.EventHandler;
+import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
 
 class Template {    
     public static final String dflt_strt = 
