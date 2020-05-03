@@ -1,0 +1,4 @@
+{
+  "api_token": "token of telegram bot",
+  "chat_id": "id of telegram chat where bot suppose to work"
+}
