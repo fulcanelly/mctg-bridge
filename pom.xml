@@ -6,7 +6,7 @@
     <packaging>jar</packaging>
 
     <name>tg-bridge</name>
-    <description>bridge of tg and minecraft chat</description>
+    <description>A bridge between Telegram group and Minecraft chat</description>
 
     <licenses>
         <license>
