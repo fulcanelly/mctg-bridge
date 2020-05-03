@@ -13,14 +13,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 
-class Template {
-    public static final String defBeginning = ChatColor.BLUE + "[tg]" + ChatColor.YELLOW + "[%s]";
-    public static final String defEnding = ChatColor.RESET + " %s";
-    public static final String unknownBeginning = ChatColor.BLUE + "[tg]" + ChatColor.YELLOW + "[%s]";
-    public static final String unknownEnding = ChatColor.RESET + " sent something";
-}
-
 public class TelegramListener implements Listener {
+    static class Template {
+        public static final String defBeginning = ChatColor.BLUE + "[tg]" + ChatColor.YELLOW + "[%s]";
+        public static final String defEnding = ChatColor.RESET + " %s";
+        public static final String unknownBeginning = ChatColor.BLUE + "[tg]" + ChatColor.YELLOW + "[%s]";
+        public static final String unknownEnding = ChatColor.RESET + " sent something";
+    }
+
     TgBridge bridge;
 
     TextComponent formatMessage(Message msg) {
