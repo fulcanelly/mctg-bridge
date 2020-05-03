@@ -1,6 +1,6 @@
 
 
-package tgbridge.tapi;
+package me.fulcanelly.tgbridge.tapi;
 
 //import org.json.simple.JSONArray; 
 import org.json.simple.JSONObject; 

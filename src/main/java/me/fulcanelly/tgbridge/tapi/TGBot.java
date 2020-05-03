@@ -1,15 +1,14 @@
-package tgbridge.tapi;
+package me.fulcanelly.tgbridge.tapi;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import me.fulcanelly.tgbridge.TgBridge;
+import me.fulcanelly.tgbridge.utils.UsefulStuff;
+import me.fulcanelly.tgbridge.utils.events.detector.EventDetectorManager;
+import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import tgbridge.TgBridge;
-import tgbridge.utils.UsefulStuff;
-import tgbridge.utils.events.detector.EventDetectorManager;
-import tgbridge.utils.events.pipe.EventPipe;
 
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;

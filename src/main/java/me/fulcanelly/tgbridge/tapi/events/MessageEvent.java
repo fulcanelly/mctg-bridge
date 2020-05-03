@@ -1,8 +1,8 @@
-package tgbridge.tapi.events;
+package me.fulcanelly.tgbridge.tapi.events;
 
-import tgbridge.tapi.Message;
-import tgbridge.utils.events.detector.EventDetectorManager.Detector;
-import tgbridge.utils.events.pipe.EventObject;
+import me.fulcanelly.tgbridge.utils.events.detector.EventDetectorManager;
+import me.fulcanelly.tgbridge.utils.events.pipe.EventObject;
+import me.fulcanelly.tgbridge.tapi.Message;
 
 public class MessageEvent extends Message implements EventObject {
     //public Message message;
@@ -11,7 +11,7 @@ public class MessageEvent extends Message implements EventObject {
         super(entries);
     }
 
-    public static Detector detector = update -> {
+    public static EventDetectorManager.Detector detector = update -> {
         //System.o
         Object message = update.get("message");
 
