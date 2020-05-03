@@ -131,7 +131,7 @@ public class TgBridge extends JavaPlugin {
         }
 
         String token = cLoader.getApiToken();
-        String chat = cLoader.getPinedChat();
+        String chat = cLoader.getPinnedChat();
 
         if(token == null) {
             System.out.println("Can't load bot API token");
