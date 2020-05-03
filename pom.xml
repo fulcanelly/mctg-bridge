@@ -22,12 +22,10 @@
     </developers>
 
     <properties>
-
         <maven.compiler.source>1.13</maven.compiler.source>
         <author>fulcanelly</author>
         <mainClass>tgbridge.TgBridge</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
     </properties>
 
     <dependencies>
@@ -36,7 +34,6 @@
             <artifactId>spigot-api</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
