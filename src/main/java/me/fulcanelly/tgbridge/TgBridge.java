@@ -30,6 +30,10 @@ public class TgBridge extends JavaPlugin {
     public CommandManager commandManager = null;
     public EventPipe tgpipe = null;
 
+    String token = null;
+    String chat = null;
+    ConfigLoader cLoader = null;
+
     public TgBridge() {
         instance = this;
     }
@@ -59,7 +63,7 @@ public class TgBridge extends JavaPlugin {
     }
     
     public String getMemory() {
-        final long mb = 1024*1024;
+        final long mb = 1024 * 1024;
         Runtime rtime = Runtime.getRuntime();
         
         long totalMemory = rtime.totalMemory() / mb;
@@ -78,17 +82,17 @@ public class TgBridge extends JavaPlugin {
             .getInstance();
 
         calendar.setTime(new Date(jvmUpTime));
-
+        
+        int day = calendar.get(Calendar.DAY_OF_YEAR) - 1;
         int hours = calendar.get(Calendar.HOUR_OF_DAY);
         int minutes = calendar.get(Calendar.MINUTE);
         int seconds = calendar.get(Calendar.SECOND);
 
-        return String.format("Uptime : %dh %dm %ds", hours, minutes, seconds);
+        return String.format("Uptime : %dd %dh %dm %ds", day,  hours, minutes, seconds);
     }
 
     public List<String> getOnlineList() {
-        return Bukkit.getOnlinePlayers()
-            .stream()
+        return Bukkit.getOnlinePlayers().stream()
             .map((one) -> one.getName())
             .collect(Collectors.toList());
     }
@@ -118,45 +122,50 @@ public class TgBridge extends JavaPlugin {
         };
     }
 
+    void loadConfig() throws Exception {
+        cLoader = new ConfigLoader("config.json");
+        if(!cLoader.load()) {
+            throw new Exception("TgBridge.onEnable(): cant load config file.");
+        }
+    }
+
+    void obtainToken() throws Exception {
+        token = cLoader.getApiToken();
+
+        if(token == null) {
+            throw new Exception("Can't load bot API token");
+        }
+    }
+
+    void obtainChat() throws Exception {
+        chat = cLoader.getPinnedChat();
+        if(chat == null) {
+            throw new Exception("Can't load chat_id");
+        }
+    }
+
     @Override
     public void onEnable() {
         if (!new File(getDataFolder(), "config.json").exists()) {
             saveResource("config.json", false);
         }
 
-        ConfigLoader cLoader = new ConfigLoader("config.json");
-
-        //to do: make it shorter
-        //BEGIN
-        if(!cLoader.load()) {
-            System.out.println("TgBridge.onEnable(): cant load config file.");
+        try {
+            loadConfig();
+            obtainChat();
+            obtainToken();
+        } catch(Exception e) {
+            getLogger()
+                .warning(e.getMessage());
             turnOff();
             return;
         }
-
-        String token = cLoader.getApiToken();
-        String chat = cLoader.getPinnedChat();
-
-        if(token == null) {
-            System.out.println("Can't load bot API token");
-            turnOff();
-            return;
-        }
-
-        if(chat == null) {
-            System.out.println("Can't load chat_id");
-            turnOff();
-            return;
-        }
-        //END
 
         tgpipe = new EventPipe();
         TGBot.setEventPipe(tgpipe);
-
         bot = new TGBot(token);
 
-
-        //order of adding detecors is important
+        //order of adding detectors is important
         bot.getDetectorManager()
             .addDetector(MessageEvent.detector);
             
@@ -168,7 +177,8 @@ public class TgBridge extends JavaPlugin {
                 .getMe()
                 .getUsername();
         } catch(Exception e) {
-            System.out.println("Could not find this bot");
+            getLogger()
+                .warning("Could not find this bot");
             turnOff();
             return;
         }
@@ -180,7 +190,7 @@ public class TgBridge extends JavaPlugin {
         commandManager
             .addCommand("ping", msg -> msg.reply("pong"))
             .addCommand("memory", msg -> msg.reply(getMemory()))
-            .addCommand("list", getListCmdHandler())
+            .addCommand("list", this.getListCmdHandler())
             .addCommand("chat_id", msg -> {
                 String chat_id = msg
                     .getChat()

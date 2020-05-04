@@ -1,6 +1,5 @@
 package me.fulcanelly.tgbridge.utils;
 
-import org.bukkit.Bukkit;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
