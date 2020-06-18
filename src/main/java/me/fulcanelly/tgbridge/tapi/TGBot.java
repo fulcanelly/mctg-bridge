@@ -16,6 +16,10 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 public class TGBot {
+    class parse_mode {
+        static final String Markdown = "Markdown"; 
+        static final String HTML = "HTML"; 
+    }
 
     String apiToken;
     EventDetectorManager detector;
@@ -113,7 +117,7 @@ public class TGBot {
         String page = new MethodCaller(Method.SEND)
             .put("chat_id", chat_id.toString())
             .put("text", text)
-            .put("parse_mode", "Markdown")
+            .put("parse_mode", parse_mode.Markdown)
             .call();
         return parseResponse(page);
     }
@@ -122,7 +126,7 @@ public class TGBot {
         String page = new MethodCaller(Method.SEND)
             .put("chat_id", chat_id.toString())
             .put("text", text)
-            .put("parse_mode", "Markdown")
+            .put("parse_mode", parse_mode.Markdown)
             .put("reply_to_message_id", reply_to_message_id.toString())
             .call();
         return parseResponse(page);

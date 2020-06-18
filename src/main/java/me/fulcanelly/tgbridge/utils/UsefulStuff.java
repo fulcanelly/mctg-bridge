@@ -21,13 +21,29 @@ public class UsefulStuff {
         return new JSONObject();
     }
 
+    public static String formatMarkdown(String input) {
+        return input
+            .replace("_", "\\_")
+            .replace("*", "\\*")
+            .replace("[", "\\[")
+            .replace("`", "\\`");
+
+    }
+
+    public static String formatHtml(String input) {
+        return input
+            .replace(">", "&gt;")
+            .replace("<", "&lt;")
+            .replace("&", "&amp;");
+    }
+
     public static String loadPage(String url) {
         String pageText = "";
 
         try {
             InputStream inp = new URL(url)
-                    .openConnection()
-                    .getInputStream();
+                .openConnection()
+                .getInputStream();
 
             byte[] buffer = new byte[4096];
             ByteArrayOutputStream page = new ByteArrayOutputStream();

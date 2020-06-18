@@ -1,13 +1,11 @@
 
 
 package me.fulcanelly.tgbridge.tapi;
-
-//import org.json.simple.JSONArray; 
+ 
 import org.json.simple.JSONObject; 
-//import org.json.simple.parser.*; 
-//import org.json.simple.parser.JSONParser;
 
 public class Message {
+    public JSONObject msg = new JSONObject();
 
     static public class From  {
         public JSONObject from = new JSONObject();
@@ -52,7 +50,6 @@ public class Message {
         }
     }
 
-    public JSONObject msg = new JSONObject();
 
     static public TGBot bot;
 
@@ -88,11 +85,7 @@ public class Message {
     {
         return (Long)msg.get("message_id");
     }
-/*
-    public void setMsgId(Long msg_id) {
-        msg.put("message_id", msg_id);
-    }
-*/
+
     public String getText() {
         return (String)msg.get("text");
     }
@@ -110,11 +103,6 @@ public class Message {
         return new From(msg.get("chat"));
     }
 
-    /*
-    public void setChat(From chat) {
-        msg.put("chat", chat.from);
-    }
-*/
     public Message reply(String text) {
         return bot.sendMessage(getChat().getId(), text, getMsgId());
     }

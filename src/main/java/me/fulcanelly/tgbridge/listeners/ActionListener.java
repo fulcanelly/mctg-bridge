@@ -12,12 +12,13 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.EventHandler;
 
 import me.fulcanelly.tgbridge.tapi.TGBot;
+import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
 public class ActionListener implements Listener {
     final TGBot bot;
     final Long chat_id;
 
-    void send(String text) {
+    private void send(String text) {
         bot.sendMessage(chat_id, text);
     }
 
@@ -28,11 +29,12 @@ public class ActionListener implements Listener {
 
     @EventHandler
     void onPlayerJoing(PlayerJoinEvent event) {
-        String text = String.format(
-            "*%s* join the server", 
-            event
+        String player_name = event
             .getPlayer()
-            .getName()
+            .getName();
+        String text = String.format(
+            "`%s` join the server", 
+            UsefulStuff.formatMarkdown(player_name)
         );
         send(text);
     }
@@ -42,7 +44,7 @@ public class ActionListener implements Listener {
         String name = event
             .getPlayer()
             .getName();
-        String text = String.format("*%s* left the server", name);
+        String text = String.format("`%s` left the server", UsefulStuff.formatMarkdown(name));
         send(text);
     }
     
@@ -60,6 +62,10 @@ public class ActionListener implements Listener {
     void onChatEvent(AsyncPlayerChatEvent event) {
         String playerName = event.getPlayer().getName();
         String message = event.getMessage();
+
+        playerName = UsefulStuff.formatMarkdown(playerName);
+        message = UsefulStuff.formatMarkdown(message);
+        
         String text = String.format("*<%s>* %s", playerName, message);
         send(text);
     }

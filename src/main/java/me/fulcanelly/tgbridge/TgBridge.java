@@ -20,6 +20,7 @@ import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.utils.ConfigLoader;
+import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 public class TgBridge extends JavaPlugin {
@@ -93,14 +94,10 @@ public class TgBridge extends JavaPlugin {
 
     public List<String> getOnlineList() {
         return Bukkit.getOnlinePlayers().stream()
-            .map((one) -> one.getName())
+            .map(player -> player.getName())
+            .map(username -> UsefulStuff.formatMarkdown(username))
             .collect(Collectors.toList());
     }
-
-    final String template = 
-        ChatColor.BLUE + "[tg]" +
-        ChatColor.YELLOW + "[%s]" +
-        ChatColor.RESET + " %s";
 
     public static void turnOff() {
         TgBridge plugin = getInstance();
@@ -115,8 +112,9 @@ public class TgBridge extends JavaPlugin {
 
         return msg -> {
             List<String> nick_names = getOnlineList();
+
             String result = nick_names.size() > 0 ? 
-                "Online players: " + String.join("\n", nick_names) :
+                "Online players: " + String.join("\n", nick_names):
                 emptyServerMessage;
             msg.reply(result);
         };
@@ -125,7 +123,7 @@ public class TgBridge extends JavaPlugin {
     void loadConfig() throws Exception {
         cLoader = new ConfigLoader("config.json");
         if(!cLoader.load()) {
-            throw new Exception("TgBridge.onEnable(): cant load config file.");
+            throw new Exception("Can't load config file.");
         }
     }
 
@@ -201,13 +199,11 @@ public class TgBridge extends JavaPlugin {
             })
             .addCommand("uptime", msg -> msg.reply(getUptime()));
             
-
         cLoader.getApiToken();
 
         getServer()
             .getPluginManager()
             .registerEvents(new ActionListener(bot, chat), this);
-        
         
         bot.start();
     }

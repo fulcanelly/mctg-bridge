@@ -9,6 +9,8 @@ import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -19,6 +21,7 @@ public class TelegramListener implements Listener {
         public static final String defEnding = ChatColor.RESET + " %s";
         public static final String unknownBeginning = ChatColor.BLUE + "* [tg]" + ChatColor.YELLOW + "[%s]";
         public static final String unknownEnding = ChatColor.RESET + " sent something";
+        //todo:  public static final String message = "{unk.sign}[tg][{from}]{unk.mark} {msg.text} {text.caption}";
     }
 
     TgBridge bridge;
@@ -31,7 +34,7 @@ public class TelegramListener implements Listener {
         String ending;
 
         String name = msg.getFrom().getName();
-
+        //String caption = msg.getCaption();
         //begining
         if (text == null) {
             beginning = String.format(Template.unknownBeginning, name);
@@ -51,7 +54,7 @@ public class TelegramListener implements Listener {
             TextComponent component = new TextComponent(ChatColor.GRAY + "(in reply to)");
 
             HoverEvent hEvent = new HoverEvent(
-                    HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(replyComponent).create()
+                HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(replyComponent).create()
             );
 
             component.setHoverEvent(hEvent);
@@ -69,14 +72,14 @@ public class TelegramListener implements Listener {
 
     void broadcast(TextComponent component) {
         Bukkit
-                .spigot()
-                .broadcast(component);
+            .spigot()
+            .broadcast(component);
 
         ConsoleCommandSender console = bridge.getServer()
-                .getConsoleSender();
+            .getConsoleSender();
 
         console.spigot()
-                .sendMessage(component);
+            .sendMessage(component);
     }
 
     @EventHandler
