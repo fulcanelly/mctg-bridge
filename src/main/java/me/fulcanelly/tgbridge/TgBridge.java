@@ -8,7 +8,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,6 +19,7 @@ import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.utils.ConfigLoader;
+import me.fulcanelly.tgbridge.utils.StatCollector;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
@@ -32,7 +32,7 @@ public class TgBridge extends JavaPlugin {
     public EventPipe tgpipe = null;
 
     String token = null;
-    String chat = null;
+    public String chat = new String();
     ConfigLoader cLoader = null;
 
     public TgBridge() {
@@ -114,7 +114,7 @@ public class TgBridge extends JavaPlugin {
             List<String> nick_names = getOnlineList();
 
             String result = nick_names.size() > 0 ? 
-                "Online players: " + String.join("\n", nick_names):
+                "`Online players:` \n\n" + String.join("\n", nick_names):
                 emptyServerMessage;
             msg.reply(result);
         };
@@ -184,7 +184,8 @@ public class TgBridge extends JavaPlugin {
         Message.setBot(bot);
         CommandManager.setUsername(username);
         commandManager = new CommandManager();
-        
+        StatCollector.initalize(this);
+
         commandManager
             .addCommand("ping", msg -> msg.reply("pong"))
             .addCommand("memory", msg -> msg.reply(getMemory()))
