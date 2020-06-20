@@ -20,7 +20,7 @@ public class TelegramListener implements Listener {
         public static final String defBeginning = ChatColor.BLUE + "[tg]" + ChatColor.YELLOW + "[%s]";
         public static final String defEnding = ChatColor.RESET + " %s";
         public static final String unknownBeginning = ChatColor.BLUE + "* [tg]" + ChatColor.YELLOW + "[%s]";
-        public static final String unknownEnding = ChatColor.RESET + " sent something";
+        public static final String unknownEnding = ChatColor.GRAY + " sent something";
         //todo:  public static final String message = "{unk.sign}[tg][{from}]{unk.mark} {msg.text} {text.caption}";
     }
 
@@ -39,6 +39,11 @@ public class TelegramListener implements Listener {
         if (text == null) {
             beginning = String.format(Template.unknownBeginning, name);
             ending = Template.unknownEnding;
+            String caption = msg.getCaption();
+            if (caption != null) {
+                ending += " with caption: " + ChatColor.RESET + caption;
+            }
+       
         } else {
             beginning = String.format(Template.defBeginning, name);
             ending = String.format(Template.defEnding, text);
@@ -89,7 +94,7 @@ public class TelegramListener implements Listener {
 
         if (text != null && text.startsWith("/")) {
             bridge.tgpipe.emit(new CommandEvent(event.msg));
-        } else {
+        } else /*if(event.getChat().getId().toString() == bridge.chat)*/ {            
             message = formatMessage(event);
             broadcast(message);
         }

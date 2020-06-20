@@ -55,6 +55,7 @@ public class ActionListener implements Listener {
 
     @EventHandler
     void onAchivement(PlayerAdvancementDoneEvent event) {
+        System.out.println(event.getAdvancement().getCriteria());
        // send(event.getAdvancement().toString());
     }
 
