@@ -5,18 +5,21 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.fulcanelly.tgbridge.TgBridge;
-import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 
 public class StatCollector implements Listener {
 
     TgBridge plugin;
+    HashMap<String, Stats> stats = new HashMap<>();
 
     StatCollector(TgBridge plugin) {
         this.plugin = plugin;
+        Bukkit.getOnlinePlayers()
+            .forEach(player -> getStat(player.getName()).startTimer());
         plugin.commandManager.addCommand("stats", msg -> {
             msg.reply(this.getMessage());
         });
@@ -37,14 +40,12 @@ public class StatCollector implements Listener {
         boolean and_is_online = false;
 
         public synchronized void startTimer() {
-            
             if (and_is_online) {
                 return;
             }
 
             last_point = System.currentTimeMillis();
             and_is_online = true;
-
         }
 
         public synchronized Stats update() {
@@ -64,7 +65,7 @@ public class StatCollector implements Listener {
         public String toString() {
             long seconds = total_time / 1000l;
    
-            long hours = (seconds / 60 * 60) % 60;
+            long hours = (seconds / 3600) % 60;
             long minutes = (seconds / 60) % 60;
             seconds = seconds % 60;
 
@@ -85,16 +86,15 @@ public class StatCollector implements Listener {
         }
     }
 
-    Stats getStat(String String) {
-        Stats stat = stats.get(String);
+    Stats getStat(String name) {
+        System.out.println("getting \"" + name + "\"");
+        Stats stat = stats.get(name);
         if (stat == null) {
             stat = new Stats();
-            stats.put(String, stat);
+            stats.put(name, stat);
         }
         return stat;
     }
-
-    HashMap<String, Stats> stats = new HashMap<>();
 
     @EventHandler
     void onJoin(PlayerJoinEvent event) {
@@ -109,9 +109,7 @@ public class StatCollector implements Listener {
     }
 
     synchronized void update() {
-        for (Stats stat: stats.values()) {
-            stat.update();
-        }
+        stats.forEach((ignored_name, stat) -> stat.update());
     }
     
     private class MessageMaker {
@@ -119,9 +117,9 @@ public class StatCollector implements Listener {
         String result = new String();
 
         String get() {
-            StatCollector.this.stats.forEach((player, stat) -> {
+            stats.forEach((player, stat) -> {
                 result += String.format(
-                    "`%s` played %s\n", UsefulStuff.formatMarkdown(player), stat.toString()
+                    "%s played %s\n", UsefulStuff.formatMarkdown(player), stat.toString()
                 );
             });
             return result;
