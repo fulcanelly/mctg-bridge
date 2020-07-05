@@ -21,6 +21,13 @@ public class UsefulStuff {
         return new JSONObject();
     }
 
+    static public void delay(long time) {
+        try { 
+            Thread.sleep(time);
+        } catch(Throwable t) {
+            t.printStackTrace();
+        }
+    }
     public static String formatMarkdown(String input) {
         return input
             .replace("_", "\\_")

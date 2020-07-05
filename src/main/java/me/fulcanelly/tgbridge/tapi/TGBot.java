@@ -1,9 +1,9 @@
 package me.fulcanelly.tgbridge.tapi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.fulcanelly.tgbridge.TgBridge;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.events.detector.EventDetectorManager;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
@@ -16,6 +16,42 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 public class TGBot {
+    
+
+    private ArrayList<Long> recent_updates = new ArrayList<>();
+    static int MAX_RECENT_UPDATES = 10;
+    
+    /**
+     * @return true if update not handlet yet
+     * otherwise return false and add update to list
+     * also keep list fixed size
+     * 
+     * needed to prevent message repeating
+     * 
+     * todo
+     */
+    boolean updateWatcher(Long update_id) {
+        boolean result = true;
+
+        synchronized(recent_updates) {
+            adjustRecentListSize();
+
+            if (recent_updates.contains(update_id)) {
+                result = false;
+            }
+
+            recent_updates.add(update_id);
+        }
+
+        return result;
+    }
+
+    void adjustRecentListSize() {
+        while (recent_updates.size() > MAX_RECENT_UPDATES) {
+            recent_updates.remove(0);
+        }
+    }
+ 
     class parse_mode {
         static final String Markdown = "Markdown"; 
         static final String HTML = "HTML"; 
@@ -186,23 +222,38 @@ public class TGBot {
         return false;
     }
 
+    boolean alive = true;
+
+
+    public void stop() {
+        alive = false;
+    }
+
+    void setup(Runnable func) {
+        new Thread(() -> {
+            while(true && alive) {
+                func.run();
+                UsefulStuff.delay(30);
+            }
+        }).start();
+    }
     public void start() {
-        new TgBridge.BScheduler(() -> {
+
+        setup(() -> {
             for(Object updateObject: getUpdates()) {
                 JSONObject update = (JSONObject)updateObject;
+                updateWatcher((Long)update.get("update_id"));
                 this.updateLast(update);
                 detector.handle(update);
             }
-        }).schedule(0, 30L);
+        });
+
     }
 
     public void setOffset(Long offset) {
-       // new Thread(() -> 
-            new MethodCaller(Method.UPDATES)
-                .put("offset", offset.toString())
-                .call()
-        //)
-        ;
+        new MethodCaller(Method.UPDATES)
+            .put("offset", offset.toString())
+            .call();
     }
 
 };

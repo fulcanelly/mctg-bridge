@@ -19,6 +19,7 @@ import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.utils.ConfigLoader;
+import me.fulcanelly.tgbridge.utils.DeepLoger;
 import me.fulcanelly.tgbridge.utils.StatCollector;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
@@ -61,6 +62,8 @@ public class TgBridge extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        bot.stop();
+        StatCollector.stop();
     }
     
     public String getMemory() {
@@ -144,6 +147,8 @@ public class TgBridge extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        DeepLoger.initalize(this);
+        
         if (!new File(getDataFolder(), "config.json").exists()) {
             saveResource("config.json", false);
         }

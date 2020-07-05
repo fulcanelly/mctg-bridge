@@ -71,16 +71,16 @@ public class EventPipe {
 
     public void registerReactor(Reactor reactor) {
         Class<?> type = reactor.getType();
-        reactors.putIfAbsent(type, new ArrayList<>());
+        reactors.putIfAbsent(type, new ArrayList<Reactor>());
 
         List<Reactor> listeners = reactors.get(type);
         listeners.add(reactor);
     }
 
     public void emit(EventObject object) {
-        new Thread(() -> 
-            reactors.get(object.getClass()).stream()
-            .forEach(reactor -> reactor.call(object))
-        ).start(); 
+   //     new Thread(() -> 
+        reactors.get(object.getClass())
+            .forEach(reactor -> reactor.call(object));
+       // ).start(); 
     }
 }

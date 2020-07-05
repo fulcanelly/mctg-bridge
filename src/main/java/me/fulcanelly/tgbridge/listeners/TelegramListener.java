@@ -94,7 +94,7 @@ public class TelegramListener implements Listener {
 
         if (text != null && text.startsWith("/")) {
             bridge.tgpipe.emit(new CommandEvent(event.msg));
-        } else /*if(event.getChat().getId().toString() == bridge.chat)*/ {            
+        } else if(event.getChat().getId().toString().equals(bridge.chat)) {            
             message = formatMessage(event);
             broadcast(message);
         }

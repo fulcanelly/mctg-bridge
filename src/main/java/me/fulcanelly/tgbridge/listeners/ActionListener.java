@@ -9,6 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.event.EventHandler;
 
 import me.fulcanelly.tgbridge.tapi.TGBot;
@@ -55,7 +56,9 @@ public class ActionListener implements Listener {
 
     @EventHandler
     void onAchivement(PlayerAdvancementDoneEvent event) {
-        System.out.println(event.getAdvancement().getCriteria());
+        System.out.println(event.getAdvancement().getKey().getKey());
+        //AdvancementProgress
+      //  System.out.println(event.getAdvancement().getCriteria());
        // send(event.getAdvancement().toString());
     }
 

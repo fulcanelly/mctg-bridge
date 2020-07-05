@@ -3,91 +3,170 @@ package me.fulcanelly.tgbridge.utils;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import me.fulcanelly.tgbridge.TgBridge;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.PrintWriter;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 
+class Stats {
+
+    public long total_time = 0l;
+    public long last_point = -1l;
+    public boolean is_online = false;
+
+    static public Stats load(JSONObject obj) {
+        Stats res = new Stats();
+
+        res.total_time = (long) obj.get("total");
+        res.last_point = (long) obj.get("last");
+
+        return res;
+    }
+    
+    public JSONObject jsonize() {
+        HashMap<String, Long> result = new HashMap<>();
+
+        result.put("total", total_time);
+        result.put("last", last_point);
+
+        return new JSONObject(result);
+    }
+
+    public synchronized void startTimer() {
+        if (is_online) {
+            return;
+        }
+
+        last_point = System.currentTimeMillis();
+        is_online = true;
+    }
+
+    public synchronized Stats update() {
+        if (is_online && last_point != -1) {
+            long now = System.currentTimeMillis();
+            total_time += now - last_point;
+            last_point = now;
+        }
+        return this;
+    }
+
+    public void stop() {
+        is_online = false;
+    }
+
+    //todo 
+    public String toString() {
+
+        long seconds = total_time / 1000l;
+
+        long hours = (seconds / 3600) % 60;
+        long minutes = (seconds / 60) % 60;
+        seconds = seconds % 60;
+
+        StringBuilder builder = new StringBuilder();
+        if (hours != 0) {
+            builder.append(hours + " hrs ");
+        }
+        
+        if (minutes != 0) {
+            builder.append(minutes + " min ");
+        }        
+        
+        if (seconds != 0) {
+            builder.append(seconds + " sec ");
+        }
+        
+        return builder.toString();
+    }
+}
+
 public class StatCollector implements Listener {
+
+    public synchronized void load() {
+        File configFile = new File(plugin.getDataFolder(), "player-stats.json");
+   
+        JSONObject loaded = new JSONObject();
+
+        if (!configFile.exists()) {
+            return;
+        }
+
+        try {
+            FileReader reader = new FileReader(configFile);
+            Object data = new JSONParser().parse(reader);
+            loaded = (JSONObject) data;
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        loaded.forEach((name, stat) -> {
+            stats.put((String)name, Stats.load((JSONObject)stat));
+        });
+
+    }
+    
+    public synchronized void save() {
+        File configFile = new File(plugin.getDataFolder(), "player-stats.json");
+
+        try {
+            PrintWriter pw = new PrintWriter(configFile);
+            pw.write(this.jsonize().toJSONString());
+            pw.flush();
+            pw.close();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    JSONObject jsonize() {
+        HashMap<String, JSONObject> result = new HashMap<>();
+        stats.forEach((name, stats) -> {
+            result.put(name, stats.jsonize());
+        });
+        return new JSONObject(result);
+    }
 
     TgBridge plugin;
     HashMap<String, Stats> stats = new HashMap<>();
 
-    StatCollector(TgBridge plugin) {
+    private StatCollector(TgBridge plugin) {
         this.plugin = plugin;
+        this.load();
         Bukkit.getOnlinePlayers()
             .forEach(player -> getStat(player.getName()).startTimer());
-        plugin.commandManager.addCommand("stats", msg -> {
-            msg.reply(this.getMessage());
-        });
+        plugin.commandManager.addCommand("stats", msg -> msg.reply(this.getMessage()) );
 
     }
+
+    static StatCollector instance = null;
 
     public static void initalize(TgBridge plugin) {
-        StatCollector collector = new StatCollector(plugin);
+        
+        if (instance != null ) {
+            throw new RuntimeException("instance exists already");
+        }
+
+        instance = new StatCollector(plugin);
         plugin.getServer()
             .getPluginManager()
-            .registerEvents(collector, plugin);
+            .registerEvents(instance, plugin);
     }
 
-    class Stats {
-
-        long total_time = 0l;
-        long last_point = -1l;
-        boolean and_is_online = false;
-
-        public synchronized void startTimer() {
-            if (and_is_online) {
-                return;
-            }
-
-            last_point = System.currentTimeMillis();
-            and_is_online = true;
-        }
-
-        public synchronized Stats update() {
-            if (and_is_online && last_point != -1) {
-                long now = System.currentTimeMillis();
-                total_time += now - last_point;
-                last_point = now;
-            }
-            return this;
-        }
-
-        public void stop() {
-            and_is_online = false;
-        }
-
-        //todo 
-        public String toString() {
-            long seconds = total_time / 1000l;
-   
-            long hours = (seconds / 3600) % 60;
-            long minutes = (seconds / 60) % 60;
-            seconds = seconds % 60;
-
-            StringBuilder builder = new StringBuilder();
-            if (hours != 0) {
-                builder.append(hours + " hours ");
-            }
-            
-            if (minutes != 0) {
-                builder.append(minutes + " minutes ");
-            }        
-            
-            if (seconds != 0) {
-                builder.append(seconds + " seconds ");
-            }
-            
-            return builder.toString();
-        }
+    public static void stop() {
+        instance.update();
+        instance.save();
     }
 
     Stats getStat(String name) {
-        System.out.println("getting \"" + name + "\"");
         Stats stat = stats.get(name);
         if (stat == null) {
             stat = new Stats();
@@ -114,14 +193,21 @@ public class StatCollector implements Listener {
     
     private class MessageMaker {
 
-        String result = new String();
-
+        String result = new String("Played time: \n\n");
+        
         String get() {
-            stats.forEach((player, stat) -> {
-                result += String.format(
-                    "%s played %s\n", UsefulStuff.formatMarkdown(player), stat.toString()
-                );
-            });
+            stats.entrySet()
+                .stream()
+                .sorted((a, b) -> (int)(a.getValue().total_time - b.getValue().total_time))
+                .forEach(pair -> { 
+                    String player = pair.getKey();
+                    Stats stat = pair.getValue();
+
+                    result += String.format(
+                        " 🏳️‍🌈 %s %s\n", UsefulStuff.formatMarkdown(player), stat.toString()
+                    );
+                });
+
             return result;
         }
     }
