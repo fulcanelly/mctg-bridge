@@ -2,20 +2,20 @@ package me.fulcanelly.tgbridge.listeners;
 
 import org.bukkit.event.Listener;
 
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
-import org.bukkit.advancement.AdvancementProgress;
+
 import org.bukkit.event.EventHandler;
 
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
 public class ActionListener implements Listener {
+
     final TGBot bot;
     final Long chat_id;
 
@@ -34,8 +34,7 @@ public class ActionListener implements Listener {
             .getPlayer()
             .getName();
         String text = String.format(
-            "`%s` join the server", 
-            UsefulStuff.formatMarkdown(player_name)
+            "`%s` join the server", player_name
         );
         send(text);
     }
@@ -45,32 +44,33 @@ public class ActionListener implements Listener {
         String name = event
             .getPlayer()
             .getName();
-        String text = String.format("`%s` left the server", UsefulStuff.formatMarkdown(name));
-        send(text);
+        send(
+            String.format("`%s` left the server", name)
+        );
     }
     
     @EventHandler
     void onDeath(PlayerDeathEvent event) {
-        send(event.getDeathMessage());
+        send(
+            event.getDeathMessage()
+        );
     }
 
+    //todo
     @EventHandler
     void onAchivement(PlayerAdvancementDoneEvent event) {
-        System.out.println(event.getAdvancement().getKey().getKey());
-        //AdvancementProgress
-      //  System.out.println(event.getAdvancement().getCriteria());
-       // send(event.getAdvancement().toString());
+   
     }
 
     @EventHandler
     void onChatEvent(AsyncPlayerChatEvent event) {
-        String playerName = event.getPlayer().getName();
+        String player_name = event.getPlayer().getName();
         String message = event.getMessage();
 
-        playerName = UsefulStuff.formatMarkdown(playerName);
         message = UsefulStuff.formatMarkdown(message);
         
-        String text = String.format("*<%s>* %s", playerName, message);
-        send(text);
+        send(
+            String.format("*<%s>* %s", player_name, message)
+        );
     }
 }
