@@ -11,8 +11,8 @@ import me.fulcanelly.tgbridge.TgBridge;
 import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -194,20 +194,29 @@ public class StatCollector implements Listener {
     private class MessageMaker {
 
         String result = new String("Played time: \n\n");
-        
-        String get() {
+
+        <T extends Entry<String, Stats> > int comparator(T a, T b) {
+            return (int)( b.getValue().total_time - a.getValue().total_time );
+        }
+
+        void builder(Entry<String, Stats> pair) {
+            String player = pair.getKey();
+            Stats stat = pair.getValue();
+
+            result += String.format(
+                " 🏳️‍🌈 `%s` %s\n", player, stat.toString()
+            );
+        }
+
+        void buildUp() {
             stats.entrySet()
                 .stream()
-                .sorted((a, b) -> (int)(a.getValue().total_time - b.getValue().total_time))
-                .forEach(pair -> { 
-                    String player = pair.getKey();
-                    Stats stat = pair.getValue();
+                .sorted(this::comparator)
+                .forEach(this::builder);
+        }
 
-                    result += String.format(
-                        " 🏳️‍🌈 %s %s\n", UsefulStuff.formatMarkdown(player), stat.toString()
-                    );
-                });
-
+        String get() {
+            this.buildUp();
             return result;
         }
     }
