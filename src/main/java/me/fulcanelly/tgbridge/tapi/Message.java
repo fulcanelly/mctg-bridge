@@ -50,7 +50,6 @@ public class Message {
         }
     }
 
-
     static public TGBot bot;
 
     public <T>Message(T msg) {
@@ -97,7 +96,6 @@ public class Message {
     public From getFrom() {
         return new From(msg.get("from"));
     }
-
 
     public From getChat() {
         return new From(msg.get("chat"));
