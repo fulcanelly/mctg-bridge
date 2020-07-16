@@ -18,23 +18,41 @@ import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
-import me.fulcanelly.tgbridge.utils.ConfigLoader;
+import me.fulcanelly.tgbridge.tools.login.LoginManager;
+import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.DeepLoger;
-import me.fulcanelly.tgbridge.utils.StatCollector;
+import me.fulcanelly.tgbridge.utils.MainConfig;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
+
+class BScheduler extends BukkitRunnable {
+    Runnable runnable;
+
+    public BScheduler(Runnable r) {
+        this.runnable = r;
+    }
+
+    public void run() {
+        runnable.run();
+    }
+
+    public void schedule(long delay, long period) {
+        runTaskTimerAsynchronously(TgBridge.getInstance(), delay, period);
+    }
+}
 
 public class TgBridge extends JavaPlugin {
 
     static TgBridge instance = null;
+
+    public ActionListener in_listener;
     public String username = null;
     public TGBot bot = null;
-    public CommandManager commandManager = null;
-    public EventPipe tgpipe = null;
+    public CommandManager commands = null;
+    public EventPipe tgpipe = new EventPipe();
 
-    String token = null;
-    public String chat = new String();
-    ConfigLoader cLoader = null;
+    public MainConfig config;
+    public String chat;
 
     public TgBridge() {
         instance = this;
@@ -44,25 +62,11 @@ public class TgBridge extends JavaPlugin {
         return instance;
     }
 
-    static public class BScheduler extends BukkitRunnable {
-        Runnable runnable;
-
-        public BScheduler(Runnable r) {
-            this.runnable = r;
-        }
-
-        public void run() {
-            runnable.run();
-        }
-
-        public void schedule(long delay, long period) {
-            runTaskTimerAsynchronously(TgBridge.getInstance(), delay, period);
-        }
-    }
-
     @Override
     public void onDisable() {
-        bot.stop();
+        if (bot != null ) {
+            bot.stop();
+        }
         StatCollector.stop();
     }
     
@@ -123,40 +127,17 @@ public class TgBridge extends JavaPlugin {
         };
     }
 
-    void loadConfig() throws Exception {
-        cLoader = new ConfigLoader("config.json");
-        if(!cLoader.load()) {
-            throw new Exception("Can't load config file.");
-        }
-    }
-
-    void obtainToken() throws Exception {
-        token = cLoader.getApiToken();
-
-        if(token == null) {
-            throw new Exception("Can't load bot API token");
-        }
-    }
-
-    void obtainChat() throws Exception {
-        chat = cLoader.getPinnedChat();
-        if(chat == null) {
-            throw new Exception("Can't load chat_id");
-        }
-    }
-
     @Override
     public void onEnable() {
         DeepLoger.initalize(this);
-        
+
         if (!new File(getDataFolder(), "config.json").exists()) {
             saveResource("config.json", false);
         }
 
         try {
-            loadConfig();
-            obtainChat();
-            obtainToken();
+            config = new MainConfig(this);
+            config.manager.load();
         } catch(Exception e) {
             getLogger()
                 .warning(e.getMessage());
@@ -164,9 +145,25 @@ public class TgBridge extends JavaPlugin {
             return;
         }
 
-        tgpipe = new EventPipe();
+        chat = config.chat_id;
+
+        LoginManager loginer = new LoginManager(this);
+
+        if (config.login_manger) {
+            getServer()
+                .getPluginManager()
+                .registerEvents(loginer, this);
+
+            getCommand("log").setExecutor(loginer);
+
+            //System.out.println(loginer.getListener());
+            // tgpipe
+            //   .registerListener(loginer.getListener());
+        }
+
         TGBot.setEventPipe(tgpipe);
-        bot = new TGBot(token);
+
+        bot = new TGBot(config.api_token);
 
         //order of adding detectors is important
         bot.getDetectorManager()
@@ -180,38 +177,37 @@ public class TgBridge extends JavaPlugin {
                 .getMe()
                 .getUsername();
         } catch(Exception e) {
-            getLogger()
-                .warning("Could not find this bot");
+            e.printStackTrace();
+
             turnOff();
             return;
         }
 
         Message.setBot(bot);
         CommandManager.setUsername(username);
-        commandManager = new CommandManager();
+        commands = new CommandManager();
         StatCollector.initalize(this);
 
-        commandManager
+        commands
             .addCommand("ping", msg -> msg.reply("pong"))
             .addCommand("memory", msg -> msg.reply(getMemory()))
             .addCommand("list", this.getListCmdHandler())
-            .addCommand("chat_id", msg -> {
-                String chat_id = msg
-                    .getChat()
-                    .getId()
-                    .toString();
-        
-                msg.reply(chat_id);
-            })
+            .addCommand("chat_id", this::onChatId)
             .addCommand("uptime", msg -> msg.reply(getUptime()));
-            
-        cLoader.getApiToken();
-
+        
+        in_listener = new ActionListener(bot, config.chat_id);
         getServer()
             .getPluginManager()
-            .registerEvents(new ActionListener(bot, chat), this);
+            .registerEvents(in_listener, this);
         
         bot.start();
+    }
+
+    void onChatId(Message message) {
+        String chat_id = message.getChat()
+            .getId()
+            .toString();
+        message.reply(chat_id);
     }
 }
 
