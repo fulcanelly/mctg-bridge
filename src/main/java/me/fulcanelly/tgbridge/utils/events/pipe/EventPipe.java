@@ -12,7 +12,7 @@ public class EventPipe {
 
     boolean isRightHandler(Method method) {
         
-        if(method.getAnnotation(EventHandler.class) == null) {
+        if(method.getAnnotation(EventReactor.class) == null) {
             return false;
         }
 
