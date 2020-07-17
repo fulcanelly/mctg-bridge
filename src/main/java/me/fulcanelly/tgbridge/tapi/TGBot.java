@@ -172,6 +172,7 @@ public class TGBot {
         String page = new MethodCaller(Method.EDIT)
             .put("chat_id", chat_id.toString())
             .put("message_id", message_id.toString())
+            .put("parse_mode", parse_mode.Markdown)
             .put("text", text)
             .call();
 
