@@ -1,4 +1,4 @@
-name: tg-bridge
+name: ${name}
 version: ${version}
 description: ${description}
 author: ${author}
@@ -6,3 +6,15 @@ website: ${url}
 api-version: 1.13
 
 main: ${mainClass}
+commands:
+  log:
+    description: No description
+    permission: ${name}.test
+    usage: /<command> 
+    default: true
+
+
+permissions:
+    ${name}.*:
+      description: permission
+      default: true
