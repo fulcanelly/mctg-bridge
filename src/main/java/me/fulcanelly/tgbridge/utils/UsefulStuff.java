@@ -4,8 +4,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import lombok.SneakyThrows;
+
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -44,25 +45,23 @@ public class UsefulStuff {
             .replace("&", "&amp;");
     }
 
+    @SneakyThrows
     public static String loadPage(String url) {
-        String pageText = "";
+        String pageText = new String();
+        
+        InputStream inp = new URL(url)
+            .openConnection()
+            .getInputStream();
 
-        try {
-            InputStream inp = new URL(url)
-                .openConnection()
-                .getInputStream();
+        byte[] buffer = new byte[4096];
+        ByteArrayOutputStream page = new ByteArrayOutputStream();
 
-            byte[] buffer = new byte[4096];
-            ByteArrayOutputStream page = new ByteArrayOutputStream();
-
-            int length;
-            while ((length = inp.read(buffer)) != -1) {
-                page.write(buffer, 0, length);
-            }
-            pageText = page.toString();
-        } catch (IOException ignored) {
-
+        int length;
+        while ((length = inp.read(buffer)) != -1) {
+            page.write(buffer, 0, length);
         }
+        pageText = page.toString();
+
 
         return pageText;
     }
