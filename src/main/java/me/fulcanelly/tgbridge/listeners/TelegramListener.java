@@ -4,12 +4,11 @@ import me.fulcanelly.tgbridge.TgBridge;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventHandler;
+import me.fulcanelly.tgbridge.utils.events.pipe.EventReactor;
 import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,19 +22,18 @@ public class TelegramListener implements Listener {
         public static final String unknownEnding = ChatColor.GRAY + " sent something";
         //todo:  public static final String message = "{unk.sign}[tg][{from}]{unk.mark} {msg.text} {text.caption}";
     }
-
-    TgBridge bridge;
-
+    
+    final TgBridge bridge;
+    
     TextComponent formatMessage(Message msg) {
-        String text = msg.getText();
         TextComponent result = new TextComponent();
-
-        String beginning;
-        String ending;
-
+        
+        String text = msg.getText();
         String name = msg.getFrom().getName();
-        //String caption = msg.getCaption();
-        //begining
+        
+        String beginning = null;
+        String ending = null;
+
         if (text == null) {
             beginning = String.format(Template.unknownBeginning, name);
             ending = Template.unknownEnding;
@@ -87,22 +85,29 @@ public class TelegramListener implements Listener {
             .sendMessage(component);
     }
 
-    @EventHandler
-    public void onMessage(MessageEvent event) {
-        String text = event.getText();
-        TextComponent message;
+    boolean isRightChat(MessageEvent event) {
+        return event.getChat().getId().toString().equals(bridge.chat);
+    }
 
+    @EventReactor
+    public void onMessage(MessageEvent event) {
+        synchronized(bridge.in_listener) {
+            bridge.in_listener.actual_last = event.getMsgId();
+        }
+        String text = event.getText();
+        
         if (text != null && text.startsWith("/")) {
             bridge.tgpipe.emit(new CommandEvent(event.msg));
-        } else if(event.getChat().getId().toString().equals(bridge.chat)) {            
-            message = formatMessage(event);
-            broadcast(message);
+        } else if(this.isRightChat(event)) {            
+            broadcast(
+                formatMessage(event)
+            );
         }
     }
 
-    @EventHandler
+    @EventReactor
     public void onCommand(CommandEvent event) {
-        bridge.commandManager.tryMatch(event);
+        bridge.commands.tryMatch(event);
     }
 }
 
