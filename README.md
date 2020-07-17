@@ -8,4 +8,9 @@ MCTG-bridge is a lightweight plugin that creates a chat bridge between Telegram 
 
 After that, you have to restart your server, and then bot should be working.
 
-
+### What's Left to be Added/Fixed
+- The Following Ideas
+  - [ ] message reduction
+  - [x] message merging
+  - [ ] login via telegram
+  - [ ] flexible configurtation
