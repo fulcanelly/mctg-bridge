@@ -1,6 +1,7 @@
 package me.fulcanelly.tgbridge.utils;
 
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -9,12 +10,11 @@ import java.util.Queue;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.block.data.type.*;
 
 public class DeepLoger implements Listener {
 
 
-    Queue<BlockBreakEvent> queue = new ArrayDeque<>();
+    Queue<BlockEvent> queue = new ArrayDeque<>();
 
     //todo
     void logDeamon() {
@@ -32,21 +32,16 @@ public class DeepLoger implements Listener {
 
     @EventHandler
     void onBreak(BlockBreakEvent event ) {
-
-       // if (event.getBlock().getBlockData() instanceof Leaves) {
-       //     Leaves leaf = (Leaves) event.getBlock().getBlockData();
-      //      System.out.println(leaf.isPersistent​());
-       // }
-
+     //   queue.add(event);
         System.out.println(
             event.getPlayer().getName() + " break block at " + event.getBlock().getLocation().toString()
         );
     }
 
     @EventHandler
-    @Deprecated
     void onPlace(BlockPlaceEvent event) {
-        
+       // queue.add(event);
+
         System.out.println(
             event.getPlayer().getName() + " placed block at " + event.getBlock().getLocation().toString()
         );
