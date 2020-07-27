@@ -10,10 +10,19 @@ import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import lombok.SneakyThrows;
+
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 import java.io.*;
 import java.util.stream.Collectors;
+
+enum Method {
+    SEND,
+    EDIT,
+    UPDATES,
+    GET_ME
+}
 
 public class TGBot {
     
@@ -71,20 +80,15 @@ public class TGBot {
     }
         
     static public EventPipe epipe;
-    static final String empty_answer = new JSONObject().toString();
     
     public EventDetectorManager getDetectorManager() {
         return detector;
     }
 
-    private enum Method {
-        SEND,
-        EDIT,
-        UPDATES,
-        GET_ME
-    }
+    static final String empty_answer = new JSONObject().toString();
 
     class MethodCaller {
+
         final Map<String, String> requestParams = new HashMap<>();
 
         String decodeMethod(Method m) {
@@ -99,13 +103,9 @@ public class TGBot {
 
         String link;
 
+        @SneakyThrows
         String encodeValue(String value) {
-            try {
-                return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-            }  catch(UnsupportedEncodingException e) {
-                //to do (or not)
-            }
-            return new String("error occured");
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
         }
          
         void generateRequestLink(String methodName) {
@@ -127,8 +127,7 @@ public class TGBot {
         }
 
         public String call() {
-            String encodedURL = requestParams
-                .keySet()
+            String encodedURL = requestParams.keySet()
                 .stream()
                 .map(key -> key + "=" + encodeValue(requestParams.get(key)))
                 .collect(Collectors.joining("&", link + "?", ""));
@@ -149,32 +148,28 @@ public class TGBot {
         return new Message(result);
     }
     
-    public Message sendMessage(Long chat_id, String text) {
-        String page = new MethodCaller(Method.SEND)
-            .put("chat_id", chat_id.toString())
-            .put("text", text)
+    MethodCaller defaultCaller(Method method, String text, Long chat_id) {
+        return new MethodCaller(method)
             .put("parse_mode", parse_mode.Markdown)
-            .call();
+            .put("chat_id", chat_id.toString())
+            .put("text", text);
+    }
+
+    public Message sendMessage(Long chat_id, String text) {
+        String page = defaultCaller(Method.SEND, text, chat_id).call();
         return parseResponse(page);
     }
 
     public Message sendMessage(Long chat_id, String text, Long reply_to_message_id) {
-        String page = new MethodCaller(Method.SEND)
-            .put("chat_id", chat_id.toString())
-            .put("text", text)
-            .put("parse_mode", parse_mode.Markdown)
-            .put("reply_to_message_id", reply_to_message_id.toString())
-            .call();
+        String page = defaultCaller(Method.SEND, text, chat_id)
+            .put("reply_to_message_id", reply_to_message_id.toString()).call();
+
         return parseResponse(page);
     }
 
     public Message editMessage(Long chat_id, Long message_id, String text) {
-        String page = new MethodCaller(Method.EDIT)
-            .put("chat_id", chat_id.toString())
-            .put("message_id", message_id.toString())
-            .put("parse_mode", parse_mode.Markdown)
-            .put("text", text)
-            .call();
+        String page = defaultCaller(Method.SEND, text, chat_id)
+            .put("message_id", message_id.toString()).call();
 
         return parseResponse(page);
     }
@@ -225,32 +220,32 @@ public class TGBot {
 
     boolean alive = true;
 
-
     public void stop() {
         alive = false;
     }
 
+    @SneakyThrows
     void setup(Runnable func) {
-        new Thread(() -> {
-            while(true && alive) {
-                func.run();
-                UsefulStuff.delay(30);
-            }
-        }).start();
+        while(true && alive) {
+            func.run();
+            Thread.sleep(30);
+        }
     }
+
     public void start() {
-
-        setup(() -> {
-            for(Object updateObject: getUpdates()) {
-                JSONObject update = (JSONObject)updateObject;
-                updateWatcher((Long)update.get("update_id"));
-                this.updateLast(update);
-                detector.handle(update);
-            }
-        });
-
+        Runnable runnable = () -> setup(this::updater);
+        new Thread(runnable).start();    
     }
 
+    void updater() {
+        for(Object updateObject: getUpdates()) {
+            JSONObject update = (JSONObject)updateObject;
+            updateWatcher((Long)update.get("update_id"));
+            this.updateLast(update);
+            detector.handle(update);
+        } 
+    }
+    
     public void setOffset(Long offset) {
         new MethodCaller(Method.UPDATES)
             .put("offset", offset.toString())
