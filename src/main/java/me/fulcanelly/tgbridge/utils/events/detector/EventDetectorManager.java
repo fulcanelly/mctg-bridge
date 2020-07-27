@@ -32,13 +32,16 @@ public class EventDetectorManager {
     }
     
     private void checkDetector(Detector detector) {
-         event = detector.is_it(update);
-         if (event != null) {
+        event = detector.is_it(update);
+        if (event != null) {
             pipe.emit(event);
-         }
+        }
     }
 
-    public void handle(JSONObject update) {
+    JSONObject update = null;
+
+    synchronized public void handle(JSONObject update) {
+        this.update = update;
         detectors.stream()
                 .forEach(this::checkDetector);
     }
