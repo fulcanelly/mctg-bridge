@@ -13,7 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.fulcanelly.tgbridge.listeners.ActionListener;
 import me.fulcanelly.tgbridge.listeners.TelegramListener;
-import me.fulcanelly.tgbridge.tapi.Action;
+import me.fulcanelly.tgbridge.tapi.CommandAction;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
@@ -114,7 +114,7 @@ public class TgBridge extends JavaPlugin {
             .disablePlugin(plugin);
     }
 
-    Action getListCmdHandler() {
+    CommandAction getListCmdHandler() {
         String emptyServerMessage = "Server unfortunately is empty :c";
 
         return msg -> {
