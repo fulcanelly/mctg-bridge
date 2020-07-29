@@ -3,6 +3,7 @@ package me.fulcanelly.tgbridge.tapi;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 
 public class CommandManager {
 
@@ -10,9 +11,14 @@ public class CommandManager {
 
 		final String command;
 		final String forGroups;
-		final Action action;
+		final CommandAction action;
 
-		Command(String command, Action action) {
+		//todo
+		String[] parseArgs(CommandEvent msg) {
+			return null;
+		}
+
+		Command(String command, CommandAction action) {
 			this.command = command;
 			this.action = action;
 			forGroups = generatePattern();
@@ -47,7 +53,7 @@ public class CommandManager {
 	public CommandManager() {
 	}
 
-	public CommandManager addCommand(String text, Action action) {
+	public CommandManager addCommand(String text, CommandAction action) {
 		commands.add(new Command(text, action));
 		return this;
 	}	
@@ -56,7 +62,7 @@ public class CommandManager {
 		boolean match(Command cmd);
 	};
 	
-	public void tryMatch(Message msg) {
+	public void tryMatch(CommandEvent msg) {
 		
 		boolean is_private = msg
 			.getChat()
@@ -68,8 +74,9 @@ public class CommandManager {
 			command -> command.matchForPrivate(text): 
 			command -> command.matchForGroup(text);
 
-		for(Command command: commands) {
-			if(matcher.match(command)) {
+		for (Command command: commands) {
+			if (matcher.match(command)) {
+			//	msg.args = command.parseArgs(msg);
 				command.action.run(msg);
 			}
 		}
