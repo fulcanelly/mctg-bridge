@@ -5,6 +5,7 @@ import me.fulcanelly.tgbridge.tapi.Message;
 
 public class CommandEvent extends Message implements EventObject {
 
+    public String [] args;
     public <T>CommandEvent(T msg) {
         super(msg);
     }
