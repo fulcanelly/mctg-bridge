@@ -3,37 +3,55 @@ package me.fulcanelly.tgbridge.tapi;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 
 public class CommandManager {
 
 	static class Command {
 
-		final String command;
-		final String forGroups;
 		final CommandAction action;
-
-		//todo
-		String[] parseArgs(CommandEvent msg) {
-			return null;
-		}
+		final Pattern privatePattern;
+		final Pattern publicPattern;
 
 		Command(String command, CommandAction action) {
-			this.command = command;
 			this.action = action;
-			forGroups = generatePattern();
+
+			String private_form = "/" + command;
+			String public_form = generateGroupPattern(private_form);
+			String template = "(\\s(?<arguments>.*)){0,}";
+
+			privatePattern = Pattern.compile(private_form + template);
+			publicPattern = Pattern.compile(public_form + template);
 		}
 		
-		String generatePattern() {
-			return String.format("/%s@%s", command, username);
+		String generateGroupPattern(String command) {
+			return String.format("%s@%s", command, username);
 		}
 
-		boolean matchForPrivate(String input) {
-			return ("/" + command).equals(input);
+		boolean tryRunEventWith(CommandEvent event, Pattern pattern) {
+			Matcher matcher = pattern.matcher(
+				event.getText() );
+
+			if (matcher.find()) {
+				String arguments = matcher.group("arguments");
+				if (arguments != null) { 
+					event.args = arguments.split("\\s");
+				}
+				action.run(event);
+				return true;
+			}
+			return false;
 		}
 
-		boolean matchForGroup(String input) {
-			return forGroups.equals(input);
+		boolean matchForPrivate(CommandEvent event) {
+			return tryRunEventWith(event, privatePattern);
+		}
+
+		boolean matchForGroup(CommandEvent event) {
+			return tryRunEventWith(event, publicPattern);
 		}
 	}
 
@@ -58,26 +76,23 @@ public class CommandManager {
 		return this;
 	}	
 
-	interface Matcher {
+	interface CommandMatcher {
 		boolean match(Command cmd);
 	};
 	
-	public void tryMatch(CommandEvent msg) {
+	public void tryMatch(CommandEvent event) {
 		
-		boolean is_private = msg
+		boolean is_private = event
 			.getChat()
 			.isPrivate();
 
-		String text = msg.getText();
-
-		Matcher matcher = is_private ? 
-			command -> command.matchForPrivate(text): 
-			command -> command.matchForGroup(text);
+		CommandMatcher matcher = is_private ? 
+			command -> command.matchForPrivate(event): 
+			command -> command.matchForGroup(event);
 
 		for (Command command: commands) {
 			if (matcher.match(command)) {
-			//	msg.args = command.parseArgs(msg);
-				command.action.run(msg);
+				return;
 			}
 		}
     }
