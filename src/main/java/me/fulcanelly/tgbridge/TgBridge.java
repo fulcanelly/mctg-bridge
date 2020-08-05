@@ -18,8 +18,8 @@ import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
-import me.fulcanelly.tgbridge.tools.login.LoginManager;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
+import me.fulcanelly.tgbridge.tools.stats.StatsTable;
 import me.fulcanelly.tgbridge.utils.DeepLoger;
 import me.fulcanelly.tgbridge.utils.MainConfig;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
@@ -147,9 +147,9 @@ public class TgBridge extends JavaPlugin {
 
         chat = config.chat_id;
 
-        LoginManager loginer = new LoginManager(this);
+       // LoginManager loginer = new LoginManager(this);
 
-        if (config.login_manger) {
+      /*  if (config.login_manger) {
             getServer()
                 .getPluginManager()
                 .registerEvents(loginer, this);
@@ -160,7 +160,7 @@ public class TgBridge extends JavaPlugin {
             // tgpipe
             //   .registerListener(loginer.getListener());
         }
-
+*/
         TGBot.setEventPipe(tgpipe);
 
         bot = new TGBot(config.api_token);
@@ -193,8 +193,21 @@ public class TgBridge extends JavaPlugin {
             .addCommand("memory", msg -> msg.reply(getMemory()))
             .addCommand("list", this.getListCmdHandler())
             .addCommand("chat_id", this::onChatId)
-            .addCommand("uptime", msg -> msg.reply(getUptime()));
-        
+            .addCommand("uptime", msg -> msg.reply(getUptime()))
+            .addCommand("stats", event -> {    
+                if (event.args == null) {
+                    event.reply("specify nickname to get stats");
+                } else {
+                    String name = event.args[0];
+                    StatsTable stats = StatCollector.instance.stats.get(name);
+                    if (stats == null) {
+                        event.reply("no players whith such nickname yet");
+                    } else {
+                        event.reply("you played " + stats.toString());
+                    }
+                }
+            });
+
         in_listener = new ActionListener(bot, config.chat_id);
         getServer()
             .getPluginManager()
