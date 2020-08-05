@@ -58,11 +58,11 @@ public class ActionListener implements Listener {
             bot.editMessage(chat_id, message_id, for_send);
         }
 
-        boolean isFrom(String name) {
-            if (name == null) {
+        boolean isFrom(String another_name) {
+            if (another_name == null) {
                 return false;
             }
-            return name.equals(name);
+            return name.equals(another_name);
         }   
 
         final static long MAX_SIZE = 20;
