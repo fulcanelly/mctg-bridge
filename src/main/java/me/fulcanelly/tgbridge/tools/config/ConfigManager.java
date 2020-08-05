@@ -22,7 +22,7 @@ public class ConfigManager<T> {
     @SneakyThrows
     public ConfigManager(T config, File path) {
         Class<?> klass = config.getClass();
-        ConfigFille cfile = klass.getAnnotation(ConfigFille.class);
+        ConfigFile cfile = klass.getAnnotation(ConfigFile.class);
         
         if (cfile == null) {
             throw new RuntimeException("Wrong class");

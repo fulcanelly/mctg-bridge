@@ -6,7 +6,7 @@ import java.io.File;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-@ConfigFille(file = "config.json")
+@ConfigFile(file = "config.json")
 public class MainConfig {
     
     @Saveable

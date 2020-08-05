@@ -3,6 +3,6 @@ package me.fulcanelly.tgbridge.tools.config;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ConfigFille {
+public @interface ConfigFile {
     String file();
 }
