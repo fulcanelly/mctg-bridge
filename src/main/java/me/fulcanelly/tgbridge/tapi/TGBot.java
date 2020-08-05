@@ -167,7 +167,7 @@ public class TGBot {
     }
 
     public Message editMessage(Long chat_id, Long message_id, String text) {
-        String page = defaultCaller(Method.SEND, text, chat_id)
+        String page = defaultCaller(Method.EDIT, text, chat_id)
             .put("message_id", message_id.toString()).call();
 
         return parseResponse(page);
