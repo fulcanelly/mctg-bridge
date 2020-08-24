@@ -1,4 +1,4 @@
-package me.fulcanelly.tgbridge.tools.config;
+package me.fulcanelly.tgbridge.utils.config;
 
 import java.lang.annotation.*;
 

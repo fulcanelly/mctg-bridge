@@ -20,8 +20,8 @@ import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.stats.StatsTable;
-import me.fulcanelly.tgbridge.utils.DeepLoger;
-import me.fulcanelly.tgbridge.utils.MainConfig;
+import me.fulcanelly.tgbridge.tools.DeepLoger;
+import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 

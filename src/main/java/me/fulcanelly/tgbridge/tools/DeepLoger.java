@@ -1,4 +1,4 @@
-package me.fulcanelly.tgbridge.utils;
+package me.fulcanelly.tgbridge.tools;
 
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;

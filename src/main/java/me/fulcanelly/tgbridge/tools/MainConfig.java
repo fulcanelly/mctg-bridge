@@ -1,6 +1,6 @@
-package me.fulcanelly.tgbridge.utils;
+package me.fulcanelly.tgbridge.tools;
 
-import me.fulcanelly.tgbridge.tools.config.*;
+import me.fulcanelly.tgbridge.utils.config.*;
 
 import java.io.File;
 
