@@ -20,7 +20,8 @@ enum Method {
     SEND,
     EDIT,
     UPDATES,
-    GET_ME
+    GET_ME,
+    PIN
 }
 
 public class TGBot {
@@ -96,6 +97,7 @@ public class TGBot {
                 case EDIT: return "editMessageText";
                 case UPDATES: return "getUpdates";
                 case GET_ME: return "getMe";
+                case PIN: return "pinChatMessage";
             }
             return null;
         }
@@ -146,7 +148,19 @@ public class TGBot {
 
         return new Message(result);
     }
-    
+    //todo
+    public boolean pinChatMessage(String chat_id, String message_id, Boolean dont_notificate) {
+        new MethodCaller(Method.PIN)
+            .put("disable_notification", dont_notificate.toString())
+            .put("chat_id", chat_id)
+            .put("message_id", message_id).call();
+        return true;
+    }
+
+    public boolean pinChatMessage(String chat_id, String message_id) {
+        return pinChatMessage(chat_id, message_id, true);
+    }
+
     MethodCaller defaultCaller(Method method, String text, Long chat_id) {
         return new MethodCaller(method)
             .put("parse_mode", parse_mode.Markdown)
