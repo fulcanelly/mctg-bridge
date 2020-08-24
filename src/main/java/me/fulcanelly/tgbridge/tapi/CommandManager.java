@@ -10,13 +10,14 @@ import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 
 public class CommandManager {
 
-	static class Command {
+	class Command {
 
 		final CommandAction action;
 		final Pattern privatePattern;
 		final Pattern publicPattern;
 
 		Command(String command, CommandAction action) {
+			commands.add(this);
 			this.action = action;
 
 			String private_form = "/" + command;
@@ -55,26 +56,34 @@ public class CommandManager {
 		}
 	}
 
-	List<Command> commands = new ArrayList<>();
+	public List<Command> commands = new ArrayList<>();
 
-	static String username;
-	public static TGBot bot;
+	String username;
 
-	public static void setUsername(String u) {
-		username = u;
+	public CommandManager(String uname) {
+		username = uname;
 	}
 
-	public static void setBot(TGBot b) {
-		bot = b;
-	}
-
-	public CommandManager() {
-	}
-
-	public CommandManager addCommand(String text, CommandAction action) {
-		commands.add(new Command(text, action));
+	public CommandManager addCommand(String command, CommandAction action) {
+		new Command(command, action);
 		return this;
 	}	
+
+	public CommandManager addCommand(String command, String answer) {
+		new Command(command, msg -> msg.reply(answer));
+		return this;
+	}	
+
+	public CommandManager addCommand(String command, StringReturner sreturner) {
+		CommandAction action =  msg -> msg.reply(
+			sreturner.get() );
+		new Command(command, action);
+		return this;
+	}
+	
+	public interface StringReturner {
+		String get();
+	}
 
 	interface CommandMatcher {
 		boolean match(Command cmd);
