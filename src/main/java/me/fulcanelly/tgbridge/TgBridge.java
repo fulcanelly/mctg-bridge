@@ -184,16 +184,22 @@ public class TgBridge extends JavaPlugin {
         }
 
         Message.setBot(bot);
-        CommandManager.setUsername(username);
-        commands = new CommandManager();
+        commands = new CommandManager(username);
         StatCollector.initalize(this);
 
         commands
-            .addCommand("ping", msg -> msg.reply("pong"))
-            .addCommand("memory", msg -> msg.reply(getMemory()))
+        /*
+            .addCommand("pin", msg -> {
+                Message replied = msg.getReplyTo();
+                replied.getText();
+                bot.pinChatMessage(
+                    replied.getChat().getId().toString(), replied.getMsgId().toString() );
+            })*/
+            .addCommand("ping", "pong")
+            .addCommand("memory", this::getMemory)
             .addCommand("list", this.getListCmdHandler())
             .addCommand("chat_id", this::onChatId)
-            .addCommand("uptime", msg -> msg.reply(getUptime()))
+            .addCommand("uptime", this::getUptime)
             .addCommand("stats", event -> {    
                 if (event.args == null) {
                     event.reply("specify nickname to get stats");
