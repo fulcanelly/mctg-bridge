@@ -205,8 +205,7 @@ public class LoginManager implements org.bukkit.event.Listener, CommandExecutor 
     }
 
     @EventHandler
-    void onMovement(PlayerMoveEvent event ) {
-        //event.getPlayer().se
+    void onMovement(PlayerMoveEvent event) {
         checkEvent(event);
     }
 
