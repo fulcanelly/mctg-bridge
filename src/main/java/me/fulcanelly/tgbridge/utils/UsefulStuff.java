@@ -22,6 +22,13 @@ public class UsefulStuff {
         return new JSONObject();
     }
 
+    static public String adjustSize(int len, String str) {
+        if (str.length() > len) {
+            return str.substring(0, len) + "...";
+        }
+        return str;
+    }
+
     static public void delay(long time) {
         try { 
             Thread.sleep(time);
@@ -29,6 +36,7 @@ public class UsefulStuff {
             t.printStackTrace();
         }
     }
+    
     public static String formatMarkdown(String input) {
         return input
             .replace("_", "\\_")
