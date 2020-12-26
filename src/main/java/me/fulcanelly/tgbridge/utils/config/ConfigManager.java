@@ -42,8 +42,6 @@ public class ConfigManager<T> {
             
             nullable = field.isAnnotationPresent(Nullable.class);
             optional = field.isAnnotationPresent(Optional.class);
-     
-
         }
     
         Field unwrap() {
