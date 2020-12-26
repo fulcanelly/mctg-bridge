@@ -1,12 +1,11 @@
 package me.fulcanelly.tgbridge.utils.config;
 
 import java.lang.reflect.Field;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.logging.Logger;
 
 import java.io.*;
 
@@ -15,7 +14,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import lombok.SneakyThrows;
 
-import me.fulcanelly.tgbridge.TgBridge;
 import me.fulcanelly.tgbridge.utils.config.annotations.ConfigFile;
 import me.fulcanelly.tgbridge.utils.config.annotations.Nullable;
 import me.fulcanelly.tgbridge.utils.config.annotations.Optional;
@@ -25,7 +23,7 @@ import me.fulcanelly.tgbridge.utils.config.annotations.Saveable;
 public class ConfigManager<T> {
 
     List<FieldWrapper> fields;
-    Map<String, Object> data;
+    Map<String, Object> data = new HashMap<>();
     T instance;
     File file;
   
@@ -108,21 +106,15 @@ public class ConfigManager<T> {
         this.on_absent = oa;
     }
 
-    Logger logger = TgBridge
-        .getInstance()
-        .getLogger();
-
     @SneakyThrows
     public T load() {
 
         if (!file.exists() && on_absent != null) {
-            logger.warning("on_absent called");
             on_absent.run();
         }
 
         data = yaml.load(new FileReader(file));
 
-        logger.info(data.toString());
         fields.forEach(this::fieldSetter);
         return instance;
     }
@@ -137,8 +129,6 @@ public class ConfigManager<T> {
     void fieldSetter(FieldWrapper field) {
         Object value = field.getFromData();
         String name = field.unwrap().getName();
-
-        logger.info("value = " + value);
 
         if (!data.containsKey(name) && !field.optional) {
             error("%s file don't contains variable variable %s", file.toString(), name);
