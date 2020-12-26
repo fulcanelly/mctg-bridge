@@ -1,6 +1,6 @@
 package me.fulcanelly.tgbridge.listeners;
 
-import me.fulcanelly.tgbridge.TgBridge;
+import me.fulcanelly.tgbridge.TelegramBridge;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
@@ -24,7 +24,7 @@ public class TelegramListener implements Listener {
         //todo:  public static final String message = "{unk.sign}[tg][{from}]{unk.mark} {msg.text} {text.caption}";
     }
     
-    final TgBridge bridge;
+    final TelegramBridge bridge;
     
     TextComponent formatMessage(Message msg) {
         TextComponent result = new TextComponent();
@@ -72,7 +72,7 @@ public class TelegramListener implements Listener {
         return result;
     }
 
-    public TelegramListener(TgBridge bridge) {
+    public TelegramListener(TelegramBridge bridge) {
         this.bridge = bridge;
     }
 

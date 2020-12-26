@@ -1,12 +1,9 @@
 package me.fulcanelly.tgbridge;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -14,17 +11,17 @@ import java.lang.management.ManagementFactory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.yaml.snakeyaml.Yaml;
+
+import net.md_5.bungee.api.ChatColor;
 
 import lombok.SneakyThrows;
+
 import me.fulcanelly.tgbridge.listeners.ActionListener;
 import me.fulcanelly.tgbridge.listeners.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.CommandAction;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
-import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.stats.StatsTable;
@@ -33,28 +30,10 @@ import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
-import net.md_5.bungee.api.ChatColor;
 
+public class TelegramBridge extends JavaPlugin {
 
-class BScheduler extends BukkitRunnable {
-    Runnable runnable;
-
-    public BScheduler(Runnable r) {
-        this.runnable = r;
-    }
-
-    public void run() {
-        runnable.run();
-    }
-
-    public void schedule(long delay, long period) {
-        runTaskTimerAsynchronously(TgBridge.getInstance(), delay, period);
-    }
-}
-
-public class TgBridge extends JavaPlugin {
-
-    static TgBridge instance = null;
+    static TelegramBridge instance = null;
 
     public ActionListener in_listener;
     public String username = null;
@@ -76,13 +55,12 @@ public class TgBridge extends JavaPlugin {
     public String getPinnedChatId() {
        return chat_id;
     }
-     //String chat;
 
-    public TgBridge() {
+    public TelegramBridge() {
         instance = this;
     }
 
-    public static TgBridge getInstance() {
+    public static TelegramBridge getInstance() {
         return instance;
     }
 
@@ -131,12 +109,13 @@ public class TgBridge extends JavaPlugin {
     }
 
     public static void turnOff() {
-        TgBridge plugin = getInstance();
+        TelegramBridge plugin = getInstance();
         plugin
             .getServer()
             .getPluginManager()
             .disablePlugin(plugin);
     }
+    
     int secretTempCode;
     
     void generateSecretTempCode() {

@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-import me.fulcanelly.tgbridge.TgBridge;
+import me.fulcanelly.tgbridge.TelegramBridge;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventReactor;
@@ -106,13 +106,13 @@ public class LoginManager implements org.bukkit.event.Listener, CommandExecutor 
 
     }   
 
-    TgBridge bridge;
+    TelegramBridge bridge;
     //key , player
     HashMap<String, String> registration = new HashMap<>();
     //
     HashMap<String, String> logining = new HashMap<>();
 
-    public LoginManager(TgBridge bridge) {
+    public LoginManager(TelegramBridge bridge) {
         this.bridge = bridge;
     }
 

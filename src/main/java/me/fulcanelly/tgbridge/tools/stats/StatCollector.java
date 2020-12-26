@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import lombok.SneakyThrows;
-import me.fulcanelly.tgbridge.TgBridge;
+import me.fulcanelly.tgbridge.TelegramBridge;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.config.annotations.*;
 
@@ -166,10 +166,10 @@ public class StatCollector implements Listener {
         return new JSONObject(result);
     }
 
-    TgBridge plugin;
+    TelegramBridge plugin;
     public HashMap<String, StatsTable> stats = new HashMap<>();
 
-    private StatCollector(TgBridge plugin) {
+    private StatCollector(TelegramBridge plugin) {
         this.plugin = plugin;
         this.load();
         Bukkit.getOnlinePlayers()
@@ -187,7 +187,7 @@ public class StatCollector implements Listener {
 
     public static StatCollector instance = null;
 
-    public static void initalize(TgBridge plugin) {
+    public static void initalize(TelegramBridge plugin) {
         
         if (instance != null ) {
             throw new RuntimeException("instance exists already");
