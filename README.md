@@ -8,6 +8,44 @@ MCTG-bridge is a lightweight plugin that creates a chat bridge between Telegram 
 
 After that, you have to restart your server, and then bot should be working.
 
+### Structure
+
+```text
+         +-------------------------------------+
+         |                                     |
+         |           +-----------+             v
+         |           |           |          +--+--------+
+         |    +------+ Formatter +<-+       |           |
+         |    |      |           |  |       |  Command  |
+         |    |      +-----------+  |    +->+  handler  +<--+
+         |    |                     |    |  |           |   |
+         v    v                     |    |  +-----------+   |
+ +-------+----+----+                |    |                  |
+ |                 |         +------+----+-----+            |
+ |   Spigot API    |         |                 |            |
+ |                 |         | Event dispatcher|            |
+ +-------+---------+         |                 |            |
+         |                   +---------+-------+            |
+         |                             ^                    |
++--------+--------+  +-------+         |                    |
+|                 |  |       | +-------+---------+          |
+| Event dispatcher|  |   F   | |                 |          |
+|                 |  |   o   | |  Telegram API   +<---------+
++--------+---+----+  |   r   | |                 |          |
+         |   |       |   m   | +----+------------+          |
+         |   |       |   a   |      ^                       |
+         |   +------>+   t   +------+                       |
+         |           |       |                              |
+         |           +-------+                              |
+         |                                                  |
+         +--------------------------------------------------+
+
+
+                                                                                                                       PI
+
+````
+
+
 ### What's Left to be Added/Fixed
 - The Following Ideas
   - [ ] Message reduction
