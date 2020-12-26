@@ -2,7 +2,7 @@ package me.fulcanelly.tgbridge.tools.stats;
 
 import org.json.simple.JSONObject;
 
-import me.fulcanelly.tgbridge.utils.config.Saveable;
+import me.fulcanelly.tgbridge.utils.config.annotations.*;
 
 import java.util.HashMap;
 

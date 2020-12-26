@@ -12,7 +12,7 @@ import org.json.simple.parser.JSONParser;
 import lombok.SneakyThrows;
 import me.fulcanelly.tgbridge.TgBridge;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
-import me.fulcanelly.tgbridge.utils.config.Saveable;
+import me.fulcanelly.tgbridge.utils.config.annotations.*;
 
 import java.io.File;
 import java.io.FileReader;
