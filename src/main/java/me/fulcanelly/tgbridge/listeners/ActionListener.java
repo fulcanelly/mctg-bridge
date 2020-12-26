@@ -96,7 +96,11 @@ public class ActionListener implements Listener {
     final Long chat_id;
 
     void send(String text, String from) {
-    
+        
+        if (chat_id == null) {
+            return;
+        }
+        
         boolean merge = false;
 
         if (last_sended != null) {
@@ -121,7 +125,11 @@ public class ActionListener implements Listener {
     
     public ActionListener(TGBot bot, String chat_id) {
         this.bot = bot;
-        this.chat_id = Long.parseLong(chat_id);
+        if (chat_id == null) {
+            this.chat_id = null;
+        } else {
+            this.chat_id = Long.valueOf(chat_id);
+        }
     }
 
     @EventHandler
