@@ -8,7 +8,9 @@ import lombok.SneakyThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 
 public class UsefulStuff {
@@ -56,11 +58,18 @@ public class UsefulStuff {
     @SneakyThrows
     public static String loadPage(String url) {
         String pageText = new String();
-        
-        InputStream inp = new URL(url)
-            .openConnection()
-            .getInputStream();
+        URLConnection urlConnection = new URL(url).openConnection();
 
+        if (urlConnection instanceof HttpURLConnection) {
+            var responseCode = ((HttpURLConnection)urlConnection).getResponseCode();
+            switch (responseCode) {
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    throw new RuntimeException("Not found");
+            }
+        }
+
+        InputStream inp = urlConnection.getInputStream();
+        
         byte[] buffer = new byte[4096];
         ByteArrayOutputStream page = new ByteArrayOutputStream();
 
