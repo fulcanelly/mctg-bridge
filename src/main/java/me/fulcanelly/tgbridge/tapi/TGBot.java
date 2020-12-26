@@ -85,8 +85,6 @@ public class TGBot {
         return detector;
     }
 
-    static final String empty_answer = new JSONObject().toString();
-
     class MethodCaller {
 
         final Map<String, String> requestParams = new HashMap<>();
@@ -99,7 +97,7 @@ public class TGBot {
                 case GET_ME: return "getMe";
                 case PIN: return "pinChatMessage";
             }
-            return null;
+            throw new RuntimeException("Unknown method");
         }
 
         String link;
@@ -133,11 +131,7 @@ public class TGBot {
                 .map(key -> key + "=" + encodeValue(requestParams.get(key)))
                 .collect(Collectors.joining("&", link + "?", ""));
 
-            try {
-                return UsefulStuff.loadPage(encodedURL);
-            } catch (Exception e) {
-                return empty_answer;
-            }
+            return UsefulStuff.loadPage(encodedURL);
         }
     }
 
