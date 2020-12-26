@@ -6,6 +6,7 @@ import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventReactor;
 import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -56,8 +57,10 @@ public class TelegramListener implements Listener {
             TextComponent replyComponent = formatMessage(reply);
             TextComponent component = new TextComponent(ChatColor.GRAY + "(in reply to)");
 
+            BaseComponent[] baseComponent = new ComponentBuilder(replyComponent).create();
+
             HoverEvent hEvent = new HoverEvent(
-                HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(replyComponent).create()
+                HoverEvent.Action.SHOW_TEXT, baseComponent
             );
 
             component.setHoverEvent(hEvent);
@@ -86,7 +89,11 @@ public class TelegramListener implements Listener {
     }
 
     boolean isRightChat(MessageEvent event) {
-        return event.getChat().getId().toString().equals(bridge.chat);
+        return event.getChat()
+            .getId()
+            .toString()
+            .equals(
+                bridge.getPinnedChatId() );
     }
 
     @EventReactor
