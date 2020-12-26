@@ -1,26 +1,92 @@
 package me.fulcanelly.tgbridge.utils.config;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.logging.Logger;
+
 import java.io.*;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
 import lombok.SneakyThrows;
-//todo
+
+import me.fulcanelly.tgbridge.TgBridge;
+import me.fulcanelly.tgbridge.utils.config.annotations.ConfigFile;
+import me.fulcanelly.tgbridge.utils.config.annotations.Nullable;
+import me.fulcanelly.tgbridge.utils.config.annotations.Optional;
+import me.fulcanelly.tgbridge.utils.config.annotations.Saveable;
+
 
 public class ConfigManager<T> {
 
-    ArrayList<Field> fields = new ArrayList<>();
-    Map<Object, Object> middle_table;
-    JSONObject data;
+    List<FieldWrapper> fields;
+    Map<String, Object> data;
     T instance;
     File file;
+  
+    Runnable on_absent;
+    Yaml yaml;
+
+    class FieldWrapper {
+
+        Field field;
+        boolean optional;
+        boolean nullable;
     
+        FieldWrapper(Field field) {
+            this.field = field;
+            field.setAccessible(true);
+            
+            nullable = field.isAnnotationPresent(Nullable.class);
+            optional = field.isAnnotationPresent(Optional.class);
+     
+
+        }
+    
+        Field unwrap() {
+            return field; 
+        }
+
+        @SneakyThrows
+        Object getFromInstance() {
+            return field.get(instance);
+        }
+
+        @SneakyThrows
+        void setInInstance(Object value) {
+            field.set(instance, value);
+        } 
+
+        Object getFromData() {
+            String name = field.getName();
+            return data.get(name);
+        }
+
+        boolean isSetInData() {
+            return data.containsKey(field.getName());
+        }
+
+        void setInData(Object for_set) {
+            data.put(field.getName(), for_set);
+        }
+
+    }
+
     @SneakyThrows
     public ConfigManager(T config, File path) {
+        DumperOptions options = new DumperOptions();
+
+        options.setIndent(2);
+        options.setPrettyFlow(true);
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        
+        yaml = new Yaml(options);
+
         Class<?> klass = config.getClass();
         ConfigFile cfile = klass.getAnnotation(ConfigFile.class);
         
@@ -30,65 +96,70 @@ public class ConfigManager<T> {
 
         instance = config;
 
-        if (path == null) {
-            file = new File(cfile.file());
-        } else {
-            file = new File(path, cfile.file());
-        }
+        file = new File(path, cfile.file());
 
-        for (Field field: klass.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Saveable.class)) {
-                fields.add(field);
-                field.setAccessible(true);
-            }
-        }
+        fields = Stream.of(klass.getDeclaredFields())
+            .filter(field -> field.isAnnotationPresent(Saveable.class))
+            .map(field -> new FieldWrapper(field))
+            .collect(Collectors.toList());
     }
 
-    Runnable on_absent = null;
-
-    public void setOnAbsent(Runnable oa) {
+    public void setOnFileAbsence(Runnable oa) {
         this.on_absent = oa;
     }
 
+    Logger logger = TgBridge
+        .getInstance()
+        .getLogger();
+
     @SneakyThrows
     public T load() {
+
         if (!file.exists() && on_absent != null) {
-            System.out.println("on_absent called");
+            logger.warning("on_absent called");
             on_absent.run();
         }
 
-        FileReader reader = new FileReader(file);
-        data = (JSONObject)new JSONParser().parse(reader);
+        data = yaml.load(new FileReader(file));
+
+        logger.info(data.toString());
         fields.forEach(this::fieldSetter);
-        save();
         return instance;
     }
 
+    void error(String template, Object... data) {
+        throw new RuntimeException(
+            String.format(template, data)
+        );
+    }
+
     @SneakyThrows
-    void fieldSetter(Field field) {
-        String name = field.getName();
-        Object value = data.get(name);
+    void fieldSetter(FieldWrapper field) {
+        Object value = field.getFromData();
+        String name = field.unwrap().getName();
+
+        logger.info("value = " + value);
+
+        if (!data.containsKey(name) && !field.optional) {
+            error("%s file don't contains variable variable %s", file.toString(), name);
+        }
 
         if (value != null) {
-            field.set(instance, value);
+            field.setInInstance(value);
+        } else if (!field.nullable) {
+            error("variable %s in %s file is set to null", name, file.toString());
         }
     }
 
     @SneakyThrows
-    void fieldGetter(Field field) {
-        String name = field.getName();
-        middle_table.put(name, field.get(instance));
+    void fieldGetter(FieldWrapper field) {
+        field.setInData(field.getFromInstance());
     }
 
     @SneakyThrows
     public void save() {
-        middle_table = new HashMap<>();
         fields.forEach(this::fieldGetter);
-        data = new JSONObject(middle_table);
-        middle_table = null;
-        PrintWriter pw = new PrintWriter(file);
-        pw.write(data.toJSONString());
-        pw.flush();
-        pw.close();
+        yaml.dump(data, new FileWriter(file));
     }
+
 }
