@@ -2,47 +2,39 @@ package me.fulcanelly.tgbridge.utils.events.detector;
 
 import me.fulcanelly.tgbridge.utils.events.pipe.EventObject;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventDetectorManager {
+class EventDetectorManagerData<U, D extends Detector<U>> {
 
     EventPipe pipe = null;
     EventObject event = null;
-    List<Detector> detectors = new ArrayList<>();
+    List<D> detectors = new ArrayList<>();
+    
+} 
 
-    public interface Detector {
-        EventObject is_it(JSONObject update);
-    }
+public class EventDetectorManager<U> extends EventDetectorManagerData<U, Detector<U>> {
 
     public EventDetectorManager(EventPipe pipe) {
         this.pipe = pipe;
     }
 
-    public EventDetectorManager setPipe(EventPipe p) {
+    public EventDetectorManager<U> setPipe(EventPipe p) {
         this.pipe = p;
         return this;
     }
 
-    public EventDetectorManager addDetector(Detector d) {
-        detectors.add(d);
+    public EventDetectorManager<U> addDetector(Detector<U> detector) {
+        detectors.add(detector);
         return this;
     }
-    
-    private void checkDetector(Detector detector) {
-        event = detector.is_it(update);
-        if (event != null) {
-            pipe.emit(event);
-        }
-    }
 
-    JSONObject update = null;
-
-    synchronized public void handle(JSONObject update) {
-        this.update = update;
-        detectors.stream()
-                .forEach(this::checkDetector);
+    public void handle(U update) {
+        this.detectors
+            .parallelStream()
+            .map(detector -> detector.is_it(update))
+            .filter(result -> result != null)
+            .forEach(event -> pipe.emit(event));
     }
 }

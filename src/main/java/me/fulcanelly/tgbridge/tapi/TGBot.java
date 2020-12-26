@@ -67,11 +67,11 @@ public class TGBot {
     }
 
     String apiToken;
-    EventDetectorManager detector;
+    EventDetectorManager<JSONObject> detector;
     long last_update_id = -1;
 
     public TGBot(String apiToken) {
-        detector = new EventDetectorManager(epipe);
+        detector = new EventDetectorManager<>(epipe);
         this.apiToken = apiToken;
     }
     
@@ -81,7 +81,7 @@ public class TGBot {
         
     static public EventPipe epipe;
     
-    public EventDetectorManager getDetectorManager() {
+    public EventDetectorManager<JSONObject> getDetectorManager() {
         return detector;
     }
 
