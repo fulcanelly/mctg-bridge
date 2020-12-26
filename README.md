@@ -10,7 +10,8 @@ After that, you have to restart your server, and then bot should be working.
 
 ### What's Left to be Added/Fixed
 - The Following Ideas
-  - [ ] message reduction
-  - [x] message merging
-  - [ ] login via telegram
-  - [x] flexible configurtation
+  - [ ] Message reduction
+  - [x] Message merging
+  - [ ] Login via telegram
+  - [x] Flexible configurtation
+  - [ ] Ingore switch
