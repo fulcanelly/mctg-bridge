@@ -13,4 +13,4 @@ After that, you have to restart your server, and then bot should be working.
   - [ ] message reduction
   - [x] message merging
   - [ ] login via telegram
-  - [ ] flexible configurtation
+  - [x] flexible configurtation
