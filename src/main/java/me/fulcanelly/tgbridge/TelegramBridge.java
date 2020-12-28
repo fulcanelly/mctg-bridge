@@ -1,6 +1,7 @@
 package me.fulcanelly.tgbridge;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -24,18 +25,32 @@ import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
-import me.fulcanelly.tgbridge.tools.stats.StatsTable;
 import me.fulcanelly.tgbridge.tools.DeepLoger;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
+import me.fulcanelly.tgbridge.utils.databse.ConnectionProvider;
+import me.fulcanelly.tgbridge.utils.databse.LazySQLActor;
+import me.fulcanelly.tgbridge.utils.databse.QueryHandler;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 public class TelegramBridge extends JavaPlugin {
 
     static TelegramBridge instance = null;
+    LazySQLActor sqlhandler;
 
-    public ActionListener in_listener;
+    public LazySQLActor getSQLhandler() {
+        return sqlhandler;
+    }
+    
+    void setUpSQLhandler() {
+        var conn = new ConnectionProvider(this)
+            .getConnection();
+    
+        sqlhandler = new LazySQLActor(new QueryHandler(conn));
+    }
+    
+    public ActionListener actionListener;
     public String username = null;
     public TGBot bot = null;
     public CommandManager commands = null;
@@ -66,10 +81,15 @@ public class TelegramBridge extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        getServer()
+            .getOnlinePlayers()
+            //.parallelStream()
+            .forEach(player -> player.kickPlayer("Server closed."));
+            
         if (bot != null ) {
             bot.stop();
         }
-        StatCollector.stop();
+     //   StatCollector.stop();
     }
     
     public String getMemory() {
@@ -138,6 +158,8 @@ public class TelegramBridge extends JavaPlugin {
     }
 
     private void safeEnable() {
+        this.setUpSQLhandler();
+
         DeepLoger.initalize(this);
         TGBot.setEventPipe(tgpipe);
 
@@ -169,8 +191,8 @@ public class TelegramBridge extends JavaPlugin {
         Message.setBot(bot);
         this.setCommandManager(new CommandManager(username));
 
-        StatCollector.initalize(this);
-
+     //   StatCollector.initalize(this);
+        StatCollector statCollector = new StatCollector(this); 
         generateSecretTempCode();
         
         if (config.chat_id == null) {
@@ -198,25 +220,29 @@ public class TelegramBridge extends JavaPlugin {
             .addCommand("chat_id", this::onChatId)
             .addCommand("uptime", this::getUptime)
             .addCommand("stats", event -> {    
-                if (event.args == null) {
+                if (event.getArgs().isEmpty()) {
                     event.reply("specify nickname to get stats");
                 } else {
-                    String name = event.args[0];
-                    StatsTable stats = StatCollector.instance.stats.get(name);
-                    if (stats == null) {
+                    var stats = statCollector
+                        .findByName(event.args[0]);
+
+                    if (stats.isEmpty()) {
                         event.reply("no players whith such nickname yet");
                     } else {
-                        event.reply("you played " + stats.toString());
+                        event.reply("you played " + stats.get().toString());
                     }
                 }
             });
 
-        in_listener = new ActionListener(bot, config.chat_id);
-
-        getServer()
-            .getPluginManager()
-            .registerEvents(in_listener, this);
+        actionListener = new ActionListener(bot, config.chat_id);
         
+        Arrays.asList(actionListener, statCollector)
+            .forEach(listener -> {
+                getServer()
+                    .getPluginManager()
+                    .registerEvents(listener, this);
+            });
+
         bot.start();
     }
 
