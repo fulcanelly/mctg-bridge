@@ -11,17 +11,13 @@ public class MainConfig {
     @Saveable
     public String api_token;
 
-    @Saveable
-    @Nullable
+    @Saveable @Nullable
     public String chat_id;
 
     @Saveable
     public Boolean login_manger = false;
 
-
-    @Saveable
-    @Nullable
-    @Optional
+    @Saveable @Nullable @Optional
     public String test_field = "works";
     
 }
