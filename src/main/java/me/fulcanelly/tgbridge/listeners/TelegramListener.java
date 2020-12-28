@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,21 +53,22 @@ public class TelegramListener implements Listener {
 
         Message reply = msg.getReplyTo();
 
-        //reply mark
+        
         if (!reply.is_null()) {
             TextComponent replyComponent = formatMessage(reply);
             TextComponent component = new TextComponent(ChatColor.GRAY + "(in reply to)");
+            replyComponent.getExtra().toArray();
 
             BaseComponent[] baseComponent = new ComponentBuilder(replyComponent).create();
-
-            HoverEvent hEvent = new HoverEvent(
-                HoverEvent.Action.SHOW_TEXT, baseComponent
+            
+            HoverEvent hevent = new HoverEvent(
+                HoverEvent.Action.SHOW_TEXT, new Text(baseComponent)
             );
-
-            component.setHoverEvent(hEvent);
+                
+            component.setHoverEvent(hevent);
             result.addExtra(component);
         }
-        //ending 
+
         result.addExtra(ending);
 
         return result;
@@ -98,9 +100,11 @@ public class TelegramListener implements Listener {
 
     @EventReactor
     public void onMessage(MessageEvent event) {
-        synchronized(bridge.in_listener) {
-            bridge.in_listener.actual_last = event.getMsgId();
+        
+        synchronized(bridge.actionListener) {
+            bridge.actionListener.actual_last = event.getMsgId();
         }
+
         String text = event.getText();
         
         if (text != null && text.startsWith("/")) {
