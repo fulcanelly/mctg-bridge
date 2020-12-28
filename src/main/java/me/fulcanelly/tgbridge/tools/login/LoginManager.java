@@ -74,7 +74,7 @@ public class LoginManager implements org.bukkit.event.Listener, CommandExecutor 
         Message sendLoginKey(String who, String key) {
             String chat_id = login_db.getChatID(who);
             return bridge.bot.sendMessage(
-                new Long(chat_id), "Your login key is `" + key + "`"
+                Long.valueOf(chat_id), "Your login key is `" + key + "`"
             );
         }
 
