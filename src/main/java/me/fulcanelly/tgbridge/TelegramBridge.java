@@ -15,8 +15,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.md_5.bungee.api.ChatColor;
 
-import lombok.SneakyThrows;
-
 import me.fulcanelly.tgbridge.listeners.ActionListener;
 import me.fulcanelly.tgbridge.listeners.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.CommandAction;
@@ -36,7 +34,6 @@ import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 public class TelegramBridge extends JavaPlugin {
 
-    static TelegramBridge instance = null;
     LazySQLActor sqlhandler;
 
     public LazySQLActor getSQLhandler() {
@@ -71,13 +68,6 @@ public class TelegramBridge extends JavaPlugin {
        return chat_id;
     }
 
-    public TelegramBridge() {
-        instance = this;
-    }
-
-    public static TelegramBridge getInstance() {
-        return instance;
-    }
 
     @Override
     public void onDisable() {
@@ -89,7 +79,6 @@ public class TelegramBridge extends JavaPlugin {
         if (bot != null ) {
             bot.stop();
         }
-     //   StatCollector.stop();
     }
     
     public String getMemory() {
@@ -128,12 +117,11 @@ public class TelegramBridge extends JavaPlugin {
             .collect(Collectors.toList());
     }
 
-    public static void turnOff() {
-        TelegramBridge plugin = getInstance();
-        plugin
+    public void turnOff() {
+        this
             .getServer()
             .getPluginManager()
-            .disablePlugin(plugin);
+            .disablePlugin(this);
     }
     
     int secretTempCode;
@@ -157,7 +145,7 @@ public class TelegramBridge extends JavaPlugin {
         };
     }
 
-    private void safeEnable() {
+    private void safeEnable() throws ReloadException {
         this.setUpSQLhandler();
 
         DeepLoger.initalize(this);
@@ -178,20 +166,17 @@ public class TelegramBridge extends JavaPlugin {
         //order of adding detectors is important
         bot.getDetectorManager()
             .addDetector(MessageEvent.detector);
-          //  CommandEvent
+
         tgpipe
             .registerListener(new TelegramListener(this));
-
         
         username = bot
             .getMe()
             .getUsername();
 
-
         Message.setBot(bot);
         this.setCommandManager(new CommandManager(username));
 
-     //   StatCollector.initalize(this);
         StatCollector statCollector = new StatCollector(this); 
         generateSecretTempCode();
         
@@ -253,30 +238,27 @@ public class TelegramBridge extends JavaPlugin {
         message.reply(chat_id);
     }
 
-    class ReloadException extends Exception {
 
-        private static final long serialVersionUID = 1L;
-    
-    }
     
     void startGuard() {
         try {  
             safeEnable();
+        } catch(ReloadException e) {
+            startGuard();
         } catch (Throwable e) {
-            if (e instanceof ReloadException) {
-                startGuard();
-            }
-
             e.printStackTrace();
             turnOff();
-
         }
     }
 
     @Override
-    @SneakyThrows
     public void onEnable() {    
         new Thread(this::startGuard).start();
     }
 }
 
+class ReloadException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+}
