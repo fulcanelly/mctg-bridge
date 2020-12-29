@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.SneakyThrows;
-import me.fulcanelly.tgbridge.TelegramBridge;
 
+import me.fulcanelly.tgbridge.TelegramBridge;
 import me.fulcanelly.tgbridge.utils.databse.LazySQLActor;
 
 public class StatsDatabase {
@@ -48,11 +48,8 @@ public class StatsDatabase {
         }
     }
 
-
     @SneakyThrows
     void initTables() {
-      
-
         sqlhandler.execute("CREATE TABLE IF NOT EXISTS user_stats(\n" +
             "total_time LONG NOT NULL,\n" +
             "last_point LONG,\n" + 
