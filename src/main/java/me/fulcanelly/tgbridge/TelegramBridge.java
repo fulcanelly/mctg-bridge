@@ -15,8 +15,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.md_5.bungee.api.ChatColor;
 
-import me.fulcanelly.tgbridge.listeners.ActionListener;
-import me.fulcanelly.tgbridge.listeners.TelegramListener;
+import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
+import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
 import me.fulcanelly.tgbridge.tapi.CommandAction;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.Message;
@@ -31,8 +31,9 @@ import me.fulcanelly.tgbridge.utils.databse.ConnectionProvider;
 import me.fulcanelly.tgbridge.utils.databse.LazySQLActor;
 import me.fulcanelly.tgbridge.utils.databse.QueryHandler;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
+import me.fulcanelly.tgbridge.view.MainControll;
 
-public class TelegramBridge extends JavaPlugin {
+public class TelegramBridge extends JavaPlugin implements MainControll {
 
     LazySQLActor sqlhandler;
 
@@ -47,11 +48,23 @@ public class TelegramBridge extends JavaPlugin {
         sqlhandler = new LazySQLActor(new QueryHandler(conn));
     }
     
-    public ActionListener actionListener;
+    public ActionListener getActionListener() {
+        return actionListener;
+    }
+    
+    public EventPipe getTelegramPipe() {
+        return tgpipe;
+    }
+
+    public CommandManager getCommandManager() {
+        return commands;
+    }
+
+    ActionListener actionListener;
     public String username = null;
     public TGBot bot = null;
-    public CommandManager commands = null;
-    public EventPipe tgpipe = new EventPipe();
+    CommandManager commands = null;
+    EventPipe tgpipe = new EventPipe();
 
     
     CommandManager getCommandsManager() {
@@ -65,7 +78,7 @@ public class TelegramBridge extends JavaPlugin {
     String chat_id;
 
     public String getPinnedChatId() {
-       return chat_id;
+        return chat_id;
     }
 
 
