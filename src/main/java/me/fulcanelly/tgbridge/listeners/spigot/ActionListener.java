@@ -1,4 +1,4 @@
-package me.fulcanelly.tgbridge.listeners;
+package me.fulcanelly.tgbridge.listeners.spigot;
 
 import org.bukkit.event.Listener;
 
@@ -22,6 +22,10 @@ import me.fulcanelly.tgbridge.utils.UsefulStuff;
 public class ActionListener implements Listener {
     public long actual_last = -1;
 
+    public synchronized void setActualLast(long last) {
+        actual_last = last;
+    }
+
     class ShortMessage {
 
         String name;
@@ -29,18 +33,14 @@ public class ActionListener implements Listener {
         long message_id;
         
         ShortMessage(Message msg, String from, String text) {
-            synchronized(ActionListener.this) {
-                actual_last = message_id = msg.getMsgId();
-            }
+            setActualLast(message_id = msg.getMsgId());
             this.name = from;
             lines = new ArrayList<>();
             lines.add(text);
         }   
 
         ShortMessage(Message msg) {
-            synchronized(ActionListener.this) {
-                actual_last = message_id = msg.getMsgId();
-            }
+            setActualLast(message_id = msg.getMsgId());
         }   
 
         String formString() {
