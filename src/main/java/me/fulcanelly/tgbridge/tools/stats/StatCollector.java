@@ -22,7 +22,7 @@ public class StatCollector extends StatsDatabase implements Listener {
             .forEach(player -> getStat(player.getName())
                 .startTimer()
                 .updateTable(this));
-        plugin.commands.addCommand("top", this::getMessage);
+        plugin.getCommandManager().addCommand("top", this::getMessage);
     }
 
     private UserStats getStat(String name) {
