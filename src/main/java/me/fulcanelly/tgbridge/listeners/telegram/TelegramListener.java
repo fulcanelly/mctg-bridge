@@ -53,7 +53,7 @@ public class TelegramListener implements Listener {
         String text = event.getText();
 
         if (text != null && text.startsWith("/")) {
-            bridge.getTelegramPipe().emit(new CommandEvent(event.msg));
+            bridge.getTelegramPipe().emit(new CommandEvent(event));
 
             return true;
         }

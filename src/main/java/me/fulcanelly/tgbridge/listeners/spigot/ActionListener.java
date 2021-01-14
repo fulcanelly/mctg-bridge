@@ -106,7 +106,6 @@ public class ActionListener implements Listener {
             merge = last_sended.isMergeableWith(from);
         }
 
-        System.out.println("merge: " + merge);
         if (merge) {
             last_sended.mergeWith(text);
         } else {
@@ -161,15 +160,18 @@ public class ActionListener implements Listener {
     //todo
     @EventHandler
     void onAchivement(PlayerAdvancementDoneEvent event) {
-   
+
     }
 
     @EventHandler
     void onChatEvent(AsyncPlayerChatEvent event) {
         String player_name = event.getPlayer().getName();
         String message = event.getMessage();
-
-        message = UsefulStuff.formatMarkdown(message);
-        send( message, player_name );
+        if (event.isCancelled()) {
+            return;
+        } else {
+            send(
+                UsefulStuff.formatMarkdown(message), player_name);
+        }
     }
 }
