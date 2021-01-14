@@ -14,33 +14,27 @@ import java.util.stream.Stream;
 import org.apache.commons.lang.ClassUtils;
 
 import lombok.SneakyThrows;
+import me.fulcanelly.tgbridge.utils.async.AsyncActorEngine;
+import me.fulcanelly.tgbridge.utils.async.tasks.AsyncTask;
+import me.fulcanelly.tgbridge.utils.databse.tasks.AsyncSQLTask;
+import me.fulcanelly.tgbridge.utils.stop.Stopable;
 import net.md_5.bungee.api.ChatColor;
 
 
-public class QueryHandler {
-    final Connection connection;
+public class SQLiteQueryHandler implements Stopable {
 
-    public QueryHandler(Connection conn) {
+    final Connection connection;
+    final AsyncActorEngine engine;  
+
+    public SQLiteQueryHandler(Connection conn) {
         connection = conn;
+        this.engine = new AsyncActorEngine();
     }
 
     void logString(String to_log) {
         System.out.println("[" + Thread.currentThread() + "] "+ ChatColor.BLUE + to_log);
     }
 
-    @SneakyThrows
-    public int execute(String query, Object ...args) {
-        logString(query);
-        return setUpPStatementOf(query, args)
-            .executeUpdate();
-    }
-
-    @SneakyThrows
-    public ResultSet executeQuery(String query, Object ...args) {
-        logString(query);
-        return setUpPStatementOf(query, args)
-            .executeQuery();
-    }
 
     @SneakyThrows
     PreparedStatement setUpPStatementOf(String query, Object ...args) {
@@ -62,7 +56,7 @@ public class QueryHandler {
     }
 
     @SneakyThrows
-    static public Map<String, Object> parseMapOf(ResultSet set) {
+    public Map<String, Object> parseMapOfResultSet(ResultSet set) {
 
         ResultSetMetaData data = set.getMetaData();
         
@@ -73,20 +67,45 @@ public class QueryHandler {
                     i -> getColumnLabelOf(data, i), 
                     i -> getColumnByIndex(set, i)
                 )
-            );
+        );
     }
 
     @SneakyThrows
-    static public List< Map<String, Object> > parseListOf(ResultSet set) {
+    public List< Map<String, Object> > parseListOf(ResultSet set) {
 
         var list = new ArrayList< Map<String, Object> >();
-
+        
         while (set.next()) {
-            list.add(parseMapOf(set));
+            list.add(parseMapOfResultSet(set));
         }
 
         return list;
     }
+
+    @SneakyThrows
+    public int updateExecutor(String query, Object ...args) {
+        logString(query);
+        return setUpPStatementOf(query, args)
+            .executeUpdate();
+    }
+
+    @SneakyThrows
+    public ResultSet queryExecutor(String query, Object ...args) {
+        logString(query);
+        return setUpPStatementOf(query, args)
+            .executeQuery();
+    }
+
+    public void execute(String query, Object... args) {
+        new AsyncSQLTask<>(query, args, this::updateExecutor, engine)
+            .addToQueue();
+    }
+
+    public AsyncTask<ResultSet> executeQuery(String query, Object... args) {
+        return new AsyncSQLTask<>(query, args, this::queryExecutor, engine)
+            .addToQueue();
+    }
+
 
     @SneakyThrows
     void dispatchOneItem(PreparedStatement pstmt, int index, Object item) {
@@ -105,6 +124,11 @@ public class QueryHandler {
     void setVars(PreparedStatement pstmt, Object ...list) {
         IntStream.range(0, list.length)
             .forEach(index -> dispatchOneItem(pstmt, index + 1, list[index]));
+    }
+
+    @Override
+    public void stopIt() {
+        engine.stopIt();
     }
  
 }
