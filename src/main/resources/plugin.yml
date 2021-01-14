@@ -7,11 +7,11 @@ api-version: 1.13
 
 main: ${mainClass}
 commands:
-  log:
-    description: No description
-    permission: ${name}.test
-    usage: /<command> 
-    default: true
+  tg:
+    description: Control over telegram bridge
+#    permission: ${name}.test
+    usage: /tg <params> 
+#    default: true
 
 
 permissions:
