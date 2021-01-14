@@ -24,7 +24,7 @@ public class CommandEvent extends Message implements EventObject {
         return cache;
     }
     
-    public <T>CommandEvent(T msg) {
+    public CommandEvent(Message msg) {
         super(msg);
     }
 

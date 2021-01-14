@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 
 public class Message {
     public JSONObject msg = new JSONObject();
+    TGBot bot;
 
     static public class From  {
         public JSONObject from = new JSONObject();
@@ -50,18 +51,20 @@ public class Message {
         }
     }
 
-    static public TGBot bot;
+   // static public TGBot bot;
 
-    public <T>Message(T msg) {
+    public <T>Message(T msg, TGBot bot) {
+        this.bot = bot;
         this.msg = (JSONObject)msg;
     }
 
-    static public void setBot(TGBot b) {
-        bot = b;
+    public Message(Message another) {
+        this.msg = another.msg;
+        this.bot = another.bot;
     }
 
     public Message getReplyTo() {
-        return new Message(msg.get("reply_to_message"));
+        return new Message(msg.get("reply_to_message"), bot);
     }
     
     public boolean is_null() {
