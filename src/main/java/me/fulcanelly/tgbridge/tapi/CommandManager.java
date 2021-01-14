@@ -2,7 +2,7 @@ package me.fulcanelly.tgbridge.tapi;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.function.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,11 +12,11 @@ public class CommandManager {
 
 	class Command {
 
-		final CommandAction action;
+		final Consumer<CommandEvent> action;
 		final Pattern privatePattern;
 		final Pattern publicPattern;
 
-		Command(String command, CommandAction action) {
+		Command(String command, Consumer<CommandEvent> action) {
 			commands.add(this);
 			this.action = action;
 
@@ -41,7 +41,7 @@ public class CommandManager {
 				if (arguments != null) { 
 					event.args = arguments.split("\\s");
 				}
-				action.run(event);
+				action.accept(event);
 				return true;
 			}
 			return false;
@@ -54,6 +54,10 @@ public class CommandManager {
 		boolean matchForGroup(CommandEvent event) {
 			return tryRunEventWith(event, publicPattern);
 		}
+
+		CommandManager getCommandManager() {
+			return CommandManager.this;
+		}
 	}
 
 	public List<Command> commands = new ArrayList<>();
@@ -64,21 +68,28 @@ public class CommandManager {
 		username = uname;
 	}
 
-	public CommandManager addCommand(String command, CommandAction action) {
-		new Command(command, action);
-		return this;
+	public CommandManager addCommand(String command, Consumer<CommandEvent> action) {
+		return new Command(command, action).getCommandManager();
 	}	
 
 	public CommandManager addCommand(String command, String answer) {
-		new Command(command, msg -> msg.reply(answer));
-		return this;
+		return new Command(command, msg -> msg.reply(answer)).getCommandManager();
 	}	
 
-	public CommandManager addCommand(String command, StringReturner sreturner) {
-		CommandAction action =  msg -> msg.reply(
-			sreturner.get() );
-		new Command(command, action);
-		return this;
+	public CommandManager addCommand(String command, Supplier<String> strProducer) {
+		return new Command(command, makeConsumerFromSupplier(strProducer)).getCommandManager();
+	}
+
+	Consumer<CommandEvent> makeConsumerFromSupplier(Supplier<String> strProducer) {
+		return event -> event.reply(strProducer.get());
+	}
+
+	Consumer<CommandEvent> makeConsumerFromFunction(Function<CommandEvent, String> function) {
+		return event -> event.reply(function.apply(event));
+	}
+
+	public CommandManager addCommand(String command, Function<CommandEvent, String> function) {
+		return new Command(command, makeConsumerFromFunction(function)).getCommandManager();
 	}
 	
 	public interface StringReturner {
