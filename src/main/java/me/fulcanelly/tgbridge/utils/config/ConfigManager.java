@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import java.io.*;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -73,15 +74,29 @@ public class ConfigManager<T> {
 
     }
 
-    @SneakyThrows
-    public ConfigManager(T config, File path) {
+    File findOrLoadFromResource(JavaPlugin plugin, String fileName) {
+        var file = new File(plugin.getDataFolder(), fileName);
+        if (!file.exists()) {
+            plugin.saveResource(fileName, false);
+        }
+        return file;
+    }
+
+    Yaml setUpYaml() {
         DumperOptions options = new DumperOptions();
 
         options.setIndent(2);
         options.setPrettyFlow(true);
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         
-        yaml = new Yaml(options);
+        return new Yaml(options);
+    }
+    
+    @SneakyThrows
+    public ConfigManager(T config, JavaPlugin plugin) {      
+        instance = config;
+  
+        yaml = setUpYaml();
 
         Class<?> klass = config.getClass();
         ConfigFile cfile = klass.getAnnotation(ConfigFile.class);
@@ -90,9 +105,7 @@ public class ConfigManager<T> {
             throw new RuntimeException("Wrong class");
         }
 
-        instance = config;
-
-        file = new File(path, cfile.file());
+        file = findOrLoadFromResource(plugin, cfile.file());
 
         fields = Stream.of(klass.getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(Saveable.class))
