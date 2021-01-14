@@ -7,8 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EventPipe {
-    public EventPipe() {}
+import me.fulcanelly.tgbridge.utils.async.ActorTemplate;
+
+public class EventPipe extends ActorTemplate<EventObject> {
+
+    public EventPipe() {
+        this.start();
+    }
+
+    HashMap<Class<?>, List<Reactor>> reactors = new HashMap<>();
 
     boolean isRightHandler(Method method) {
         
@@ -33,9 +40,9 @@ public class EventPipe {
     
     List<Reactor> getHandlers(Listener object) {
         return Arrays.asList(object.getClass().getDeclaredMethods()).stream()
-        .filter(method -> this.isRightHandler(method))
-        .map(method -> new Reactor(method, object))
-        .collect(Collectors.toList());
+            .filter(method -> this.isRightHandler(method))
+            .map(method -> new Reactor(method, object))
+            .collect(Collectors.toList());
     }
 
     class Reactor {
@@ -61,9 +68,6 @@ public class EventPipe {
         }
     }
 
-    //HashMap<Class<Listener>, List<Reactor>> reactors = new HashMap<>();
-    HashMap<Class<?>, List<Reactor>> reactors = new HashMap<>();
-
     public void registerListener(Listener listener) {
         getHandlers(listener).stream()
             .forEach(reactor -> registerReactor(reactor));
@@ -78,9 +82,11 @@ public class EventPipe {
     }
 
     public void emit(EventObject object) {
-   //     new Thread(() -> 
-        reactors.get(object.getClass())
-            .forEach(reactor -> reactor.call(object));
-       // ).start(); 
+        addOne(object);
+    }
+
+    public void consume(EventObject obj) {
+        reactors.get(obj.getClass())
+            .forEach(reactor -> reactor.call(obj));
     }
 }
