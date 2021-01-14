@@ -62,3 +62,4 @@ After that, you have to restart your server, and then bot should be working.
   - [ ] Login via telegram
   - [x] Flexible configurtation
   - [ ] Ingore switch
+  - [ ] Custom localization
