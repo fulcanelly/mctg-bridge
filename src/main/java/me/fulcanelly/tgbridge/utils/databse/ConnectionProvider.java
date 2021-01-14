@@ -17,8 +17,7 @@ public class ConnectionProvider {
     }
 
     @SneakyThrows
-	public
-    Connection getConnection() {
+	public Connection getConnection() {
         var folder = this.plugin.getDataFolder();
         var path = new File(folder, "database.sqlite3").toString();
         return DriverManager.getConnection("jdbc:sqlite:" + path);
