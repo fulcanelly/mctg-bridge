@@ -6,7 +6,7 @@ import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import java.util.ArrayList;
 import java.util.List;
 
-class EventDetectorManagerData<U, D extends Detector<U>> {
+class EventDetectorManagerData<U, K, D extends Detector<U, K>> {
 
     EventPipe pipe = null;
     EventObject event = null;
@@ -14,26 +14,25 @@ class EventDetectorManagerData<U, D extends Detector<U>> {
     
 } 
 
-public class EventDetectorManager<U> extends EventDetectorManagerData<U, Detector<U>> {
+public class EventDetectorManager<U, K> extends EventDetectorManagerData<U, K, Detector<U, K>> {
 
     public EventDetectorManager(EventPipe pipe) {
         this.pipe = pipe;
     }
 
-    public EventDetectorManager<U> setPipe(EventPipe p) {
+    public EventDetectorManager<U, K> setPipe(EventPipe p) {
         this.pipe = p;
         return this;
     }
 
-    public EventDetectorManager<U> addDetector(Detector<U> detector) {
+    public EventDetectorManager<U, K> addDetector(Detector<U, K> detector) {
         detectors.add(detector);
         return this;
     }
 
-    public void handle(U update) {
-        this.detectors
-            .parallelStream()
-            .map(detector -> detector.is_it(update))
+    public void handle(U update, K data) {
+        this.detectors.stream()
+            .map(detector -> detector.is_it(update, data))
             .filter(result -> result != null)
             .forEach(event -> pipe.emit(event));
     }
