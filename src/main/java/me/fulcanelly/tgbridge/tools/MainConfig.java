@@ -19,5 +19,24 @@ public class MainConfig {
 
     @Saveable @Nullable @Optional
     public String test_field = "works";
+
+    @Saveable 
+    public Boolean log_status;
+
+
+    public String getApiToken() {
+        return api_token;
+    }
+
+    public String getChatId() {
+        return chat_id;
+    }
     
+    public boolean isLoginManagerEnabled() {
+        return login_manger;
+    }
+
+    public <T>void setChatId(T chat_id) {
+        this.chat_id = chat_id.toString();
+    }
 }
