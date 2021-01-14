@@ -7,6 +7,8 @@ import java.util.Map;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.events.detector.EventDetectorManager;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
+import me.fulcanelly.tgbridge.utils.stop.Stopable;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -24,7 +26,7 @@ enum Method {
     PIN
 }
 
-public class TGBot {
+public class TGBot implements Stopable {
     
 
     private ArrayList<Long> recent_updates = new ArrayList<>();
@@ -67,21 +69,15 @@ public class TGBot {
     }
 
     String apiToken;
-    EventDetectorManager<JSONObject> detector;
+    EventDetectorManager<JSONObject, TGBot> detector;
     long last_update_id = -1;
 
-    public TGBot(String apiToken) {
-        detector = new EventDetectorManager<>(epipe);
+    public TGBot(String apiToken, EventPipe pipe) {
+        detector = new EventDetectorManager<>(pipe);
         this.apiToken = apiToken;
     }
     
-    static public void setEventPipe(EventPipe pipe) {
-        epipe = pipe;
-    }
-        
-    static public EventPipe epipe;
-    
-    public EventDetectorManager<JSONObject> getDetectorManager() {
+    public EventDetectorManager<JSONObject, TGBot> getDetectorManager() {
         return detector;
     }
 
@@ -140,8 +136,9 @@ public class TGBot {
             .stringToJSON(text)
             .get("result");
 
-        return new Message(result);
+        return new Message(result, this);
     }
+    
     //todo
     public boolean pinChatMessage(String chat_id, String message_id, Boolean dont_notificate) {
         new MethodCaller(Method.PIN)
@@ -227,12 +224,13 @@ public class TGBot {
 
     boolean alive = true;
 
-    public void stop() {
+    @Override
+    public void stopIt() {
         alive = false;
     }
 
     @SneakyThrows
-    void setup(Runnable func) {
+    void loop(Runnable func) {
         while(true && alive) {
             func.run();
             Thread.sleep(30);
@@ -240,7 +238,7 @@ public class TGBot {
     }
 
     public void start() {
-        Runnable runnable = () -> setup(this::updater);
+        Runnable runnable = () -> loop(this::updater);
         new Thread(runnable).start();    
     }
 
@@ -249,7 +247,7 @@ public class TGBot {
             JSONObject update = (JSONObject)updateObject;
             updateWatcher((Long)update.get("update_id"));
             this.updateLast(update);
-            detector.handle(update);
+            detector.handle(update, this);
         } 
     }
     
