@@ -1,5 +1,4 @@
-api_token: 1
+api_token: ""
 chat_id: null
 login_manger: false
-#logi_manger: 
-#  enable: false
+log_status: true
