@@ -1,31 +1,7 @@
 package me.fulcanelly.tgbridge.tools.login;
 
-import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import org.bukkit.GameMode;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-import me.fulcanelly.tgbridge.TelegramBridge;
-import me.fulcanelly.tgbridge.tapi.Message;
-import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventReactor;
-import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
-import net.md_5.bungee.api.ChatColor;
-
+/*
 class LoginDataBase {
     boolean includes(Player pl) { 
         return false;
@@ -87,7 +63,7 @@ public class LoginManager implements org.bukkit.event.Listener, CommandExecutor 
 
                 playerdata.allowAllActions();
             } catch(NullPointerException ignored) {}
-        }*/
+        }/
     }
 
     @Override
@@ -254,3 +230,4 @@ public class LoginManager implements org.bukkit.event.Listener, CommandExecutor 
    // void on(PlayerRespawnEvent)
    // void onLogin(E)
 }
+*/
