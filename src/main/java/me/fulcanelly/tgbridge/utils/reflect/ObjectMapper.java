@@ -14,7 +14,7 @@ public class ObjectMapper {
             if (map.containsKey(name)) {
                 field.set(instance, map.get(name));
             } else {
-                throw new RuntimeException("fuck russia");
+                throw new RuntimeException("redundand field");
             }
         }
     
