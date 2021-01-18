@@ -3,6 +3,7 @@ package me.fulcanelly.tgbridge.tools.stats;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.SneakyThrows;
@@ -76,15 +77,23 @@ public class StatsDatabase {
 
     @SneakyThrows
     UserStats parserFromResultSet(ResultSet rset) {
-        return mapper.convertValue(qhandler.parseMapOfResultSet(rset), UserStats.class);
+        Map<String, Object> map = qhandler.parseMapOfResultSet(rset);
+        map.put("name", String.valueOf(map.get("name")));
+        return mapper.convertValue(map, UserStats.class);
     }
+
+    static Optional<UserStats> empty = Optional.empty();
 
     @SneakyThrows
     Optional<UserStats> getOptionalOf(ResultSet set) {
         if (set.next()) {
-            return Optional.of(parserFromResultSet(set));
+            try {
+                return Optional.of(parserFromResultSet(set));
+            } catch(Throwable e) {
+                return empty;
+            }
         } else {
-            return Optional.empty();
+            return empty;
         }
 
     }
