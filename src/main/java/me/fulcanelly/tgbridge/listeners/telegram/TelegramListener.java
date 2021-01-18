@@ -40,11 +40,17 @@ public class TelegramListener implements Listener {
 
     @EventReactor
     public void onMessage(MessageEvent event) {
-        bridge.getActionListener().setActualLast(event.getMsgId());
+        var rightChat = this.isRightChat(event);
+
+        if (rightChat) {
+            bridge
+                .getActionListener()
+                .setActualLast(event.getMsgId());
+        }
 
         if (isCommandEvent(event)) {
             return;
-        } else if (this.isRightChat(event)) {            
+        } else if (rightChat) {            
             broadcast(new EventFormatter(event).getText());
         }
     }
