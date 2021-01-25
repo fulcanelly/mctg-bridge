@@ -126,8 +126,12 @@ public class TGBot implements Stopable {
                 .stream()
                 .map(key -> key + "=" + encodeValue(requestParams.get(key)))
                 .collect(Collectors.joining("&", link + "?", ""));
-
-            return UsefulStuff.loadPage(encodedURL);
+            try {
+                return UsefulStuff.loadPage(encodedURL);
+            } catch(Exception e) {
+                e.printStackTrace();
+                return "{}";
+            }
         }
     }
 
