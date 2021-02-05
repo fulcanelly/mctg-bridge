@@ -7,16 +7,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.SneakyThrows;
-import me.fulcanelly.tgbridge.utils.databse.SQLiteQueryHandler;
-import me.fulcanelly.tgbridge.utils.reflect.ObjectMapper;
-import me.fulcanelly.tgbridge.utils.async.tasks.AsyncTask;
+
+import me.fulcanelly.clsql.databse.SQLQueryHandler;
+import me.fulcanelly.clsql.reflect.ObjectMapper;
+import me.fulcanelly.clsql.async.tasks.AsyncTask;
 
 public class StatsDatabase {
 
-    final SQLiteQueryHandler qhandler;
+    final SQLQueryHandler qhandler;
     final ObjectMapper mapper;
 
-    StatsDatabase(SQLiteQueryHandler sqlite) {//
+    StatsDatabase(SQLQueryHandler sqlite) {//
         this.mapper = new ObjectMapper();
         this.qhandler = sqlite;
     }   
@@ -85,7 +86,7 @@ public class StatsDatabase {
     static Optional<UserStats> empty = Optional.empty();
 
     @SneakyThrows
-    Optional<UserStats> getOptionalOf(ResultSet set) {
+    Optional<UserStats> getOptionalUserStatsOf(ResultSet set) {
         if (set.next()) {
             try {
                 return Optional.of(parserFromResultSet(set));
@@ -99,10 +100,10 @@ public class StatsDatabase {
     }
 
     @SneakyThrows
-    public AsyncTask<Optional<UserStats>> findByName(String name) {   
+    public AsyncTask<Optional<UserStats>> findByName(String name) {
         return qhandler
             .executeQuery("SELECT * FROM user_stats WHERE name = ?", name)
-            .andThen(this::getOptionalOf);
+            .andThen(this::getOptionalUserStatsOf);
     }
 
     

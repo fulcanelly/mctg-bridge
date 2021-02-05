@@ -7,14 +7,15 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.fulcanelly.tgbridge.utils.async.tasks.AsyncTask;
-import me.fulcanelly.tgbridge.utils.databse.SQLiteQueryHandler;
+import me.fulcanelly.clsql.async.tasks.AsyncTask;
+import me.fulcanelly.clsql.databse.SQLQueryHandler;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 
 public class StatCollector extends StatsDatabase implements Listener {
     
-    public StatCollector(SQLiteQueryHandler sqlite) {
+    public StatCollector(SQLQueryHandler sqlite) {
         super(sqlite);
         this.initTables();
 

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.fulcanelly.clsql.stop.Stopable;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.events.detector.EventDetectorManager;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
-import me.fulcanelly.tgbridge.utils.stop.Stopable;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

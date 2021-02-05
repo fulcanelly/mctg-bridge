@@ -1,4 +1,4 @@
-package me.fulcanelly.tgbridge.utils.databse;
+package me.fulcanelly.tgbridge.utils.database;
 
 import java.io.File;
 import java.sql.Connection;
@@ -9,7 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import lombok.SneakyThrows;
 
 public class ConnectionProvider {
-    
     JavaPlugin plugin;
 
     public ConnectionProvider(JavaPlugin plugin) {
@@ -22,5 +21,4 @@ public class ConnectionProvider {
         var path = new File(folder, "database.sqlite3").toString();
         return DriverManager.getConnection("jdbc:sqlite:" + path);
     }
-
 }

@@ -22,6 +22,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import net.md_5.bungee.api.ChatColor;
 
 import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
+import me.fulcanelly.clsql.container.Pair;
+import me.fulcanelly.clsql.container.VirtualConsumer;
+import me.fulcanelly.clsql.databse.SQLQueryHandler;
+import me.fulcanelly.clsql.stop.StopHandler;
+import me.fulcanelly.clsql.stop.Stopable;
 import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.Message;
@@ -34,12 +39,9 @@ import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.mastery.ChatVisibility;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
-import me.fulcanelly.tgbridge.utils.container.*;
-import me.fulcanelly.tgbridge.utils.databse.ConnectionProvider;
-import me.fulcanelly.tgbridge.utils.databse.SQLiteQueryHandler;
+import me.fulcanelly.tgbridge.utils.database.ConnectionProvider;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
-import me.fulcanelly.tgbridge.utils.stop.StopHandler;
-import me.fulcanelly.tgbridge.utils.stop.Stopable;
+
 import me.fulcanelly.tgbridge.view.*;
 
 abstract class MainPluginState extends JavaPlugin implements MainControll {
@@ -57,7 +59,7 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
 
     MainConfig config;
     ConfigManager<MainConfig> manager;
-    SQLiteQueryHandler queryHandler;
+    SQLQueryHandler queryHandler;
 
 
     
@@ -67,14 +69,14 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
         manager.load();
     }
 
-    public SQLiteQueryHandler getSQLQueryHandler() {
+    public SQLQueryHandler getSQLQueryHandler() {
         return queryHandler;
     }
 
     void setUpSQLhandler() {
         var conn = new ConnectionProvider(this)
             .getConnection();
-        queryHandler = new SQLiteQueryHandler(conn);
+        queryHandler = new SQLQueryHandler(conn);
     }
 
     public ActionListener getActionListener() {
@@ -281,14 +283,27 @@ public class TelegramBridge extends MainPluginState {
                 if (event.getArgs().isEmpty()) {
                     event.reply("specify nickname to get stats");
                 } else {
-                    var stats = statCollector
-                        .findByName(event.args[0])
+                    var nick = event.args[0];
+                    
+                    var optStats = statCollector
+                        .findByName(nick)
                         .waitForResult();
-
-                    if (stats.isEmpty()) {
+                                    
+                    if (optStats.isEmpty()) {
                         event.reply("no players whith such nickname yet");
                     } else {
-                        event.reply("you played " + stats.get().toString());
+                        var stats = optStats.get();
+                        
+                        String online_sign = Bukkit.getPlayer(stats.name) != null ? "❇️" : "";
+
+                        String data = String.format(
+                            " 🏳️‍🌈 `%s` " + online_sign + '\n' +
+                            "  played time — %s\n" + 
+                            "  deaths — %d\n",
+                            stats.name, stats.toString(), stats.deaths
+                        );
+    
+                        event.reply(data);
                     }
                 }
             })

@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import me.fulcanelly.tgbridge.utils.async.ActorTemplate;
+import me.fulcanelly.clsql.async.ActorTemplate;
+
 
 public class EventPipe extends ActorTemplate<EventObject> {
 
