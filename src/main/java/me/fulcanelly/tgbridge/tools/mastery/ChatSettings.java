@@ -110,7 +110,6 @@ public class ChatSettings implements NamedTabExecutor {
                 sender.sendMessage("unknown subcommand");
             break;
         }
-        sender.sendMessage("onCommand() = " + label + " " + sender.getName() + " " + List.of(args));
         return true;
     }
 
