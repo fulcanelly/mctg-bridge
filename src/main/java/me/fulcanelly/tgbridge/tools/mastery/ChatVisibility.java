@@ -9,6 +9,17 @@ import java.util.stream.Stream;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
+
+import me.fulcanelly.clsql.async.tasks.AsyncTask;
+import me.fulcanelly.clsql.databse.SQLQueryHandler;
+
+/**
+ * termplate how it should look like:
+ * 
+ * tg chat show
+ * tg chat hide
+ */
 
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
