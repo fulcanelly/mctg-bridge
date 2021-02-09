@@ -77,22 +77,51 @@ public class ChatVisibility implements NamedTabExecutor {
             .collect(Collectors.toCollection(ArrayDeque::new));
     }
 
+    void handleChat(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            sender.sendMessage("no enough arguments");
+        } else {
+            switch (args[1]) {
+                case "show":
+                    setPlayerVisibilityTo(sender.getName(), false);
+                    sender.sendMessage("chat will be shown");
+                break;
+
+                case "hide":
+                    setPlayerVisibilityTo(sender.getName(), true);
+                    sender.sendMessage("chat will be hiden");
+                break;
+
+                default:
+                    sender.sendMessage("usage: /tg char <show | hide>");
+
+            }
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         switch (args[0]) {
-          //  case "tg" 
+            case "chat":
+                handleChat(sender, args);
+            break;
+            default:
+                sender.sendMessage("unknown subcommand");
+            break;
         }
         sender.sendMessage("onCommand() = " + label + " " + sender.getName() + " " + List.of(args));
-        return false;
+        return true;
     }
 
     List<String> checkList(String arg, Deque<String> hz) {
         if (arg.equals("chat")) {
+            hz.clear();
             return List.of("show", "ignore");
         } else {
             return null;
         }
     }
+
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
