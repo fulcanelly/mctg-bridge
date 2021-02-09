@@ -61,6 +61,7 @@ public class ActionListener implements Listener {
         }   
 
         final static long MAX_SIZE = 20;
+        final static long MAX_TIMEOUT_MILLIS = 60 * 1000;
 
         boolean isLimitExceeded() {
             if (lines == null) {
