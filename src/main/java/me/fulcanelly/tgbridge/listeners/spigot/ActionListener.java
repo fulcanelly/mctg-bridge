@@ -9,7 +9,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.event.EventHandler;
@@ -28,33 +27,32 @@ public class ActionListener implements Listener {
 
     class ShortMessage {
 
+        final static long MAX_SIZE = 20;
+        final static long MAX_TIMEOUT_MILLIS = 60 * 1000;
+
         String name;
         List<String> lines;
         long message_id;
-        
+        long last_update = System.currentTimeMillis();
+
         ShortMessage(Message msg, String from, String text) {
             setActualLast(message_id = msg.getMsgId());
             this.name = from;
-            lines = new ArrayList<>();
-            lines.add(text);
-        }   
-
-        ShortMessage(Message msg) {
-            setActualLast(message_id = msg.getMsgId());
+            lines = List.of(text);
         }   
 
         String formString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append(
-                String.format("*<%s>*\n", name) );
+            StringBuilder builder = new StringBuilder(
+                String.format("*<%s>*\n", name) 
+            );
             lines.forEach(line -> builder.append(line + "\n\n"));
             return builder.toString();
         }
 
         void mergeWith(String new_text) {
+            last_update = System.currentTimeMillis();
             lines.add(new_text);
-            String for_send = formString();
-            bot.editMessage(chat_id, message_id, for_send);
+            bot.editMessage(chat_id, message_id, formString());
         }
 
         boolean isFrom(String another_name) {
@@ -64,8 +62,6 @@ public class ActionListener implements Listener {
             return name.equals(another_name);
         }   
 
-        final static long MAX_SIZE = 20;
-
         boolean isLimitExceeded() {
             if (lines == null) {
                 return false;
@@ -73,10 +69,13 @@ public class ActionListener implements Listener {
             return lines.size() > MAX_SIZE;
         }
 
-        //from = null
+        boolean isTimeout() {
+            return System.currentTimeMillis() - last_update > MAX_TIMEOUT_MILLIS;
+        }
+
         boolean isMergeableWith(String from) {
                         
-            if (last_sended.isLimitExceeded()) {
+            if (isLimitExceeded() || isTimeout()) {
                 return false;
             } 
 
@@ -88,7 +87,6 @@ public class ActionListener implements Listener {
         }
     }
 
-    final long MAX_SENDED_SIZE = 20;
     ShortMessage last_sended;
 
     final TGBot bot;
