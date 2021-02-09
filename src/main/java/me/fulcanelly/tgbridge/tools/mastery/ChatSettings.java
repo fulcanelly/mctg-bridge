@@ -48,7 +48,7 @@ public class ChatSettings implements NamedTabExecutor {
                 if (fetched.isEmpty()) {
                     sql.syncExecuteUpdate("INSERT INTO chat_visibility_settings VALUES(?, ?)", prepearedPlayer, status);
                 } else {
-                    sql.syncExecuteUpdate("UPDATE chat_visibility_settings SET player = ?, hide = ?", player, status);
+                    sql.syncExecuteUpdate("UPDATE chat_visibility_settings SET player = ?, hide = ? WHERE player = ?", prepearedPlayer, status, player);
                 }
             });
     }
