@@ -117,7 +117,7 @@ public class ChatSettings implements NamedTabExecutor {
     List<String> checkList(String arg, Deque<String> hz) {
         if (arg.equals("chat")) {
             hz.clear();
-            return List.of("show", "ignore");
+            return List.of("show", "hide");
         } else {
             return null;
         }
