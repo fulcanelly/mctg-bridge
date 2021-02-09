@@ -48,7 +48,7 @@ public class ChatSettings implements NamedTabExecutor {
                 if (fetched.isEmpty()) {
                     sql.syncExecuteUpdate("INSERT INTO chat_visibility_settings VALUES(?, ?)", prepearedPlayer, status);
                 } else {
-                    sql.syncExecuteUpdate("UPDATE TABLE chat_visibility_settings SET player = ?, hide = ?", player, status);
+                    sql.syncExecuteUpdate("UPDATE chat_visibility_settings SET player = ?, hide = ? WHERE player = ?", prepearedPlayer, status, player);
                 }
             });
     }
@@ -62,7 +62,7 @@ public class ChatSettings implements NamedTabExecutor {
                 if (fetched.isEmpty()) {
                     return defaultHide;
                 } else {
-                    return (Boolean)fetched.get().get("hide");
+                    return (Integer)fetched.get().get("hide") != 0;
                 }
             });
     }
@@ -110,14 +110,13 @@ public class ChatSettings implements NamedTabExecutor {
                 sender.sendMessage("unknown subcommand");
             break;
         }
-        sender.sendMessage("onCommand() = " + label + " " + sender.getName() + " " + List.of(args));
         return true;
     }
 
     List<String> checkList(String arg, Deque<String> hz) {
         if (arg.equals("chat")) {
             hz.clear();
-            return List.of("show", "ignore");
+            return List.of("show", "hide");
         } else {
             return null;
         }
