@@ -73,10 +73,13 @@ public class ActionListener implements Listener {
             return lines.size() > MAX_SIZE;
         }
 
-        //from = null
+        boolean isTimeout() {
+            return System.currentTimeMillis() - last_update > MAX_TIMEOUT_MILLIS;
+        }
+
         boolean isMergeableWith(String from) {
                         
-            if (last_sended.isLimitExceeded()) {
+            if (isLimitExceeded() || isTimeout()) {
                 return false;
             } 
 
