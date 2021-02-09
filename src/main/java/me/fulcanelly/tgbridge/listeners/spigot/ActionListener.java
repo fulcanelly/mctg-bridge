@@ -31,7 +31,8 @@ public class ActionListener implements Listener {
         String name;
         List<String> lines;
         long message_id;
-        
+        long last_update = System.currentTimeMillis();
+
         ShortMessage(Message msg, String from, String text) {
             setActualLast(message_id = msg.getMsgId());
             this.name = from;
