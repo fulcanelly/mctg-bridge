@@ -23,12 +23,13 @@ import me.fulcanelly.clsql.databse.SQLQueryHandler;
 
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
-public class ChatVisibility implements NamedTabExecutor {
+public class ChatSettings implements NamedTabExecutor {
 
     SQLQueryHandler sql;
     Boolean defaultHide = false;
 
-    public ChatVisibility(SQLQueryHandler sql) {
+
+    public ChatSettings(SQLQueryHandler sql) {
         this.sql = sql;
         sql.syncExecuteUpdate(
             "CREATE TABLE IF NOT EXISTS chat_visibility_settings(" +
@@ -146,3 +147,6 @@ public class ChatVisibility implements NamedTabExecutor {
     }
 
 }
+
+
+
