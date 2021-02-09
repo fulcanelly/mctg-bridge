@@ -27,6 +27,9 @@ public class ActionListener implements Listener {
     }
 
     class ShortMessage {
+        
+        final static long MAX_SIZE = 20;
+        final static long MAX_TIMEOUT_MILLIS = 60 * 1000;
 
         String name;
         List<String> lines;
