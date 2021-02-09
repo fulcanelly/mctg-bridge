@@ -10,6 +10,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
 import java.util.List;
+import java.util.*;
 
 import org.bukkit.event.EventHandler;
 
@@ -38,7 +39,7 @@ public class ActionListener implements Listener {
         ShortMessage(Message msg, String from, String text) {
             setActualLast(message_id = msg.getMsgId());
             this.name = from;
-            lines = List.of(text);
+            lines = new LinkedList<>(List.of(text));
         }   
 
         String formString() {
