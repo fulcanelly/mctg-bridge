@@ -14,6 +14,47 @@ import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
 public class ChatVisibility implements NamedTabExecutor {
 
+    SQLQueryHandler sql;
+    Boolean defaultHide = false;
+
+    public ChatVisibility(SQLQueryHandler sql) {
+        this.sql = sql;
+        sql.syncExecuteUpdate(
+            "CREATE TABLE IF NOT EXISTS chat_visibility_settings(" +
+            "    player STRING," +
+            "    hide BOOL" +
+            ")"
+        );
+    }
+
+    public void setPlayerVisibilityTo(String player, boolean status) {
+        var prepearedPlayer = player + "_";
+
+        sql.executeQuery("SELECT * FROM chat_visibility_settings WHERE player = ?", prepearedPlayer)
+            .andThen(sql::safeParseOne)
+            .andThenSilently(fetched -> {
+                if (fetched.isEmpty()) {
+                    sql.syncExecuteUpdate("INSERT INTO chat_visibility_settings VALUES(?, ?)", prepearedPlayer, status);
+                } else {
+                    sql.syncExecuteUpdate("UPDATE TABLE chat_visibility_settings SET player = ?, hide = ?", player, status);
+                }
+            });
+    }
+
+    public AsyncTask<Boolean> getPlayerVisibility(String player) {
+        var prepearedPlayer = player + "_";
+
+        return sql.executeQuery("SELECT * FROM chat_visibility_settings WHERE player = ?", prepearedPlayer)
+            .andThen(sql::safeParseOne)
+            .andThen(fetched -> {
+                if (fetched.isEmpty()) {
+                    return defaultHide;
+                } else {
+                    return (Boolean)fetched.get().get("hide");
+                }
+            });
+    }
+
     @Override 
     public String getCommandName() {
         return "tg";
