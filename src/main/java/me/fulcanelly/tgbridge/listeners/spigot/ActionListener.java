@@ -35,12 +35,7 @@ public class ActionListener implements Listener {
         ShortMessage(Message msg, String from, String text) {
             setActualLast(message_id = msg.getMsgId());
             this.name = from;
-            lines = new ArrayList<>();
-            lines.add(text);
-        }   
-
-        ShortMessage(Message msg) {
-            setActualLast(message_id = msg.getMsgId());
+            lines = List.of(text);
         }   
 
         String formString() {
