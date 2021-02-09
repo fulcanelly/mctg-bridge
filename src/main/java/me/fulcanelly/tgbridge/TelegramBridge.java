@@ -235,7 +235,9 @@ public class TelegramBridge extends MainPluginState {
         this.regSpigotListeners(actionListener, statCollector);
         this.regStopHandlers(tgpipe, queryHandler, bot);
 
-        this.regCommandAndTabCompleters(new ChatVisibility());
+        this.regCommandAndTabCompleters(
+            new ChatVisibility(this.getSQLQueryHandler())
+        );
 
         tlog.sendToPinnedChat("plugin started");
         bot.start();
