@@ -62,7 +62,7 @@ public class ChatSettings implements NamedTabExecutor {
                 if (fetched.isEmpty()) {
                     return defaultHide;
                 } else {
-                    return (Boolean)fetched.get().get("hide");
+                    return (Integer)fetched.get().get("hide") != 0;
                 }
             });
     }
