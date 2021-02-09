@@ -36,7 +36,7 @@ import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.DeepLoger;
 import me.fulcanelly.tgbridge.tools.MainConfig;
-import me.fulcanelly.tgbridge.tools.mastery.ChatVisibility;
+import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.ConnectionProvider;
@@ -194,6 +194,7 @@ public class TelegramBridge extends MainPluginState {
     }
 
     TelegramLogger tlog;
+    ChatSettings chatSettings;
 
     private void safeEnable() throws ReloadException {
         this.setUpConfig();
@@ -203,6 +204,7 @@ public class TelegramBridge extends MainPluginState {
         
         chat_id = config.getChatId();
 
+        chatSettings = new ChatSettings(this.getSQLQueryHandler());
         StatCollector statCollector = new StatCollector(this.getSQLQueryHandler()); //
         TGBot bot = new TGBot(config.getApiToken(), tgpipe);
         
@@ -236,7 +238,7 @@ public class TelegramBridge extends MainPluginState {
         this.regStopHandlers(tgpipe, queryHandler, bot);
 
         this.regCommandAndTabCompleters(
-            new ChatVisibility(this.getSQLQueryHandler())
+            getChatSettings()
         );
 
         tlog.sendToPinnedChat("plugin started");
@@ -333,6 +335,11 @@ public class TelegramBridge extends MainPluginState {
     @Override
     public void onEnable() {    
         new Thread(this::startGuard).start();
+    }
+
+    @Override
+    public ChatSettings getChatSettings() {
+        return chatSettings;
     }
 
 
