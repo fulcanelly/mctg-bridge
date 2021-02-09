@@ -168,7 +168,7 @@ public class TelegramBridge extends MainPluginState {
             List<String> nick_names = getOnlineList();
 
             String result = nick_names.size() > 0 ? 
-                "`Online players:` \n\n" + String.join("\n", nick_names):
+                "`Currently online " + nick_names.size() + "  players:` \n\n" + String.join("\n", nick_names):
                 emptyServerMessage;
             msg.reply(result);
         };
