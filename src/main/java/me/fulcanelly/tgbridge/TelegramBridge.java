@@ -73,10 +73,10 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
         return queryHandler;
     }
 
-    void setUpSQLhandler() {
+    void setUpSQLhandler(boolean verbose) {
         var conn = new ConnectionProvider(this)
             .getConnection();
-        queryHandler = new SQLQueryHandler(conn);
+        queryHandler = new SQLQueryHandler(conn, verbose);
     }
 
     public ActionListener getActionListener() {
@@ -197,7 +197,7 @@ public class TelegramBridge extends MainPluginState {
 
     private void safeEnable() throws ReloadException {
         this.setUpConfig();
-        this.setUpSQLhandler();
+        this.setUpSQLhandler(false);
 
         DeepLoger.initalize(this);
         
