@@ -27,7 +27,7 @@ public class ActionListener implements Listener {
     }
 
     class ShortMessage {
-        
+
         final static long MAX_SIZE = 20;
         final static long MAX_TIMEOUT_MILLIS = 60 * 1000;
 
@@ -51,9 +51,9 @@ public class ActionListener implements Listener {
         }
 
         void mergeWith(String new_text) {
+            last_update = System.currentTimeMillis();
             lines.add(new_text);
-            String for_send = formString();
-            bot.editMessage(chat_id, message_id, for_send);
+            bot.editMessage(chat_id, message_id, formString());
         }
 
         boolean isFrom(String another_name) {
