@@ -40,9 +40,9 @@ public class ActionListener implements Listener {
         }   
 
         String formString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append(
-                String.format("*<%s>*\n", name) );
+            StringBuilder builder = new StringBuilder(
+                String.format("*<%s>*\n", name) 
+            );
             lines.forEach(line -> builder.append(line + "\n\n"));
             return builder.toString();
         }
