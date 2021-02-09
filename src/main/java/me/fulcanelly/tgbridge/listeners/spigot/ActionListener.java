@@ -9,7 +9,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.event.EventHandler;
@@ -63,9 +62,6 @@ public class ActionListener implements Listener {
             return name.equals(another_name);
         }   
 
-        final static long MAX_SIZE = 20;
-        final static long MAX_TIMEOUT_MILLIS = 60 * 1000;
-
         boolean isLimitExceeded() {
             if (lines == null) {
                 return false;
@@ -91,7 +87,6 @@ public class ActionListener implements Listener {
         }
     }
 
-    final long MAX_SENDED_SIZE = 20;
     ShortMessage last_sended;
 
     final TGBot bot;
