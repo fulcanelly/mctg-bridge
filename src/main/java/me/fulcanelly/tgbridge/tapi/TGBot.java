@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 enum Method {
     SEND,
     EDIT,
+    DELETE,
     UPDATES,
     GET_ME,
     PIN
@@ -92,6 +93,7 @@ public class TGBot implements Stopable {
                 case UPDATES: return "getUpdates";
                 case GET_ME: return "getMe";
                 case PIN: return "pinChatMessage";
+                case DELETE: return "deleteMessage";
             }
             throw new RuntimeException("Unknown method");
         }
@@ -173,6 +175,13 @@ public class TGBot implements Stopable {
             .put("reply_to_message_id", reply_to_message_id.toString()).call();
 
         return parseResponse(page);
+    }
+
+    public void deleteMessage(Long chat_id, Long message_id) {
+        new MethodCaller(Method.DELETE)
+            .put("message_id", message_id.toString())
+            .put("chat_id", chat_id.toString())
+            .call();
     }
 
     public Message editMessage(Long chat_id, Long message_id, String text) {
