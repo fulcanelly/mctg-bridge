@@ -153,7 +153,9 @@ public class ActionListener implements Listener {
     @EventHandler
     void onDeath(PlayerDeathEvent event) {
         send(
-            UsefulStuff.formatMarkdown( event.getDeathMessage() )
+            UsefulStuff.formatMarkdown(
+                event.getDeathMessage().replaceAll("§\\w", "")
+            )
         );
     }
 
