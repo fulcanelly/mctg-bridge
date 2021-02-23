@@ -108,6 +108,10 @@ public class Message {
         return bot.sendMessage(getChat().getId(), text, getMsgId());
     }
 
+    public void delete() {
+        bot.deleteMessage(getChat().getId(), getMsgId());
+    }
+    
     public Message edit(String newText) {
         return bot.editMessage(
             getChat().getId(), 
