@@ -41,10 +41,8 @@ public class MemoryUsageDiagramDrawer {
     }
 
     static int mapValue(long value, long maxOld, long maxNew) {
- 
         float km = (float)maxNew / (float)maxOld;
         return (int) (km * value);
-
     }
 
     long getMaxMemory() {
@@ -57,9 +55,7 @@ public class MemoryUsageDiagramDrawer {
         return totalMemory - freeMemory;
     }
 
-
     synchronized void updateValues() {
-        
         values.add(
             height - mapValue(getUsedMemory(), getMaxMemory(), height)
         );
@@ -67,12 +63,9 @@ public class MemoryUsageDiagramDrawer {
         if (values.size() >= width) {
             values = values.subList(1, values.size());
         }
-
     }
 
-
-
-    //ttaken from https://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#Java
+    //taken from https://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#Java
     static void drawLine(Canvas c, int fromX, int fromY, int toX, int toY) {
         int d = 0;
  
@@ -150,30 +143,6 @@ public class MemoryUsageDiagramDrawer {
         return this.draw() + '\n' + 
             getMemory();
     }
-/*
-    public static void main(String[] args) {
-       /* Canvas canvas = new Canvas(10, 5);
-        canvas.clear();
-        drawLine(canvas, 0, 0, 10*2-1, (5*3));
-        canvas.render();
-        
-        var drawer = new MemoryUsageDiagramDrawer(40, 21);
-        System.out.printf("wait\n");
-
-        drawer.start();
-        drawer.service.scheduleAtFixedRate(() -> {
-            try {
-                System.out.printf("ok\n");
-
-                System.out.println(drawer.draw() + "==ok");
-                System.out.printf("done\n");
-                //drawer.service.shutdown();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-        }, 3, 1, TimeUnit.SECONDS);
-    }*/
 
 }
 
