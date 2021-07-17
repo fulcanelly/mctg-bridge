@@ -37,8 +37,9 @@ import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.DeepLoger;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.mastery.ChatVisibility;
-import me.fulcanelly.tgbridge.utils.MemoryUsageDiagramDrawer;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
+import me.fulcanelly.tgbridge.utils.analyst.ConstantMessageEditor;
+import me.fulcanelly.tgbridge.utils.analyst.MemoryUsageDiagramDrawer;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.ConnectionProvider;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
@@ -252,6 +253,8 @@ public class TelegramBridge extends MainPluginState {
 
     void regTelegramCommands(ConfigManager<MainConfig> manager, MainConfig config, StatCollector statCollector) {
         var drawer = new MemoryUsageDiagramDrawer(40, 21);
+        var editor = new ConstantMessageEditor();
+        editor.start();
         drawer.start();
         commands
             .addCommand("attach", event -> {
@@ -269,7 +272,11 @@ public class TelegramBridge extends MainPluginState {
                 }
             })
             .addCommand("ping", "pong")
-            .addCommand("memory", drawer::toString)
+            .addCommand("memory", event -> {
+                var paint = drawer.toString();
+                event.reply(paint);
+                // editor.addToQueueMesaggeAndEditor(event.reply(paint), drawer::toString);
+            })
             .addCommand("list", this.getListCmdHandler())
             .addCommand("chat_id", this::onChatId)
             .addCommand("uptime", this::getUptime)
