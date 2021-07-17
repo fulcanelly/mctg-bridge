@@ -36,7 +36,7 @@ import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.DeepLoger;
 import me.fulcanelly.tgbridge.tools.MainConfig;
-import me.fulcanelly.tgbridge.tools.mastery.ChatVisibility;
+import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.analyst.ConstantMessageEditor;
 import me.fulcanelly.tgbridge.utils.analyst.MemoryUsageDiagramDrawer;
@@ -75,10 +75,10 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
         return queryHandler;
     }
 
-    void setUpSQLhandler() {
+    void setUpSQLhandler(boolean verbose) {
         var conn = new ConnectionProvider(this)
             .getConnection();
-        queryHandler = new SQLQueryHandler(conn);
+        queryHandler = new SQLQueryHandler(conn, verbose);
     }
 
     public ActionListener getActionListener() {
@@ -187,15 +187,17 @@ public class TelegramBridge extends MainPluginState {
     }
 
     TelegramLogger tlog;
+    ChatSettings chatSettings;
 
     private void safeEnable() throws ReloadException {
         this.setUpConfig();
-        this.setUpSQLhandler();
+        this.setUpSQLhandler(false);
 
         DeepLoger.initalize(this);
         
         chat_id = config.getChatId();
 
+        chatSettings = new ChatSettings(this.getSQLQueryHandler());
         StatCollector statCollector = new StatCollector(this.getSQLQueryHandler()); //
         TGBot bot = new TGBot(config.getApiToken(), tgpipe);
         
@@ -228,7 +230,9 @@ public class TelegramBridge extends MainPluginState {
         this.regSpigotListeners(actionListener, statCollector);
         this.regStopHandlers(tgpipe, queryHandler, bot);
 
-        this.regCommandAndTabCompleters(new ChatVisibility());
+        this.regCommandAndTabCompleters(
+            getChatSettings()
+        );
 
         tlog.sendToPinnedChat("plugin started");
         bot.start();
@@ -332,6 +336,11 @@ public class TelegramBridge extends MainPluginState {
     @Override
     public void onEnable() {    
         new Thread(this::startGuard).start();
+    }
+
+    @Override
+    public ChatSettings getChatSettings() {
+        return chatSettings;
     }
 
 
