@@ -199,7 +199,7 @@ public class TelegramBridge extends MainPluginState {
         this.setUpConfig();
         this.setUpSQLhandler();
 
-        DeepLoger.initalize(this);
+        //DeepLoger.initalize(this);
         
         chat_id = config.getChatId();
 
