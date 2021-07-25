@@ -61,7 +61,7 @@
         </dependency>
          <dependency>
         <groupId>com.github.null93</groupId>
-        <artifactId>drawillel</artifactId>
+        <artifactId>drawille</artifactId>
         <version>1.0.2</version>
         <scope>compile</scope>
         </dependency> 

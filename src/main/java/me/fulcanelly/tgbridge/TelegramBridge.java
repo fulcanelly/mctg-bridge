@@ -36,8 +36,10 @@ import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.DeepLoger;
 import me.fulcanelly.tgbridge.tools.MainConfig;
-import me.fulcanelly.tgbridge.tools.mastery.ChatVisibility;
+import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
+import me.fulcanelly.tgbridge.utils.analyst.ConstantMessageEditor;
+import me.fulcanelly.tgbridge.utils.analyst.MemoryUsageDiagramDrawer;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.ConnectionProvider;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
@@ -62,7 +64,7 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
     SQLQueryHandler queryHandler;
 
 
-    
+
     void setUpConfig() {
         config = new MainConfig(); 
         manager = new ConfigManager<>(config, this);
@@ -73,10 +75,10 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
         return queryHandler;
     }
 
-    void setUpSQLhandler() {
+    void setUpSQLhandler(boolean verbose) {
         var conn = new ConnectionProvider(this)
             .getConnection();
-        queryHandler = new SQLQueryHandler(conn);
+        queryHandler = new SQLQueryHandler(conn, verbose);
     }
 
     public ActionListener getActionListener() {
@@ -111,23 +113,14 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
 }
 
 public class TelegramBridge extends MainPluginState {
-    
+
     @Override
     public void onDisable() {
         tlog.sendToPinnedChat("plugin stoped");
         stopHandler.stopAll();
     }
     
-    public String getMemory() {
-        final long mb = 1024 * 1024;
-        Runtime rtime = Runtime.getRuntime();
-        
-        long totalMemory = rtime.totalMemory() / mb;
-        long freeMemory = rtime.freeMemory() / mb;
-        long usedMemory = totalMemory - freeMemory;
 
-        return String.format("Memory usage: %d MB / %d MB ", usedMemory, totalMemory);
-    }
 
     public String getUptime() {
         long jvmUpTime = ManagementFactory
@@ -194,15 +187,17 @@ public class TelegramBridge extends MainPluginState {
     }
 
     TelegramLogger tlog;
+    ChatSettings chatSettings;
 
     private void safeEnable() throws ReloadException {
         this.setUpConfig();
-        this.setUpSQLhandler();
+        this.setUpSQLhandler(false);
 
         //DeepLoger.initalize(this);
         
         chat_id = config.getChatId();
 
+        chatSettings = new ChatSettings(this.getSQLQueryHandler());
         StatCollector statCollector = new StatCollector(this.getSQLQueryHandler()); //
         TGBot bot = new TGBot(config.getApiToken(), tgpipe);
         
@@ -235,7 +230,9 @@ public class TelegramBridge extends MainPluginState {
         this.regSpigotListeners(actionListener, statCollector);
         this.regStopHandlers(tgpipe, queryHandler, bot);
 
-        this.regCommandAndTabCompleters(new ChatVisibility());
+        this.regCommandAndTabCompleters(
+            getChatSettings()
+        );
 
         tlog.sendToPinnedChat("plugin started");
         bot.start();
@@ -259,6 +256,10 @@ public class TelegramBridge extends MainPluginState {
     }
 
     void regTelegramCommands(ConfigManager<MainConfig> manager, MainConfig config, StatCollector statCollector) {
+        var drawer = new MemoryUsageDiagramDrawer(40, 21);
+        var editor = new ConstantMessageEditor();
+        editor.start();
+        drawer.start();
         commands
             .addCommand("attach", event -> {
                 
@@ -275,7 +276,11 @@ public class TelegramBridge extends MainPluginState {
                 }
             })
             .addCommand("ping", "pong")
-            .addCommand("memory", this::getMemory)
+            .addCommand("memory", event -> {
+                var paint = drawer.toString();
+                event.reply(paint);
+                // editor.addToQueueMesaggeAndEditor(event.reply(paint), drawer::toString);
+            })
             .addCommand("list", this.getListCmdHandler())
             .addCommand("chat_id", this::onChatId)
             .addCommand("uptime", this::getUptime)
@@ -331,6 +336,11 @@ public class TelegramBridge extends MainPluginState {
     @Override
     public void onEnable() {    
         new Thread(this::startGuard).start();
+    }
+
+    @Override
+    public ChatSettings getChatSettings() {
+        return chatSettings;
     }
 
 
