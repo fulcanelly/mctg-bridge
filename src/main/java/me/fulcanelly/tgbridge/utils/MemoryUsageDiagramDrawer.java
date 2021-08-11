@@ -1,6 +1,7 @@
 package me.fulcanelly.tgbridge.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -27,7 +28,7 @@ public class MemoryUsageDiagramDrawer {
     final Runtime runtime = Runtime.getRuntime();
     final static long MB = 1024 * 1024;
 
-    List<Integer> values = new LinkedList<>();
+    List<Integer> values = new ArrayList<>();
     
     public void start() {
         service.scheduleAtFixedRate(() -> {
