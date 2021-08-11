@@ -52,8 +52,8 @@ public class TelegramListener implements Listener {
         var rightChat = this.isRightChat(event);
 
         if (rightChat) {
-            bridge
-                .getActionListener()
+            bridge.getActionListener()
+                .getSender()
                 .setActualLast(event.getMsgId());
         }
 
