@@ -38,6 +38,7 @@ import me.fulcanelly.tgbridge.tools.DeepLoger;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
+import me.fulcanelly.tgbridge.utils.analyst.CommonMetrix;
 import me.fulcanelly.tgbridge.utils.analyst.ConstantMessageEditor;
 import me.fulcanelly.tgbridge.utils.analyst.MemoryUsageDiagramDrawer;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
@@ -112,39 +113,15 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
 
 }
 
+
 public class TelegramBridge extends MainPluginState {
+
+    CommonMetrix metrix = new CommonMetrix();
 
     @Override
     public void onDisable() {
         tlog.sendToPinnedChat("plugin stoped");
         stopHandler.stopAll();
-    }
-    
-
-
-    public String getUptime() {
-        long jvmUpTime = ManagementFactory
-            .getRuntimeMXBean()
-            .getUptime();
-
-        Calendar calendar = GregorianCalendar   
-            .getInstance();
-
-        calendar.setTime(new Date(jvmUpTime));
-        
-        int day = calendar.get(Calendar.DAY_OF_YEAR) - 1;
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        int minutes = calendar.get(Calendar.MINUTE);
-        int seconds = calendar.get(Calendar.SECOND);
-
-        return String.format("Uptime : %dd %dh %dm %ds", day,  hours, minutes, seconds);
-    }
-
-    public List<String> getOnlineList() {
-        return Bukkit.getOnlinePlayers().stream()
-            .map(player -> player.getName())
-            .map(username -> UsefulStuff.formatMarkdown(username))
-            .collect(Collectors.toList());
     }
 
     public void turnOff() {
@@ -158,7 +135,7 @@ public class TelegramBridge extends MainPluginState {
         String emptyServerMessage = "Server unfortunately is empty :c";
 
         return msg -> {
-            List<String> nick_names = getOnlineList();
+            List<String> nick_names = metrix.getOnlineList();
 
             String result = nick_names.size() > 0 ? 
                 "Currently there are " + nick_names.size() + " players online: \n\n" + String.join("\n", nick_names):
@@ -256,10 +233,8 @@ public class TelegramBridge extends MainPluginState {
     }
 
     void regTelegramCommands(ConfigManager<MainConfig> manager, MainConfig config, StatCollector statCollector) {
-        var drawer = new MemoryUsageDiagramDrawer(40, 21);
-        var editor = new ConstantMessageEditor();
-        editor.start();
-        drawer.start();
+
+    
         commands
             .addCommand("attach", event -> {
                 
@@ -276,14 +251,10 @@ public class TelegramBridge extends MainPluginState {
                 }
             })
             .addCommand("ping", "pong")
-            .addCommand("memory", event -> {
-                var paint = drawer.toString();
-                event.reply(paint);
-                // editor.addToQueueMesaggeAndEditor(event.reply(paint), drawer::toString);
-            })
+            .addCommand("memory", metrix::getMemoryUsage)
             .addCommand("list", this.getListCmdHandler())
             .addCommand("chat_id", this::onChatId)
-            .addCommand("uptime", this::getUptime)
+            .addCommand("uptime", metrix::getUptime)
             .addCommand("stats", event -> {
                 if (event.getArgs().isEmpty()) {
                     event.reply("specify nickname to get stats");
