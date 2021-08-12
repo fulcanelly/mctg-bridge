@@ -4,12 +4,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Stream;
 
-
+import org.bukkit.Bukkit;
 
 import lombok.Data;
 import lombok.SneakyThrows;
 import me.fulcanelly.tgbridge.tapi.TGBot;
+import me.fulcanelly.tgbridge.tools.MessageSender;
 import me.fulcanelly.tgbridge.tools.compact.context.NoteMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.context.SignedMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.message.CompactableMessage;
@@ -20,29 +22,27 @@ import me.fulcanelly.tgbridge.tools.compact.visitor.NoteMessageCompactorVisitor;
 import me.fulcanelly.tgbridge.tools.compact.visitor.PlayerMessageCompactorVisitor;
 
 @Data
-public class MessageCompactableSender {
+public class MessageCompactableSender extends Thread implements MessageSender {
 
     final TGBot bot;
     final Long chatId;
 
     ArrayBlockingQueue<BaseComactableVisitor> quque = new ArrayBlockingQueue<>(10);
 
+    public void run() {
+        while (true) {
+            try {
+                tryCompactOrSendNew(quque.take());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public MessageCompactableSender(TGBot bot, Long chatId) {
         this.bot = bot;
         this.chatId = chatId;
-
-  
-        new Thread(() -> {
-            for (;;) {
-                try {
-                    var comapctor = quque.take();
-                    tryCompactOrSendNew(comapctor);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-        
+        this.start();
     }
 
     private final AtomicLong actualLast = new AtomicLong(-1);
