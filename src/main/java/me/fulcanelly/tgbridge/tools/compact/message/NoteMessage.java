@@ -2,6 +2,7 @@ package me.fulcanelly.tgbridge.tools.compact.message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 import lombok.Data;
@@ -9,6 +10,7 @@ import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tools.compact.context.CompactionContext;
 import me.fulcanelly.tgbridge.tools.compact.context.NoteMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.visitor.CompactableVisitor;
+import me.fulcanelly.tgbridge.utils.DuplicateLessList;
 import me.fulcanelly.tgbridge.utils.time.TimeoutManager;
 
 @Data
@@ -16,11 +18,11 @@ public class NoteMessage implements CompactableMessage {
 
     static final long MAX_ALLOWED = 20;
     
-    private List<String> notes = new ArrayList<>();
+    private DuplicateLessList<String> notes = new DuplicateLessList<>();
 
     private final TimeoutManager timeout = 
         new TimeoutManager(
-            TimeUnit.SECONDS.toMillis(30)
+            TimeUnit.MINUTES.toMillis(30)
         );
 
     long messageId;
@@ -31,7 +33,7 @@ public class NoteMessage implements CompactableMessage {
     }
 
     private boolean isLimitExceeded() {
-        return notes.size() > MAX_ALLOWED;
+        return notes.getList().size() > MAX_ALLOWED;
     }
 
     public boolean isExtendable() {
@@ -51,7 +53,24 @@ public class NoteMessage implements CompactableMessage {
 
     @Override
     public String getText() {
-        return String.join("\n\n", notes);
+        var joiner = new StringJoiner("\n");
+        notes.removeDuplicatesByMaxStep();
+        var list = notes.getList();
+
+        int countLast = -1;
+
+        for (var freqvalue : list) {
+            var count = freqvalue.getCount();
+            
+            if (countLast != count) {
+                joiner.add(count == 1 ? "\n" : "\n # repeats " + count + " times \n");
+            }   
+
+            joiner.add(freqvalue.getValue());
+            countLast = freqvalue.getCount();
+        }
+
+        return joiner.toString(); //String.join("\n\n", notes);
     }
 
     @Override
