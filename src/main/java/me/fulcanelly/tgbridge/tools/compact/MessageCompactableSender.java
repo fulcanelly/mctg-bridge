@@ -12,7 +12,6 @@ import me.fulcanelly.tgbridge.tools.compact.context.SignedMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.message.CompactableMessage;
 import me.fulcanelly.tgbridge.tools.compact.visitor.CompactableVisitor;
 import me.fulcanelly.tgbridge.tools.compact.visitor.Compacted;
-import me.fulcanelly.tgbridge.tools.compact.visitor.CtxHolder;
 import me.fulcanelly.tgbridge.tools.compact.visitor.NoteMessageCompactorVisitor;
 import me.fulcanelly.tgbridge.tools.compact.visitor.PlayerMessageCompactorVisitor;
 
