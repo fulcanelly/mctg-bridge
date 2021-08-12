@@ -8,10 +8,8 @@ import lombok.With;
 
 @Data @AllArgsConstructor @Builder @NoArgsConstructor @With 
 public class FrequencyTable<T> {
+    
     public int count = 1;
     public T value;
-
-    public void add(int i) {
-      //  count
-    } 
+    
 }
