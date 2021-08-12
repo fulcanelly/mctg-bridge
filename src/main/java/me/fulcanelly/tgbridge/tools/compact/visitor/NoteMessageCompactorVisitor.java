@@ -11,7 +11,7 @@ import me.fulcanelly.tgbridge.tools.compact.message.NoteMessage;
 import me.fulcanelly.tgbridge.tools.compact.message.PlayerMessage;
 
 @RequiredArgsConstructor @Getter
-public class NoteMessageCompactorVisitor implements CompactableVisitor, Compacted, CtxHolder {
+public class NoteMessageCompactorVisitor extends BaseComactableVisitor {
 
     @NonNull AtomicLong actualLastMsgId;
     @NonNull NoteMessageCtx ctx;
