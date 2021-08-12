@@ -9,7 +9,7 @@ import me.fulcanelly.tgbridge.tools.compact.context.SignedMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.message.PlayerMessage;
 
 @RequiredArgsConstructor @Getter
-public class PlayerMessageCompactorVisitor implements CompactableVisitor, Compacted, CtxHolder {
+public class PlayerMessageCompactorVisitor extends BaseComactableVisitor {
     
     @NonNull AtomicLong actualLastMsgId;
 
