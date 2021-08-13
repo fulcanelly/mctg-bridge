@@ -1,32 +1,27 @@
 package me.fulcanelly.tgbridge;
 
 import java.io.File;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provider;
-import com.google.inject.Provides;
-import com.google.inject.Scopes;
-import com.google.inject.TypeLiteral;
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
 import java.sql.Connection;
 
-import org.apache.commons.lang.ObjectUtils.Null;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Scopes;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 
-import lombok.AllArgsConstructor;
+import org.bukkit.plugin.Plugin;
+
 import lombok.Data;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
 
-@Data 
+@Data
 public class TelegramModule extends AbstractModule { 
 
-    JavaPlugin plugin;
+    @NonNull Plugin plugin;
 
     @Provides @Singleton
     Connection provideConnection(SqliteConnectionProvider cp) {
@@ -47,13 +42,11 @@ public class TelegramModule extends AbstractModule {
             .annotatedWith(
                 Names.named("plugin_folder")
             )
-            .toInstance(new File("dasdas"));// plugin.getDataFolder());
-    
-    }
+            .toInstance(plugin.getDataFolder());
     
         bindConstant()
             .annotatedWith(Names.named("log.sql"))
             .to(false);
-}
-
+    }
+    
 }
