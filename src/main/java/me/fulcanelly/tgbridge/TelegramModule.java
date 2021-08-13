@@ -32,6 +32,11 @@ public class TelegramModule extends AbstractModule {
     Connection provideConnection(SqliteConnectionProvider cp) {
         return cp.getConnection();
     }
+
+    @Provides @Singleton
+    SQLQueryHandler provideSQLhandler(Connection conn, @Named("log.sql") Boolean verbose) {
+        return new SQLQueryHandler(conn, verbose);
+    }
     
     @Override
     protected void configure() {
