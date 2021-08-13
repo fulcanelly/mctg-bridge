@@ -46,9 +46,6 @@ public class TelegramModule extends AbstractModule {
     
     }
     
-    public static void main(String[] args) {
-        Guice.createInjector(new TelegramModule())
-            .getInstance(Connection.class);
-    }
+}
 
 }
