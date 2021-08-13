@@ -4,20 +4,24 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.SneakyThrows;
 
-public class ConnectionProvider {
-    JavaPlugin plugin;
+public class SqliteConnectionProvider {
 
-    public ConnectionProvider(JavaPlugin plugin) {
-        this.plugin = plugin;
+    final File folder;
+    
+    @Inject
+    public SqliteConnectionProvider(@Named("plugin_folder") File folder) {
+        this.folder = folder;
     }
 
     @SneakyThrows
 	public Connection getConnection() {
-        var folder = this.plugin.getDataFolder();
         var path = new File(folder, "database.sqlite3").toString();
         return DriverManager.getConnection("jdbc:sqlite:" + path);
     }
