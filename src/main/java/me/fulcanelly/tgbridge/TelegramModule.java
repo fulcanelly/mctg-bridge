@@ -28,7 +28,7 @@ public class TelegramModule extends AbstractModule {
 
     JavaPlugin plugin;
 
-    @Provides
+    @Provides @Singleton
     Connection provideConnection(SqliteConnectionProvider cp) {
         return cp.getConnection();
     }
