@@ -51,6 +51,9 @@ public class TelegramModule extends AbstractModule {
     
     }
     
+        bindConstant()
+            .annotatedWith(Names.named("log.sql"))
+            .to(false);
 }
 
 }
