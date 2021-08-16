@@ -1,0 +1,20 @@
+name: ${name}
+version: ${version}
+description: ${description}
+author: ${author}
+website: ${url}
+api-version: 1.16
+
+main: ${mainClass}
+commands:
+  tg:
+    description: Control over telegram bridge
+#    permission: ${name}.test
+    usage: /tg <params> 
+#    default: true
+
+
+permissions:
+    ${name}.*:
+      description: permission
+      default: true
