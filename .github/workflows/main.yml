@@ -30,7 +30,13 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-
+      - name: Check cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       # Runs a set of commands using the runners shell
       - name: Run Guard Tests
         run: |
