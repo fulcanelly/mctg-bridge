@@ -34,5 +34,4 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run Guard Tests
         run: |
-          cd guard
           mvn verify
