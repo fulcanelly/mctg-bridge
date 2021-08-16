@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -77,7 +77,7 @@ public class MessageCompactorTest {
         System.out.println("ujj");
     }
 
-    @Test
+    @Test @Disabled
     public void testSimpleMerge() {
         System.out.println(mcp);
 
@@ -99,7 +99,7 @@ public class MessageCompactorTest {
     }
 
 
-    @Test 
+    @Test @Disabled
     public void testInteruptedMerge() {
         mcp.setLastSent(Optional.empty());
 
@@ -115,7 +115,7 @@ public class MessageCompactorTest {
     }
 
 
-    @Test
+    @Test @Disabled
     public void testSimpleNoteMerge() {
         System.out.println(this);
         mcp.setLastSent(Optional.empty());
@@ -129,7 +129,7 @@ public class MessageCompactorTest {
     }
 
 
-    @Test
+    @Test @Disabled
     public void testNoteIntruption() {
         System.out.println(this);
         mcp.sendAsPlayer("pida", "ksdk");
@@ -137,7 +137,7 @@ public class MessageCompactorTest {
       //  throw new RuntimeException("not implemented");
     }
 
-    @Test @SneakyThrows
+    @Test @SneakyThrows @Disabled
     public void testPause() {
         System.out.println(this);
         mcp.sendAsPlayer("pida", "jango");
