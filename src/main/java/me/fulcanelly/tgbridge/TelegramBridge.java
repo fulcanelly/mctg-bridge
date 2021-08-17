@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,8 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import net.md_5.bungee.api.ChatColor;
 
 import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
 import me.fulcanelly.clsql.container.Pair;
@@ -35,6 +32,7 @@ import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.MainConfig;
+import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
@@ -56,8 +54,6 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
     EventPipe tgpipe = new EventPipe();
 
     String chat_id;
-
-    int secretTempCode;
 
     MainConfig config;
     ConfigManager<MainConfig> manager;
@@ -98,17 +94,10 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
         return chat_id;
     }
 
-    Random random = new Random();
-
-    public synchronized int generateSecretTempCode() {
-        secretTempCode = random.nextInt() % 100000;
-        this.getLogger().info( 
-            ChatColor.GREEN + "secretTempCode is set to " + secretTempCode);
-        return secretTempCode;
-    }
+    
+    
 
 }
-
 
 public class TelegramBridge extends MainPluginState {
 
@@ -146,8 +135,11 @@ public class TelegramBridge extends MainPluginState {
 
     TelegramLogger tlog;
     ChatSettings chatSettings;
+    SecretCodeMediator secode;
 
     private void safeEnable() throws ReloadException {
+        secode = new SecretCodeMediator(this.getLogger());
+        
         this.setUpConfig();
         this.setUpSQLhandler(false);
 
@@ -174,7 +166,7 @@ public class TelegramBridge extends MainPluginState {
 
         this.setCommandManager(new CommandManager(username));
         
-        this.generateSecretTempCode();
+        secode.generateSecretTempCode();
         
         if (config.getChatId() == null) {
             this.getLogger().warning(
@@ -222,10 +214,10 @@ public class TelegramBridge extends MainPluginState {
                 System.out.println("attach: " + event.getArgs());
                 if (event.getArgs().isEmpty()) {
                     return "Sepcify secret code";
-                } else if (Integer.toString(secretTempCode).equals(event.args[0])) {
+                } else if (secode.isSecretCodeMatch(Integer.valueOf(event.args[0]))) {
                     config.setChatId(event.getChat().getId());
                     manager.save();
-                    this.generateSecretTempCode();
+                    secode.generateSecretTempCode();
                     return "OK, done. Reload plugin";
                 } else {
                     return "Wrong code";
