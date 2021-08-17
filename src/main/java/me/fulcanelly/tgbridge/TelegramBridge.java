@@ -27,6 +27,7 @@ import me.fulcanelly.clsql.container.VirtualConsumer;
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.clsql.stop.StopHandler;
 import me.fulcanelly.clsql.stop.Stopable;
+import me.fulcanelly.tgbridge.exception.ReloadException;
 import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.Message;
@@ -310,15 +311,6 @@ public class TelegramBridge extends MainPluginState {
         return chatSettings;
     }
 
-
-}
-
-
-
-
-class ReloadException extends Exception {
-
-    private static final long serialVersionUID = 1L;
 
 }
 
