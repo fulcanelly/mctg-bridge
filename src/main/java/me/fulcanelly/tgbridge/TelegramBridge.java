@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import java.lang.management.ManagementFactory;
 
 import org.bukkit.Bukkit;
@@ -36,6 +35,7 @@ import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.MainConfig;
+import me.fulcanelly.tgbridge.tools.TelegramLogger;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 import me.fulcanelly.tgbridge.utils.analyst.CommonMetrix;
@@ -144,21 +144,6 @@ public class TelegramBridge extends MainPluginState {
         Arrays.asList(more).forEach(stopHandler::register);
     }
 
-    class TelegramLogger {
-
-        final TGBot bot;
-        
-        TelegramLogger(TGBot bot) {
-            this.bot = bot;
-        }
-
-        void sendToPinnedChat(String text) {
-            if (config.getChatId() != null && bot != null) {
-                bot.sendMessage(Long.valueOf(chat_id), text);
-            }
-        }
-    }
-
     TelegramLogger tlog;
     ChatSettings chatSettings;
 
@@ -174,7 +159,7 @@ public class TelegramBridge extends MainPluginState {
         StatCollector statCollector = new StatCollector(this.getSQLQueryHandler()); //
         TGBot bot = new TGBot(config.getApiToken(), tgpipe);
         
-        tlog = new TelegramLogger(config.log_status ? bot : null);
+        tlog = new TelegramLogger(config.log_status ? bot : null, config);
         
         //order of adding detectors is important
         bot.getDetectorManager()
