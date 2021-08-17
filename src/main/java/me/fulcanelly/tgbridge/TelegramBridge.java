@@ -35,7 +35,6 @@ import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
-import me.fulcanelly.tgbridge.tools.DeepLoger;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
