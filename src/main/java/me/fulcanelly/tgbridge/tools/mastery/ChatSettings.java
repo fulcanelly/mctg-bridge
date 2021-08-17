@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.inject.Inject;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -28,7 +30,7 @@ public class ChatSettings implements NamedTabExecutor {
     SQLQueryHandler sql;
     Boolean defaultHide = false;
 
-
+    @Inject
     public ChatSettings(SQLQueryHandler sql) {
         this.sql = sql;
         sql.syncExecuteUpdate(
