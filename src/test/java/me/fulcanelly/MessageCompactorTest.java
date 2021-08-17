@@ -56,7 +56,7 @@ public class MessageCompactorTest {
         System.out.println("b");
     }
 
-   
+   /*
     {
 
         var profile = Optional.<Function<InvocationOnMock, ?>>of(MessageCompactorTest::profile).get();
@@ -147,5 +147,5 @@ public class MessageCompactorTest {
 
       //  throw new RuntimeException("not implemented");
     }
-
+*/
 }
