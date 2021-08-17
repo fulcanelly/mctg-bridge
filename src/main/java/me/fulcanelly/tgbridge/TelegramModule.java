@@ -12,15 +12,18 @@ import com.google.inject.name.Names;
 
 import org.bukkit.plugin.Plugin;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
 
-@Data
+@AllArgsConstructor
 public class TelegramModule extends AbstractModule { 
-
+    
+    @Getter
     @NonNull Plugin plugin;
 
     @Provides @Singleton
