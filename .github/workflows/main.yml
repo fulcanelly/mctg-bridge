@@ -42,5 +42,5 @@ jobs:
       - name: Upload jar
         uses: actions/upload-artifact@v2
         with:
-          name: tg-bridge-*.jar
-          path: out/app-debug.apk
+          name: tg-bridge.jar
+          path: target/tg-bridge-*.jar
