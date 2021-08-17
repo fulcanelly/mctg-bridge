@@ -20,3 +20,4 @@ After that, you have to restart your server, and then bot should be working.
   - [x] Flexible configurtation
   - [x] Ingore switch
   - [ ] Custom localization
+  - [ ] Config editor
