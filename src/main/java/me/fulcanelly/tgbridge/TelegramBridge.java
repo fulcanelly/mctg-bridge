@@ -42,7 +42,6 @@ import me.fulcanelly.tgbridge.utils.analyst.CommonMetrix;
 import me.fulcanelly.tgbridge.utils.analyst.ConstantMessageEditor;
 import me.fulcanelly.tgbridge.utils.analyst.MemoryUsageDiagramDrawer;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
-import me.fulcanelly.tgbridge.utils.database.ConnectionProvider;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 import me.fulcanelly.tgbridge.view.*;
@@ -77,9 +76,6 @@ abstract class MainPluginState extends JavaPlugin implements MainControll {
     }
 
     void setUpSQLhandler(boolean verbose) {
-        var conn = new ConnectionProvider(this)
-            .getConnection();
-        queryHandler = new SQLQueryHandler(conn, verbose);
     }
 
     public ActionListener getActionListener() {
