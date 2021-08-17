@@ -44,11 +44,3 @@ jobs:
         with:
           name: tg-bridge.jar
           path: target/tg-bridge-*.jar
-  release:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - name: Create Release
-        uses: ncipollo/release-action@v1.8.8
-        with:
-          tag: "v*"
