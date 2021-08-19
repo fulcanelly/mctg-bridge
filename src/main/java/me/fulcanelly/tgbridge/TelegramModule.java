@@ -25,6 +25,7 @@ import lombok.NonNull;
 
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
+import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
@@ -93,6 +94,11 @@ public class TelegramModule extends AbstractModule {
     TelegramListener provideTelegramListener() {
         throw new NotImplementedException();
        // return new TelegramListener(plugin);
+    }
+
+    @Provides @Singleton 
+    CommandManager provideCommandManager(@Named("bot.username") String username) {
+        return new CommandManager(username);
     }
 
     @Override
