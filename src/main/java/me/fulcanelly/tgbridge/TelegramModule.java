@@ -44,7 +44,7 @@ public class TelegramModule extends AbstractModule {
     }
 
     @Provides @Singleton
-    SecretCodeMediator provideSecretCodeMediator(Logger logger) {
+    SecretCodeMediator provideSecretCodeMediator(@Named("spigot.logger") Logger logger) {
         return new SecretCodeMediator(logger);
     }
     
@@ -60,6 +60,9 @@ public class TelegramModule extends AbstractModule {
             .in(Scopes.SINGLETON);
 
         bind(Logger.class)
+            .annotatedWith(
+                Names.named("spigot.logger")
+            )
             .toInstance(plugin.getLogger());
 
         bind(SqliteConnectionProvider.class)
