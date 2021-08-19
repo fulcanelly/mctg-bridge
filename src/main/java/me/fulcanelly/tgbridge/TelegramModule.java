@@ -38,6 +38,10 @@ public class TelegramModule extends AbstractModule {
     
     @Override
     protected void configure() {
+        
+        bind(Logger.class)
+            .toInstance(plugin.getLogger());
+
         bind(SqliteConnectionProvider.class)
             .in(Scopes.SINGLETON);       
         
