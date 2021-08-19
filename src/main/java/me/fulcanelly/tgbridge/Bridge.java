@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
+import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 public class Bridge extends JavaPlugin {
@@ -24,6 +25,13 @@ public class Bridge extends JavaPlugin {
 
         tgpipe
             .registerListener(listener);
+    }
+
+    @Inject 
+    void checkConfig(MainConfig config) {
+        if (config.getChatId() == null) {
+            this.getLogger().warning("chat_id is null, use /attach <secretTempCode> to pin one");
+        }
     }
 
     @Override
