@@ -16,6 +16,7 @@ import com.google.inject.name.Names;
 
 import org.bukkit.plugin.Plugin;
 
+import jdk.jfr.Period;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -25,6 +26,7 @@ import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
+import me.fulcanelly.tgbridge.tools.TelegramLogger;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
@@ -73,6 +75,12 @@ public class TelegramModule extends AbstractModule {
         return new TGBot(config.getApiToken(), ePipe);
     }
 
+
+    @Provides @Singleton
+    TelegramLogger provideTelegramLogger(MainConfig config, TGBot bot) {
+        return new TelegramLogger(config.log_status ? bot : null, config);
+    }
+    
     @Override
     protected void configure() {
         
