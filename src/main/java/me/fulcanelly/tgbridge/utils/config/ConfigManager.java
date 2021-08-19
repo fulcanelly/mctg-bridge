@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.inject.Inject;
+
 import java.io.*;
 
 import org.bukkit.plugin.Plugin;
@@ -121,7 +123,7 @@ public class ConfigManager<T> {
         this.on_absent = oa;
     }
 
-    @SneakyThrows
+    @SneakyThrows @Inject
     public T load() {
 
         if (!file.exists() && on_absent != null) {
