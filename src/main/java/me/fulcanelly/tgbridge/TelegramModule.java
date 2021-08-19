@@ -14,6 +14,7 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.plugin.Plugin;
 
 import jdk.jfr.Period;
@@ -23,6 +24,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
+import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
@@ -87,6 +89,12 @@ public class TelegramModule extends AbstractModule {
             .getUsername();
     }
     
+    @Provides @Singleton 
+    TelegramListener provideTelegramListener() {
+        throw new NotImplementedException();
+       // return new TelegramListener(plugin);
+    }
+
     @Override
     protected void configure() {
         
