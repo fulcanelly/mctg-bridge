@@ -10,6 +10,7 @@ import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
+import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
 public class Bridge extends JavaPlugin {
     
@@ -32,6 +33,13 @@ public class Bridge extends JavaPlugin {
         if (config.getChatId() == null) {
             this.getLogger().warning("chat_id is null, use /attach <secretTempCode> to pin one");
         }
+    }
+
+    @Inject 
+    void registerTabExecutor(NamedTabExecutor executor) {
+        var cmd = this.getCommand(executor.getCommandName());
+        cmd.setTabCompleter(executor);
+        cmd.setExecutor(executor);
     }
 
     @Override
