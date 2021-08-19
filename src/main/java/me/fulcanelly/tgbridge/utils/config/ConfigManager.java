@@ -28,6 +28,10 @@ public class ConfigManager<T> {
     T instance;
     File file;
   
+    public T getConfig() {
+        return instance;
+    }
+
     Runnable on_absent;
     Yaml yaml;
 
