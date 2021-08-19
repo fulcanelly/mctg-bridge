@@ -35,6 +35,7 @@ import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
+import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
 @AllArgsConstructor
 public class TelegramModule extends AbstractModule { 
@@ -104,6 +105,9 @@ public class TelegramModule extends AbstractModule {
     @Override
     protected void configure() {
         
+        bind(NamedTabExecutor.class)
+            .to(ChatSettings.class);
+
         bind(MainConfig.class)
             .in(Scopes.SINGLETON);
 
