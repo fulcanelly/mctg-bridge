@@ -29,8 +29,10 @@ import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
+import me.fulcanelly.tgbridge.tools.MessageSender;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
+import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
@@ -80,7 +82,6 @@ public class TelegramModule extends AbstractModule {
         return new TGBot(config.getApiToken(), ePipe);
     }
 
-
     @Provides @Singleton
     TelegramLogger provideTelegramLogger(MainConfig config, TGBot bot) {
         return new TelegramLogger(config.log_status ? bot : null, config);
@@ -104,10 +105,15 @@ public class TelegramModule extends AbstractModule {
     }
 
     @Provides @Singleton 
-    ActionListener provideActionListener(TGBot bot, MainConfig config) {
-        return new ActionListener(bot, config.getChatId());
+    ActionListener provideActionListener(TGBot bot, MainConfig config, MessageSender sender) {
+        return new ActionListener(bot, config.getChatId(), sender);
     }
-    
+
+    @Provides @Singleton
+    MessageSender providSender(TGBot bot, MainConfig config) {
+        return new MessageCompactableSender(bot, Long.valueOf(config.getChatId()));
+    }
+
     @Override
     protected void configure() {
         
