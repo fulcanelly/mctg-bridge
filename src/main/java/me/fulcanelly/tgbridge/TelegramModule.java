@@ -80,6 +80,12 @@ public class TelegramModule extends AbstractModule {
     TelegramLogger provideTelegramLogger(MainConfig config, TGBot bot) {
         return new TelegramLogger(config.log_status ? bot : null, config);
     }
+
+    @Provides @Singleton @Named("bot.username")
+    String getBotUsername(TGBot bot) {
+        return bot.getMe()
+            .getUsername();
+    }
     
     @Override
     protected void configure() {
