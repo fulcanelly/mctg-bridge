@@ -2,11 +2,15 @@ package me.fulcanelly.tgbridge;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.logging.Logger;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
@@ -18,6 +22,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
+import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
 
 @AllArgsConstructor
@@ -34,6 +39,11 @@ public class TelegramModule extends AbstractModule {
     @Provides @Singleton
     SQLQueryHandler provideSQLhandler(Connection conn, @Named("log.sql") Boolean verbose) {
         return new SQLQueryHandler(conn, verbose);
+    }
+
+    @Provides @Singleton
+    SecretCodeMediator provideSecretCodeMediator(Logger logger) {
+        return new SecretCodeMediator(logger);
     }
     
     @Override
