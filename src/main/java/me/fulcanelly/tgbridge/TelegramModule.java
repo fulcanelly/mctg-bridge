@@ -22,12 +22,14 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
+import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
+import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 @AllArgsConstructor
 public class TelegramModule extends AbstractModule { 
@@ -65,10 +67,19 @@ public class TelegramModule extends AbstractModule {
         return new StatCollector(sqlite);
     }
     
+
+    @Provides @Singleton
+    TGBot provideTGBot(MainConfig config, EventPipe ePipe) {
+        return new TGBot(config.getApiToken(), ePipe);
+    }
+
     @Override
     protected void configure() {
         
         bind(MainConfig.class)
+            .in(Scopes.SINGLETON);
+
+        bind(EventPipe.class)
             .in(Scopes.SINGLETON);
 
         bind(Logger.class)
