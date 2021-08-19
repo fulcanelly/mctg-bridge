@@ -22,7 +22,9 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
+import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
+import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
 
 @AllArgsConstructor
@@ -46,9 +48,17 @@ public class TelegramModule extends AbstractModule {
         return new SecretCodeMediator(logger);
     }
     
+    @Provides @Singleton
+    ConfigManager<MainConfig> provideConfig(MainConfig config) {
+        return new ConfigManager<MainConfig>(config, plugin);
+    }
+
     @Override
     protected void configure() {
         
+        bind(MainConfig.class)
+            .in(Scopes.SINGLETON);
+
         bind(Logger.class)
             .toInstance(plugin.getLogger());
 

@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import java.io.*;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -74,7 +74,7 @@ public class ConfigManager<T> {
 
     }
 
-    File findOrLoadFromResource(JavaPlugin plugin, String fileName) {
+    File findOrLoadFromResource(Plugin plugin, String fileName) {
         var file = new File(plugin.getDataFolder(), fileName);
         if (!file.exists()) {
             plugin.saveResource(fileName, false);
@@ -93,7 +93,7 @@ public class ConfigManager<T> {
     }
     
     @SneakyThrows
-    public ConfigManager(T config, JavaPlugin plugin) {      
+    public ConfigManager(T config, Plugin plugin) {      
         instance = config;
   
         yaml = setUpYaml();
