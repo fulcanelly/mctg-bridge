@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
+import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
 import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
@@ -102,6 +103,11 @@ public class TelegramModule extends AbstractModule {
         return new CommandManager(username);
     }
 
+    @Provides @Singleton 
+    ActionListener provideActionListener(TGBot bot, MainConfig config) {
+        return new ActionListener(bot, config.getChatId());
+    }
+    
     @Override
     protected void configure() {
         
