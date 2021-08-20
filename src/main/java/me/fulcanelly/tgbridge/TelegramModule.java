@@ -15,6 +15,7 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 
 import jdk.jfr.Period;
@@ -107,6 +108,12 @@ public class TelegramModule extends AbstractModule {
     @Provides @Singleton 
     ActionListener provideActionListener(TGBot bot, MainConfig config, MessageSender sender) {
         return new ActionListener(bot, config.getChatId(), sender);
+    }
+
+
+    @Provides @Singleton 
+    ConsoleCommandSender provideConsoleCommandSender() {
+        return plugin.getServer().getConsoleSender();
     }
 
     @Provides @Singleton
