@@ -1,6 +1,6 @@
 package me.fulcanelly.tgbridge;
 
-import java.util.List;
+import java.util.Set;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -10,10 +10,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
 import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
+import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
+import me.fulcanelly.tgbridge.tools.command.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
@@ -55,6 +57,13 @@ public class Bridge extends JavaPlugin {
         }
 
     }
+
+    @Inject
+    void regCommands(CommandManager manager, Set<CommandRegister> registers) {
+        for (var register : registers) {
+            register.registerCommand(manager);
+        }
+    } 
 
     @Inject 
     void registerTabExecutor(NamedTabExecutor executor) {
