@@ -1,29 +1,34 @@
 package me.fulcanelly.tgbridge.listeners.telegram;
 
+import com.google.inject.Inject;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
+import me.fulcanelly.tgbridge.tools.MainConfig;
+import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
+import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventReactor;
 import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
-import me.fulcanelly.tgbridge.view.MainControll;
+
 import net.md_5.bungee.api.chat.TextComponent;
 
+@AllArgsConstructor(onConstructor = @__(@Inject))
 public class TelegramListener implements Listener {
 
-    final MainControll bridge;
     final ConsoleCommandSender console;
     final ChatSettings chatSetting;
+    final EventPipe telepipe;
+    final MainConfig config;
+    final MessageCompactableSender sender;  
+    final CommandManager comds;
     
-    public TelegramListener(MainControll bridge) {
-        this.bridge = bridge;
-        console = bridge.getServer()
-            .getConsoleSender();
-        chatSetting = bridge.getChatSettings();
-    }
-
     void broadcast(TextComponent component) {
         
         for (var player : Bukkit.getOnlinePlayers()) {
@@ -44,7 +49,7 @@ public class TelegramListener implements Listener {
             .getId()
             .toString()
             .equals(
-                bridge.getPinnedChatId() );
+                config.getChatId());
     }
 
     @EventReactor
@@ -52,9 +57,7 @@ public class TelegramListener implements Listener {
         var rightChat = this.isRightChat(event);
 
         if (rightChat) {
-            bridge.getActionListener()
-                .getSender()
-                .setActualLast(event.getMsgId());
+            sender.setActualLast(event.getMsgId());
         }
 
         if (isCommandEvent(event)) {
@@ -68,7 +71,7 @@ public class TelegramListener implements Listener {
         String text = event.getText();
 
         if (text != null && text.startsWith("/")) {
-            bridge.getTelegramPipe().emit(new CommandEvent(event));
+            telepipe.emit(new CommandEvent(event));
 
             return true;
         }
@@ -78,7 +81,7 @@ public class TelegramListener implements Listener {
 
     @EventReactor
     public void onCommand(CommandEvent event) {
-        bridge.getCommandManager().tryMatch(event);
+        comds.tryMatch(event);
     }
 }
 
