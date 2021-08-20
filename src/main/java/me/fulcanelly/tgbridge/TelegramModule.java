@@ -2,11 +2,12 @@ package me.fulcanelly.tgbridge;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
@@ -14,25 +15,29 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 
-import jdk.jfr.Period;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
-
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
-import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.MessageSender;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
+import me.fulcanelly.tgbridge.tools.command.AttachCommand;
+import me.fulcanelly.tgbridge.tools.command.ChatIDCommand;
+import me.fulcanelly.tgbridge.tools.command.ListCommand;
+import me.fulcanelly.tgbridge.tools.command.MemeryCommand;
+import me.fulcanelly.tgbridge.tools.command.PingCommand;
+import me.fulcanelly.tgbridge.tools.command.StatsCommand;
+import me.fulcanelly.tgbridge.tools.command.TopCommand;
+import me.fulcanelly.tgbridge.tools.command.UptimeCommand;
+import me.fulcanelly.tgbridge.tools.command.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
@@ -94,11 +99,6 @@ public class TelegramModule extends AbstractModule {
             .getUsername();
     }
     
-    @Provides @Singleton 
-    TelegramListener provideTelegramListener() {
-        throw new NotImplementedException();
-       // return new TelegramListener(plugin);
-    }
 
     @Provides @Singleton 
     CommandManager provideCommandManager(@Named("bot.username") String username) {
@@ -124,6 +124,20 @@ public class TelegramModule extends AbstractModule {
     @Override
     protected void configure() {
         
+        var commandMultibinder = Multibinder.newSetBinder(binder(), CommandRegister.class);
+
+        List.of(
+            ListCommand.class,
+            AttachCommand.class,
+            ChatIDCommand.class,
+            MemeryCommand.class,
+            PingCommand.class,
+            StatsCommand.class,
+            TopCommand.class,
+            UptimeCommand.class
+        ).forEach(cmd -> commandMultibinder.addBinding().to(cmd).in(Scopes.SINGLETON));
+
+
         bind(NamedTabExecutor.class)
             .to(ChatSettings.class);
 
