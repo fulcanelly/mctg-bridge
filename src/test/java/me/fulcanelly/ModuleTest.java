@@ -21,11 +21,13 @@ import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 public class ModuleTest {
     @Test
     void test() {
-        var jplugin = mock(Plugin.class);
+/*
+        var jplugin = mock(PluginBase.class);
         doReturn(new File(".")).when(jplugin).getDataFolder();
 
         var injector = Guice.createInjector(new TelegramModule(jplugin));
 
-        injector.getInstance(ChatSettings.class);;
+        injector.getInstance(SQLQueryHandler.class).stopIt();;
+*/
     }
 }

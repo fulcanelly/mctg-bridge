@@ -39,3 +39,8 @@ jobs:
       - name: Run Bridge Tests
         run: |
           mvn verify
+      - name: Upload jar
+        uses: actions/upload-artifact@v2
+        with:
+          name: tg-bridge-*.jar
+          path: out/app-debug.apk
