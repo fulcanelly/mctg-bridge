@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
+import com.google.inject.Inject;
 
 import java.util.*;
 
@@ -23,6 +24,7 @@ import org.bukkit.event.EventHandler;
 
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
+import me.fulcanelly.tgbridge.tools.MessageSender;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.compact.context.CompactionContext;
 import me.fulcanelly.tgbridge.tools.compact.context.NoteMessageCtx;
@@ -34,16 +36,17 @@ import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
 public class ActionListener implements Listener {
     
-    @Getter final MessageCompactableSender sender;
+    @Getter final MessageSender sender;
 
     final TGBot bot;
     final Long chatId;
     
 
-    public ActionListener(TGBot bot, String chatId) {
+    @Inject
+    public ActionListener(TGBot bot, String chatId, MessageSender sender) {
         this.bot = bot;
         this.chatId = chatId == null ? null : Long.valueOf(chatId);
-        this.sender = new MessageCompactableSender(bot, this.chatId);
+        this.sender = sender;
     }
 
 
