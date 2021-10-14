@@ -25,6 +25,7 @@ import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
+import me.fulcanelly.tgbridge.tools.ActualLastMessageObserver;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.MessageSender;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
@@ -68,8 +69,8 @@ public class TelegramModule extends AbstractModule {
     }
     
     @Provides @Singleton
-    ConfigManager<MainConfig> provideConfig(MainConfig config) {
-        return new ConfigManager<MainConfig>(config, plugin);
+    ConfigManager<MainConfig> provideConfig() {
+        return new ConfigManager<MainConfig>(new MainConfig(), plugin);
     }
 
     @Provides @Singleton
@@ -82,6 +83,11 @@ public class TelegramModule extends AbstractModule {
         return new StatCollector(sqlite);
     }
     
+    @Provides @Singleton
+    MainConfig provideConfig(ConfigManager<MainConfig> configmManager) {
+        configmManager.load();
+        return configmManager.getConfig();
+    }
 
     @Provides @Singleton
     TGBot provideTGBot(MainConfig config, EventPipe ePipe) {
@@ -118,7 +124,12 @@ public class TelegramModule extends AbstractModule {
 
     @Provides @Singleton
     MessageSender providSender(TGBot bot, MainConfig config) {
-        return new MessageCompactableSender(bot, Long.valueOf(config.getChatId()));
+        return new MessageCompactableSender(bot, config.getChatId() != null ? Long.valueOf(config.getChatId()) : null);
+    }
+
+    @Provides @Singleton
+    ActualLastMessageObserver provideLastMessageObvserver(MessageSender sender) {
+        return (ActualLastMessageObserver)sender;
     }
 
     @Override
@@ -137,12 +148,11 @@ public class TelegramModule extends AbstractModule {
             UptimeCommand.class
         ).forEach(cmd -> commandMultibinder.addBinding().to(cmd).in(Scopes.SINGLETON));
 
-
         bind(NamedTabExecutor.class)
             .to(ChatSettings.class);
 
-        bind(MainConfig.class)
-            .in(Scopes.SINGLETON);
+    //    bind(MainConfig.class)
+      //      .in(Scopes.SINGLETON);
 
         bind(EventPipe.class)
             .in(Scopes.SINGLETON);
