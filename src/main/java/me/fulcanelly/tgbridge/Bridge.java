@@ -14,6 +14,7 @@ import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.MainConfig;
+import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
 import me.fulcanelly.tgbridge.tools.command.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
@@ -40,6 +41,11 @@ public class Bridge extends JavaPlugin {
 
         tgpipe
             .registerListener(listener);
+    }
+
+    @Inject 
+    void generateSecretTempCode(SecretCodeMediator secode) {
+        secode.generateSecretTempCode();
     }
 
     @Inject 
@@ -74,11 +80,15 @@ public class Bridge extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        try {
+        System.out.println("Loading stuff...");
         var injector = Guice.createInjector(
             new TelegramModule(this)
         );
+        System.out.println("Applying stuff");
 
         injector.injectMembers(this);
+        System.out.println("Starting");
 
         regSpigotListeners(
             injector.getInstance(StatCollector.class), 
@@ -87,6 +97,14 @@ public class Bridge extends JavaPlugin {
 
         tlog.sendToPinnedChat("plugin started");
         bot.start();
+        } catch(Exception e) {
+           e.printStackTrace();
+            System.out.println( e.getMessage());
+
+        }
+
+        System.out.println("done");
+
     }   
 
 }
