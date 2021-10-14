@@ -13,7 +13,6 @@ public class ListCommand extends FullCommandBuilder {
     final CommonMetrix metrix;
     String emptyServerMessage;
 
-    @Inject
     public ListCommand(CommonMetrix metrix, String emptyServerMessage) {
         super("list");
         this.metrix = metrix;
@@ -21,12 +20,15 @@ public class ListCommand extends FullCommandBuilder {
         this.setAction(this::getListCmdHandler);
     }
 
-
+    @Inject
     public ListCommand(CommonMetrix metrix) {
         this(metrix, "Server unfortunately is empty :c");
     }
  
     void getListCmdHandler(CommandEvent msg) {
+        System.out.println("list cmd ");
+        System.out.println(metrix.getOnlineList());
+
         List<String> nick_names = metrix.getOnlineList();
         String result = nick_names.size() > 0 ? 
             "Currently there are " + nick_names.size() + " players online: \n\n" + String.join("\n", nick_names):
