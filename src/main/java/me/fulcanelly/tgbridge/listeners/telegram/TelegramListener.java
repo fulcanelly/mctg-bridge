@@ -10,6 +10,7 @@ import lombok.Setter;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
+import me.fulcanelly.tgbridge.tools.ActualLastMessageObserver;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
@@ -26,7 +27,7 @@ public class TelegramListener implements Listener {
     final ChatSettings chatSetting;
     final EventPipe telepipe;
     final MainConfig config;
-    final MessageCompactableSender sender;  
+    final ActualLastMessageObserver msgobserv;  
     final CommandManager comds;
     
     void broadcast(TextComponent component) {
@@ -57,7 +58,7 @@ public class TelegramListener implements Listener {
         var rightChat = this.isRightChat(event);
 
         if (rightChat) {
-            sender.setActualLast(event.getMsgId());
+            msgobserv.setActualLast(event.getMsgId());
         }
 
         if (isCommandEvent(event)) {

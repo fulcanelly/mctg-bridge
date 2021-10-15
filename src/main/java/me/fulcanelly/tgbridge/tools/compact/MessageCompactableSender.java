@@ -57,35 +57,32 @@ public class MessageCompactableSender extends Thread implements MessageSender, A
         lastSent = Optional.of(cmsg);
         return setActualLast(cmsg.getMessageID());
     } 
-    
-    <V extends CompactableVisitor & Compacted> 
-    boolean compactUsingCtxAndCompactor(BaseComactableVisitor compactor) {
+
+    <V extends CompactableVisitor & Compacted> boolean compactUsingCtxAndCompactor(BaseComactableVisitor compactor) {
         return lastSent.map(cpt -> {
-                cpt.accept(compactor);
-                return compactor.isCompacted();
-            })
-            .orElse(false);
+            cpt.accept(compactor);
+            return compactor.isCompacted();
+        }).orElse(false);
     }
- 
+
     boolean tryCompactOrSendNew(BaseComactableVisitor compactor) {
-        return Objects.isNull(chatId) ||
-            compactUsingCtxAndCompactor(compactor) || 
-            setAllLastOfCompactable(compactor.getCtx().send());
+        return Objects.isNull(chatId) || compactUsingCtxAndCompactor(compactor)
+                || setAllLastOfCompactable(compactor.getCtx().send());
+    }
+
+    void addAvoidingQueueOverflow(BaseComactableVisitor visitor) {
+        //if 
+        quque.add(visitor);
+
     }
 
     @SneakyThrows
     public void sendAsPlayer(String from, String text) {
-        quque.add(
-            new PlayerMessageCompactorVisitor(
-                actualLast, new SignedMessageCtx(bot, chatId, from, text))
-        );
-    } 
+        quque.add(new PlayerMessageCompactorVisitor(actualLast, new SignedMessageCtx(bot, chatId, from, text)));
+    }
 
     @SneakyThrows
     public void sendNote(String text) {
-        quque.add(
-            new NoteMessageCompactorVisitor(
-                actualLast, new NoteMessageCtx(bot, chatId, text))
-        );
+        quque.add(new NoteMessageCompactorVisitor(actualLast, new NoteMessageCtx(bot, chatId, text)));
     }
 }
