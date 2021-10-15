@@ -33,7 +33,7 @@ public class MessageCompactableSender extends Thread implements MessageSender, A
         while (true) {
             try {
                 tryCompactOrSendNew(quque.take());
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
