@@ -10,11 +10,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import me.fulcanelly.clsql.async.tasks.AsyncTask;
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 
+import com.google.inject.Inject;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 
 public class StatCollector extends StatsDatabase implements Listener {
     
+    @Inject
     public StatCollector(SQLQueryHandler sqlite) {
         super(sqlite);
         this.initTables();

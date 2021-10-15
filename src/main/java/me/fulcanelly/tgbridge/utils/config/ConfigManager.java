@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.inject.Inject;
+
 import java.io.*;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -28,6 +30,10 @@ public class ConfigManager<T> {
     T instance;
     File file;
   
+    public T getConfig() {
+        return instance;
+    }
+
     Runnable on_absent;
     Yaml yaml;
 
@@ -74,7 +80,7 @@ public class ConfigManager<T> {
 
     }
 
-    File findOrLoadFromResource(JavaPlugin plugin, String fileName) {
+    File findOrLoadFromResource(Plugin plugin, String fileName) {
         var file = new File(plugin.getDataFolder(), fileName);
         if (!file.exists()) {
             plugin.saveResource(fileName, false);
@@ -93,7 +99,7 @@ public class ConfigManager<T> {
     }
     
     @SneakyThrows
-    public ConfigManager(T config, JavaPlugin plugin) {      
+    public ConfigManager(T config, Plugin plugin) {      
         instance = config;
   
         yaml = setUpYaml();
@@ -117,7 +123,7 @@ public class ConfigManager<T> {
         this.on_absent = oa;
     }
 
-    @SneakyThrows
+    @SneakyThrows @Inject
     public T load() {
 
         if (!file.exists() && on_absent != null) {

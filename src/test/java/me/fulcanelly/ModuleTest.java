@@ -9,11 +9,13 @@ import javax.management.RuntimeErrorException;
 
 import com.google.inject.Guice;
 
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginBase;
 import org.junit.jupiter.api.Test;
 
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.tgbridge.TelegramModule;
+import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 
 
 public class ModuleTest {

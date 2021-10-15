@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import lombok.Data;
 import lombok.SneakyThrows;
 import me.fulcanelly.tgbridge.tapi.TGBot;
+import me.fulcanelly.tgbridge.tools.ActualLastMessageObserver;
 import me.fulcanelly.tgbridge.tools.MessageSender;
 import me.fulcanelly.tgbridge.tools.compact.context.NoteMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.context.SignedMessageCtx;
@@ -21,8 +22,7 @@ import me.fulcanelly.tgbridge.tools.compact.visitor.Compacted;
 import me.fulcanelly.tgbridge.tools.compact.visitor.NoteMessageCompactorVisitor;
 import me.fulcanelly.tgbridge.tools.compact.visitor.PlayerMessageCompactorVisitor;
 
-@Data
-public class MessageCompactableSender extends Thread implements MessageSender {
+public class MessageCompactableSender extends Thread implements MessageSender, ActualLastMessageObserver {
 
     final TGBot bot;
     final Long chatId;
@@ -33,7 +33,7 @@ public class MessageCompactableSender extends Thread implements MessageSender {
         while (true) {
             try {
                 tryCompactOrSendNew(quque.take());
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -57,35 +57,32 @@ public class MessageCompactableSender extends Thread implements MessageSender {
         lastSent = Optional.of(cmsg);
         return setActualLast(cmsg.getMessageID());
     } 
-    
-    <V extends CompactableVisitor & Compacted> 
-    boolean compactUsingCtxAndCompactor(BaseComactableVisitor compactor) {
+
+    <V extends CompactableVisitor & Compacted> boolean compactUsingCtxAndCompactor(BaseComactableVisitor compactor) {
         return lastSent.map(cpt -> {
-                cpt.accept(compactor);
-                return compactor.isCompacted();
-            })
-            .orElse(false);
+            cpt.accept(compactor);
+            return compactor.isCompacted();
+        }).orElse(false);
     }
- 
+
     boolean tryCompactOrSendNew(BaseComactableVisitor compactor) {
-        return Objects.isNull(chatId) ||
-            compactUsingCtxAndCompactor(compactor) || 
-            setAllLastOfCompactable(compactor.getCtx().send());
+        return Objects.isNull(chatId) || compactUsingCtxAndCompactor(compactor)
+                || setAllLastOfCompactable(compactor.getCtx().send());
+    }
+
+    void addAvoidingQueueOverflow(BaseComactableVisitor visitor) {
+        //if 
+        quque.add(visitor);
+
     }
 
     @SneakyThrows
     public void sendAsPlayer(String from, String text) {
-        quque.add(
-            new PlayerMessageCompactorVisitor(
-                actualLast, new SignedMessageCtx(bot, chatId, from, text))
-        );
-    } 
+        quque.add(new PlayerMessageCompactorVisitor(actualLast, new SignedMessageCtx(bot, chatId, from, text)));
+    }
 
     @SneakyThrows
     public void sendNote(String text) {
-        quque.add(
-            new NoteMessageCompactorVisitor(
-                actualLast, new NoteMessageCtx(bot, chatId, text))
-        );
+        quque.add(new NoteMessageCompactorVisitor(actualLast, new NoteMessageCtx(bot, chatId, text)));
     }
 }
