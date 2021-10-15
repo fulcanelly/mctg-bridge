@@ -196,14 +196,14 @@ public class TGBot implements Stopable {
         return UsefulStuff.stringToJSON(page);
     }
     
-    public Message.From getMe() {
+    public From getMe() {
         String page = new MethodCaller(Method.GET_ME).call();
 
         Object response = UsefulStuff
             .stringToJSON(page)
             .get("result");
 
-        return new Message.From(response);
+        return new From(response);
     }
 
     public interface Answerer {
