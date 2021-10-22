@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 
@@ -65,12 +66,16 @@ import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
 class Argument {
 
+    String name; 
     boolean requied = true;
     Supplier<Object> defaultSupplier = () -> null;
 
     Optional<String> permission = Optional.empty();
     Function<String, Object> parser = a -> a;
 
+    boolean isOptional() {
+        return !requied;
+    }
 };
 
 @RequiredArgsConstructor
@@ -87,7 +92,7 @@ class ArgumentsBundle {
 
         var result = argument.parser.apply(value);
 
-        if (!argument.requied && result == null) {
+        if (argument.isOptional() && result == null) {
             return argument.defaultSupplier.get();
         }
         return result;
@@ -107,7 +112,6 @@ class ArgumentsBundle {
 }
 
 
-@Builder
 class Command {
 
     String name;
@@ -116,7 +120,7 @@ class Command {
     Map<String, Command> commandByName = new HashMap<>();  
     Map<String, Argument> argumentByName = new HashMap<>();
 
-    Optional<Consumer<ArgumentsBundle>> evalutaor;
+    Optional<Consumer<ArgumentsBundle>> evalutaor = Optional.empty();
     
     public String getWrongArgsError() {
         return "wrong arguments error";
@@ -148,6 +152,36 @@ class Command {
     
 }
 
+class CommandBuilder {
+    Command cmd = new Command();
+
+    CommandBuilder create() {
+        return new CommandBuilder();
+    }
+
+    CommandBuilder setName(String name) {
+        cmd.name = name;
+        return this;
+    }
+
+    CommandBuilder addCommand(Command another) {
+        cmd.commandByName.put(cmd.name, cmd);
+        return this;
+    }
+
+    CommandBuilder addArument(Argument argument) {
+        cmd.argumentByName.put(argument.name, argument);
+        return this;
+    }
+    
+    CommandBuilder setExecutor(Consumer<ArgumentsBundle> executor) {
+        return this;
+    }
+
+    Command done() {
+        return cmd;
+    }
+}
 
 //todo
 //* redo parsing by adding parsing result holding error or/and resulting command
