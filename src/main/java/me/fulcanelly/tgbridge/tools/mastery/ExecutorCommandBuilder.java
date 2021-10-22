@@ -159,7 +159,8 @@ class CommandParser {
     Command current;
     ArgumentsBundle args;
 
-    public CommandParser(LinkedList<String> input, CommandExecutor executor) {
+    public CommandParser(Command schem, LinkedList<String> input, CommandExecutor executor) {
+        this.current = schem;
         this.input = input;
         this.args = new ArgumentsBundle(executor);
     }
