@@ -1,11 +1,11 @@
-package me.fulcanelly.tgbridge.tools.command;
+package me.fulcanelly.tgbridge.tools.command.tg;
 
 import java.util.List;
 
 import com.google.inject.Inject;
 
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
-import me.fulcanelly.tgbridge.tools.command.base.FullCommandBuilder;
+import me.fulcanelly.tgbridge.tools.command.tg.base.FullCommandBuilder;
 import me.fulcanelly.tgbridge.utils.analyst.CommonMetrix;
 
 public class ListCommand extends FullCommandBuilder {

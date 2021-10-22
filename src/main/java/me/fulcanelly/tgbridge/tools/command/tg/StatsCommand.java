@@ -1,4 +1,4 @@
-package me.fulcanelly.tgbridge.tools.command;
+package me.fulcanelly.tgbridge.tools.command.tg;
 
 import com.google.inject.Inject;
 
@@ -7,8 +7,8 @@ import org.bukkit.Bukkit;
 import lombok.AllArgsConstructor;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
-import me.fulcanelly.tgbridge.tools.command.base.CommandRegister;
-import me.fulcanelly.tgbridge.tools.command.base.ReplierBuilder;
+import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
+import me.fulcanelly.tgbridge.tools.command.tg.base.ReplierBuilder;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))

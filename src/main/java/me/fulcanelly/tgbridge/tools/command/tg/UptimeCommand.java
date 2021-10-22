@@ -1,9 +1,9 @@
-package me.fulcanelly.tgbridge.tools.command;
+package me.fulcanelly.tgbridge.tools.command.tg;
 
 
 import com.google.inject.Inject;
 
-import me.fulcanelly.tgbridge.tools.command.base.StringReplierBuilder;
+import me.fulcanelly.tgbridge.tools.command.tg.base.StringReplierBuilder;
 import me.fulcanelly.tgbridge.utils.analyst.CommonMetrix;
 
 public class UptimeCommand extends StringReplierBuilder {
