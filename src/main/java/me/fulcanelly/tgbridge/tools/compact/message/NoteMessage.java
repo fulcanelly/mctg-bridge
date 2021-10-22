@@ -10,7 +10,7 @@ import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tools.compact.context.CompactionContext;
 import me.fulcanelly.tgbridge.tools.compact.context.NoteMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.visitor.CompactableVisitor;
-import me.fulcanelly.tgbridge.utils.DuplicateLessList;
+import me.fulcanelly.tgbridge.utils.data.DuplicateLessList;
 import me.fulcanelly.tgbridge.utils.time.TimeoutManager;
 
 @Data
