@@ -1,4 +1,4 @@
-package me.fulcanelly.tgbridge.utils;
+package me.fulcanelly.tgbridge.utils.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
