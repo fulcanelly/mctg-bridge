@@ -201,8 +201,15 @@ class CommandParser {
         }
     }
 
-    boolean isEnoughArguments() {
-        return true;
+    List<String> getLackingArguments() {
+        var valuesByName = args.valuesByName;
+        var currentArgs = current.argumentByName;
+
+        return currentArgs.keySet().stream()
+            .filter(name -> valuesByName.containsKey(name))
+            .filter(name -> currentArgs.get(name).requied)
+            .collect(Collectors.toList());
+
     }
 
     void evaluate() {
@@ -210,6 +217,12 @@ class CommandParser {
             handleThing(input.poll());
         }
         
+        var lackingArgs = getLackingArguments();
+        
+        if (lackingArgs.size() > 0) {
+            throw null;
+        }
+
         if (current.isCanBeEvaluated() && inputEmpty()) {
             current.evalutaor.get().accept(args);
         }
