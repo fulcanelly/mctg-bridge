@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -55,7 +56,6 @@ public class EventFormatter {
         if (!reply.is_null()) {
             TextComponent replyComponent = formatMessage(reply);
             TextComponent component = new TextComponent(ChatColor.GRAY + "(in reply to)");
-            replyComponent.getExtra().toArray();
 
             BaseComponent[] baseComponent = new ComponentBuilder(replyComponent).create();
             
