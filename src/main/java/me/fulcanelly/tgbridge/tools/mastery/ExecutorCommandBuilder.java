@@ -255,7 +255,7 @@ class CommandParser {
         var lackingArgs = getLackingArguments();
         
         if (lackingArgs.size() > 0) {
-            throw null;
+            throw new RuntimeException("arguments lacks: " + lackingArgs.toString());
         }
 
         if (current.isCanBeEvaluated() && inputEmpty()) {
