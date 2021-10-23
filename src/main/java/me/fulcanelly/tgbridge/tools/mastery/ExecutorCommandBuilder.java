@@ -136,7 +136,7 @@ class Command {
     }
 
     public boolean isCanBeEvaluated() {
-        return evalutaor.isPresent();
+        return evaluator.isPresent();
     }
 
     public boolean isHaveSubcommands() {
