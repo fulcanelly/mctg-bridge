@@ -222,8 +222,9 @@ class CommandParser {
 
     void handleCommand(String name) {
         var next = current.getCommand(name);
+        
         if (next == null) {
-            throw new RuntimeException("unkonwn subcomand");
+            throw new RuntimeException("unkonwn subcomand: " + name);
         }
         current = next;
     }
