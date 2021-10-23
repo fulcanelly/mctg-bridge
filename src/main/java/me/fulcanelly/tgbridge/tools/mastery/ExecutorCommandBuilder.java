@@ -248,7 +248,7 @@ class CommandParser {
     }
 
     void evaluate() {
-        while (current.isHaveSubcommands()) {
+        while (!inputEmpty()) {
             handleThing(input.poll());
         }
         
