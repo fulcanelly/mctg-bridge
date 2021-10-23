@@ -6,12 +6,18 @@ import java.util.Map;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Data
 public class ArgumentsBundle {
 
     final CommandSender sender;
+    CommandSchema command;
+
+    public String getEnumArgument() {
+        return command.getName();
+    }
 
     Map<String, Argument> parsersByName = new HashMap<>();
     Map<String, String> valuesByName = new HashMap<>();
