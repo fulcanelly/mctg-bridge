@@ -111,16 +111,17 @@ class ArgumentsBundle {
     }
 }
 
-
 class Command {
 
     String name;
+    String description;
+
     Optional<String> permission = Optional.empty();
 
     Map<String, Command> commandByName = new HashMap<>();  
     Map<String, Argument> argumentByName = new HashMap<>();
 
-    Optional<Consumer<ArgumentsBundle>> evalutaor = Optional.empty();
+    Optional<Consumer<ArgumentsBundle>> evaluator = Optional.empty();
     
     public String getWrongArgsError() {
         return "wrong arguments error";
@@ -191,8 +192,22 @@ class ArgumentBuilder<T> {
 class CommandBuilder {
     Command cmd = new Command();
 
-    CommandBuilder create() {
+    static CommandBuilder create() {
         return new CommandBuilder();
+    }
+
+    static CommandBuilder named(String name) {
+        return create().setName(name);
+    }
+
+    CommandBuilder setPermission(String perm) {
+        cmd.permission = Optional.of(perm);
+        return this;
+    }
+
+    CommandBuilder setDescription(String description) {
+        cmd.description = description;
+        return this;
     }
 
     CommandBuilder setName(String name) {
@@ -200,17 +215,34 @@ class CommandBuilder {
         return this;
     }
 
-    CommandBuilder addCommand(Command another) {
-        cmd.commandByName.put(cmd.name, cmd);
+    CommandBuilder addCommand(CommandBuilder ...cbuilders) {
+        for (var it : cbuilders) {
+            this.addCommand(it.done());
+        }
         return this;
     }
 
-    CommandBuilder addArument(Argument argument) {
+    CommandBuilder addCommand(Command another) {
+        cmd.commandByName.put(another.name, another);
+        return this;
+    }
+
+
+    <T>CommandBuilder addArgument(ArgumentBuilder<T> abuilder) {
+        return this.addArgument(abuilder.done());
+    }
+
+    CommandBuilder addArgument(Argument argument) {
         cmd.argumentByName.put(argument.name, argument);
         return this;
     }
     
     CommandBuilder setExecutor(Consumer<ArgumentsBundle> executor) {
+        cmd.evaluator = Optional.of(executor);
+        return this;
+    }
+    
+    CommandBuilder generateHelpPage() {
         return this;
     }
 
