@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.management.RuntimeErrorException;
 
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -25,10 +26,10 @@ public class CommandParser {
     CommandSchema current;
     ArgumentsBundle args;
 
-    public CommandParser(CommandSchema schema, LinkedList<String> input, CommandExecutor executor) {
+    public CommandParser(CommandSchema schema, LinkedList<String> input, CommandSender sender) {
         this.current = schema;
         this.input = input;
-        this.args = new ArgumentsBundle(executor);
+        this.args = new ArgumentsBundle(sender);
     }
 
     boolean inputEmpty() {

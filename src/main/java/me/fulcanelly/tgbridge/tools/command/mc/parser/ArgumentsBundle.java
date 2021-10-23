@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class ArgumentsBundle {
 
-    final CommandExecutor executor;
+    final CommandSender sender;
 
     Map<String, Argument> parsersByName = new HashMap<>();
     Map<String, String> valuesByName = new HashMap<>();
