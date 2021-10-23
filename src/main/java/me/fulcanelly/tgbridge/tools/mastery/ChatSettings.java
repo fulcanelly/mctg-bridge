@@ -80,6 +80,16 @@ public class ChatSettings implements NamedTabExecutor {
             .collect(Collectors.toCollection(ArrayDeque::new));
     }
 
+    public void makeChatShow(CommandSender sender) {
+        setPlayerVisibilityTo(sender.getName(), false);
+        sender.sendMessage("chat will be shown");
+    }
+
+    public void makeChatHide(CommandSender sender) {
+        setPlayerVisibilityTo(sender.getName(), true);
+        sender.sendMessage("chat will be hidden");
+    }
+    
     void handleChat(CommandSender sender, String[] args) {
         if (args.length < 2) {
             sender.sendMessage("no enough arguments");
