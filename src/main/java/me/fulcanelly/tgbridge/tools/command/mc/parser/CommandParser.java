@@ -95,6 +95,8 @@ public class CommandParser {
             handleThing(input.poll());
         }
         
+        args.setCommand(current);
+
         var lackingArgs = getLackingArguments();
         
         if (lackingArgs.size() > 0) {
