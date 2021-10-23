@@ -81,7 +81,7 @@ public class CommandParser {
 
     }
 
-    void tryRun() {
+    public void tryRun() {
         if (current.isCanBeEvaluated()) {
             current.evaluator.get().accept(args);
         } else {
@@ -90,7 +90,7 @@ public class CommandParser {
         }
     }
 
-    void evaluate() {
+    public void evaluate() {
         while (!inputEmpty()) {
             handleThing(input.poll());
         }

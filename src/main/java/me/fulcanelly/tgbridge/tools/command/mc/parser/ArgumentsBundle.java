@@ -16,7 +16,7 @@ public class ArgumentsBundle {
     Map<String, Argument> parsersByName = new HashMap<>();
     Map<String, String> valuesByName = new HashMap<>();
 
-    Object getObject(String name) {
+    public Object getObject(String name) {
         var argument = parsersByName.get(name);
         var value = valuesByName.get(name);
 
@@ -28,15 +28,19 @@ public class ArgumentsBundle {
         return result;
     }
 
-    String getString(String name) {
+    public String getString(String name) {
         return (String)getObject(name);
     }
 
-    int getNumber(String name) {
+    public int getNumber(String name) {
         return Integer.valueOf(getString(name));
     }
 
-    boolean isPresent(String name) {
+    public boolean isPresent(String name) {
         return valuesByName.get(name) != null;
+    }
+
+    public CommandSender getSender() {
+        return sender;
     }
 }
