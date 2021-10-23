@@ -237,12 +237,12 @@ class CommandParser {
     }
 
     List<String> getLackingArguments() {
-        var valuesByName = args.valuesByName;
+        var needed = args.valuesByName;
         var currentArgs = current.argumentByName;
 
         return currentArgs.keySet().stream()
-            .filter(name -> valuesByName.containsKey(name))
-            .filter(name -> currentArgs.get(name).requied)
+            .filter(name -> !needed.containsKey(name))
+            .filter(name -> currentArgs.get(name).required)
             .collect(Collectors.toList());
 
     }
