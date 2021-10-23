@@ -22,10 +22,10 @@ import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 public class CommandParser {
 
     final LinkedList<String> input;
-    Command current;
+    CommandSchema current;
     ArgumentsBundle args;
 
-    public CommandParser(Command schema, LinkedList<String> input, CommandExecutor executor) {
+    public CommandParser(CommandSchema schema, LinkedList<String> input, CommandExecutor executor) {
         this.current = schema;
         this.input = input;
         this.args = new ArgumentsBundle(executor);

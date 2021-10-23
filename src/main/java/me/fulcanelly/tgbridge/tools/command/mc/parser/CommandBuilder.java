@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class CommandBuilder {
-    Command cmd = new Command();
+    CommandSchema cmd = new CommandSchema();
 
     static CommandBuilder create() {
         return new CommandBuilder();
@@ -36,7 +36,7 @@ public class CommandBuilder {
         return this;
     }
 
-    CommandBuilder addCommand(Command another) {
+    CommandBuilder addCommand(CommandSchema another) {
         cmd.commandByName.put(another.name, another);
         return this;
     }
@@ -60,7 +60,7 @@ public class CommandBuilder {
         return this;
     }
 
-    Command done() {
+    CommandSchema done() {
         return cmd;
     }
 }

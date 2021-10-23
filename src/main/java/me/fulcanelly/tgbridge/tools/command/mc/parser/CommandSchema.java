@@ -5,14 +5,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class Command {
+public class CommandSchema {
 
     String name;
     String description;
 
     Optional<String> permission = Optional.empty();
 
-    Map<String, Command> commandByName = new HashMap<>();  
+    Map<String, CommandSchema> commandByName = new HashMap<>();  
     Map<String, Argument> argumentByName = new HashMap<>();
 
     Optional<Consumer<ArgumentsBundle>> evaluator = Optional.empty();
@@ -41,7 +41,7 @@ public class Command {
         return argumentByName.get(name);
     }
 
-    public Command getCommand(String name) {
+    public CommandSchema getCommand(String name) {
         return commandByName.get(name);
     }
     
