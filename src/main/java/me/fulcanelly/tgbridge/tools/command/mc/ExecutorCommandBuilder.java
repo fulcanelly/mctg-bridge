@@ -1,4 +1,4 @@
-package me.fulcanelly.tgbridge.tools.mastery;
+package me.fulcanelly.tgbridge.tools.command.mc;
 
 import java.util.Deque;
 import java.util.HashMap;
