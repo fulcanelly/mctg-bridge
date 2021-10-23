@@ -17,7 +17,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
 @RequiredArgsConstructor
-public class InGameUI {
+public class InGameReceptionUI {
     
     @Inject
     SignupLoginReception reception;
