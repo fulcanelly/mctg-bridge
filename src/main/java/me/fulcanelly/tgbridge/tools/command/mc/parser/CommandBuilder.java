@@ -14,6 +14,11 @@ public class CommandBuilder {
         return create().setName(name);
     }
 
+    // todo
+    public CommandBuilder showUsageOnNoExecutor() {
+        return this;
+    }
+
     public CommandBuilder setPermission(String perm) {
         cmd.permission = Optional.of(perm);
         return this;
