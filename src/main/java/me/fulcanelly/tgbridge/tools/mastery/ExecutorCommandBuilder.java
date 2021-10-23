@@ -247,6 +247,15 @@ class CommandParser {
 
     }
 
+    void tryRun() {
+        if (current.isCanBeEvaluated()) {
+            current.evaluator.get().accept(args);
+        } else {
+            throw new RuntimeException("this command can't be evaluated");
+            //todo - generate usage 
+        }
+    }
+
     void evaluate() {
         while (!inputEmpty()) {
             handleThing(input.poll());
@@ -258,9 +267,10 @@ class CommandParser {
             throw new RuntimeException("arguments lacks: " + lackingArgs.toString());
         }
 
-        if (current.isCanBeEvaluated() && inputEmpty()) {
-            current.evalutaor.get().accept(args);
-        }
+        tryRun();
+        
+
+    }
 
     }
 }
