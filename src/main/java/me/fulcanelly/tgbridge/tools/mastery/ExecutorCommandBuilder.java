@@ -19,6 +19,7 @@ import org.bukkit.command.CommandExecutor;
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.Builder.Default;
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
@@ -63,18 +64,18 @@ import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 *      )
 */
 
-
+@ToString
 class Argument {
 
     String name; 
-    boolean requied = true;
-    Supplier<Object> defaultSupplier = () -> null;
+    boolean required = true;
+    Supplier<Object> defaultSupplier;
 
     Optional<String> permission = Optional.empty();
     Function<String, Object> parser = a -> a;
 
     boolean isOptional() {
-        return !requied;
+        return !required;
     }
 };
 
