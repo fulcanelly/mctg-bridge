@@ -24,6 +24,10 @@ public class Argument {
         return List.of();
     }
 
+    List<String> getCompletions(String text) {
+        return List.of();
+    }
+
     boolean isOptional() {
         return !required;
     }
