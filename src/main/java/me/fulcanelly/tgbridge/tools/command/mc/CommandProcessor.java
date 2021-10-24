@@ -46,8 +46,8 @@ public class CommandProcessor implements TabExecutor {
  
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
-    
+        var parser = new CommandParser(commandSchema, new LinkedList<String>(List.of(args)), sender);
+        return parser.parse().getExpected();
     }
 
 }
