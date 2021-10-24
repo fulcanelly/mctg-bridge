@@ -1,4 +1,4 @@
-package me.fulcanelly.tgbridge.tools.command.base;
+package me.fulcanelly.tgbridge.tools.command.tg.base;
 
 import java.util.function.Consumer;
 

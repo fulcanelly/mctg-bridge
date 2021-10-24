@@ -1,6 +1,6 @@
-package me.fulcanelly.tgbridge.tools.command;
+package me.fulcanelly.tgbridge.tools.command.tg;
 
-import me.fulcanelly.tgbridge.tools.command.base.PersistentStringBuilder;
+import me.fulcanelly.tgbridge.tools.command.tg.base.PersistentStringBuilder;
 
 public class PingCommand extends PersistentStringBuilder {
 

@@ -1,8 +1,8 @@
-package me.fulcanelly.tgbridge.tools.command;
+package me.fulcanelly.tgbridge.tools.command.tg;
 
 import com.google.inject.Inject;
 
-import me.fulcanelly.tgbridge.tools.command.base.StringReplierBuilder;
+import me.fulcanelly.tgbridge.tools.command.tg.base.StringReplierBuilder;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 
 public class TopCommand extends StringReplierBuilder {

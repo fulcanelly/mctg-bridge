@@ -5,6 +5,7 @@ import java.util.Set;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 
+import org.bukkit.command.TabExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,7 +17,7 @@ import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
-import me.fulcanelly.tgbridge.tools.command.base.CommandRegister;
+import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
@@ -72,8 +73,8 @@ public class Bridge extends JavaPlugin {
     } 
 
     @Inject 
-    void registerTabExecutor(NamedTabExecutor executor) {
-        var cmd = this.getCommand(executor.getCommandName());
+    void registerTabExecutor(TabExecutor executor) {
+        var cmd = this.getCommand("tg");
         cmd.setTabCompleter(executor);
         cmd.setExecutor(executor);
     }
@@ -81,22 +82,22 @@ public class Bridge extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
-        System.out.println("Loading stuff...");
-        var injector = Guice.createInjector(
-            new TelegramModule(this)
-        );
-        System.out.println("Applying stuff");
+            System.out.println("Loading stuff...");
+            var injector = Guice.createInjector(
+                new TelegramModule(this)
+            );
+            System.out.println("Applying stuff");
 
-        injector.injectMembers(this);
-        System.out.println("Starting");
+            injector.injectMembers(this);
+            System.out.println("Starting");
 
-        regSpigotListeners(
-            injector.getInstance(StatCollector.class), 
-            injector.getInstance(ActionListener.class)
-        );
+            regSpigotListeners(
+                injector.getInstance(StatCollector.class), 
+                injector.getInstance(ActionListener.class)
+            );
 
-        tlog.sendToPinnedChat("plugin started");
-        bot.start();
+            tlog.sendToPinnedChat("plugin started");
+            bot.start();
         } catch(Exception e) {
            e.printStackTrace();
             System.out.println( e.getMessage());

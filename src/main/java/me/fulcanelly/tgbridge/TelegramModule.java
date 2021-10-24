@@ -16,6 +16,8 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import lombok.AllArgsConstructor;
@@ -30,22 +32,39 @@ import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.MessageSender;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
-import me.fulcanelly.tgbridge.tools.command.AttachCommand;
-import me.fulcanelly.tgbridge.tools.command.ChatIDCommand;
-import me.fulcanelly.tgbridge.tools.command.ListCommand;
-import me.fulcanelly.tgbridge.tools.command.MemeryCommand;
-import me.fulcanelly.tgbridge.tools.command.PingCommand;
-import me.fulcanelly.tgbridge.tools.command.StatsCommand;
-import me.fulcanelly.tgbridge.tools.command.TopCommand;
-import me.fulcanelly.tgbridge.tools.command.UptimeCommand;
-import me.fulcanelly.tgbridge.tools.command.base.CommandRegister;
+import me.fulcanelly.tgbridge.tools.command.mc.CommandProcessor;
+import me.fulcanelly.tgbridge.tools.command.tg.AttachCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.ChatIDCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.ListCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.MemeryCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.PingCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.StartCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.StatsCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.TopCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.UptimeCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
+import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
+import static me.fulcanelly.tgbridge.tools.command.mc.parser.CommandBuilder.*;
+
+import me.fulcanelly.tgbridge.tools.command.mc.parser.ArgumentBuilder;
+import me.fulcanelly.tgbridge.tools.command.mc.parser.CommandParser;
+import me.fulcanelly.tgbridge.tools.command.mc.parser.CommandSchema;
+import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
+
+import static me.fulcanelly.tgbridge.tools.command.mc.parser.EnumeratedCommandBuilder.*;
+import me.fulcanelly.tgbridge.tools.twofactor.InGameReceptionUI;
+import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
 @AllArgsConstructor
 public class TelegramModule extends AbstractModule { 
@@ -116,6 +135,34 @@ public class TelegramModule extends AbstractModule {
         return new ActionListener(bot, config.getChatId(), sender);
     }
 
+    @Provides @Singleton 
+    CommandSchema providesDefaultSchema(InGameReceptionUI reception, ChatSettings chatSettings) {
+
+        return create()
+            .addCommand(
+                named("chat")
+                    .setDescription("controls telegram chat visibility")
+                    .addCommand(
+                        enumerated("show", "hide")
+                            .setExecutor(args -> {
+                                if (args.getEnumArgument().equals("show")) {
+                                    chatSettings.makeChatShow(args.getSender());
+                                } else {
+                                    chatSettings.makeChatHide(args.getSender());
+                                }
+                            })
+                            .done()
+                    ),
+                named("account")
+                    .setDescription("controls telegram account")
+                    .addCommand(
+                        named("register")
+                            .setExecutor(args -> reception.onPlayerRegisterRequest((Player)args.getSender()))
+                    )
+            )
+            .generateHelpPage()
+            .done();
+    }
 
     @Provides @Singleton 
     ConsoleCommandSender provideConsoleCommandSender() {
@@ -143,18 +190,24 @@ public class TelegramModule extends AbstractModule {
             ChatIDCommand.class,
             MemeryCommand.class,
             PingCommand.class,
+            StartCommand.class,
             StatsCommand.class,
             TopCommand.class,
             UptimeCommand.class
         ).forEach(cmd -> commandMultibinder.addBinding().to(cmd).in(Scopes.SINGLETON));
 
-        bind(NamedTabExecutor.class)
-            .to(ChatSettings.class);
-
+       // bind(NamedTabExecutor.class)
+      //      .to(ChatSettings.class);
+        bind(TabExecutor.class)
+            .to(CommandProcessor.class)
+            .in(Scopes.SINGLETON);
     //    bind(MainConfig.class)
       //      .in(Scopes.SINGLETON);
 
         bind(EventPipe.class)
+            .in(Scopes.SINGLETON);
+
+        bind(SignupLoginReception.class)
             .in(Scopes.SINGLETON);
 
         bind(Logger.class)
@@ -171,7 +224,7 @@ public class TelegramModule extends AbstractModule {
                 Names.named("plugin_folder")
             )
             .toInstance(plugin.getDataFolder());
-    
+        
         bindConstant()
             .annotatedWith(Names.named("log.sql"))
             .to(false);

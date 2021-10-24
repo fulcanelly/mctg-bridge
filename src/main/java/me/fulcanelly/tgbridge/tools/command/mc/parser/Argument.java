@@ -1,6 +1,11 @@
-package me.fulcanelly.tgbridge.tools.mastery;
+package me.fulcanelly.tgbridge.tools.command.mc.parser;
 
-import me.fulcanelly.tgbridge.view.NamedTabExecutor;
+import java.util.Optional;
+import java.util.function.Function;
+
+import com.google.common.base.Supplier;
+
+import lombok.ToString;
 
 /**
  * init: cmd args
@@ -11,14 +16,15 @@ import me.fulcanelly.tgbridge.view.NamedTabExecutor;
  * subcmd: cmd
  *       | cmd | subcmd
  * 
- * arg: --WORD=WORD
- *    | --WORD=NUMBER
+ * arg: WORD:WORD
+ *    | WORD:NUMBER
  *  
  * args:
  *     | WORD 
  *     | arg
  *     | arg args
  *  
+ * 
  * 
  * ExecutorCommandBuilder builder = new CommandBuilder("tg")
  *      .addSubCmd(
@@ -41,40 +47,18 @@ import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 *              .setReactor(...)
 *      )
 */
-interface Command {
-    
-}
 
-interface SubCommand extends Command {
+@ToString
+public class Argument {
 
-}
+    String name; 
+    boolean required = true;
+    Supplier<Object> defaultSupplier;
 
-interface BaseCommand extends Command {
+    Optional<String> permission = Optional.empty();
+    Function<String, Object> parser = a -> a;
 
-}
-
-
-class CommandBuilder {
-    void setName() {
-
-    }
-
-    void addSubCmd() {
-       
-    }
-
-    void addArg() {
-
-
-    }
-
-    void setReactor() {
-
-    }
-}
-public class ExecutorCommandBuilder {
-
-    public NamedTabExecutor build() {
-        return null;
+    boolean isOptional() {
+        return !required;
     }
 }
