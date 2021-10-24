@@ -16,6 +16,7 @@ public class AccountDatabaseManager {
 
     long annihilationTime = TimeUnit.MINUTES.toMillis(15);
 
+    @Inject
     public void setupTable() {
         sql.syncExecuteUpdate("CREATE TABLE IF NOT EXISTS mctg_accounts_mapping(" +
             "acc_map_entry_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -30,7 +31,6 @@ public class AccountDatabaseManager {
 
     //todo
     void delete() {
-        sql.syncExecuteUpdate("DELETE FROM mctg_accounts_mapping WHERE (creation_time + ?) <= ?", 0, System.currentTimeMillis());
 
     }
 

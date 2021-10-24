@@ -15,6 +15,7 @@ public class RegisterDatabaseManager {
 
     long annihilationTime = TimeUnit.MINUTES.toMillis(15);
 
+    @Inject
     public void setupTable() {
         sql.syncExecuteUpdate("CREATE TABLE IF NOT EXISTS registration(" +
             "reg_entry_id INTEGER PRIMARY KEY AUTOINCREMENT," +
