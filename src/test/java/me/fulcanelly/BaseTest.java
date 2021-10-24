@@ -17,7 +17,9 @@ import org.bukkit.plugin.Plugin;
 import org.junit.jupiter.api.Test;
 
 import me.fulcanelly.tgbridge.TelegramModule;
+import me.fulcanelly.tgbridge.tools.twofactor.register.AccountDatabaseManager;
 import me.fulcanelly.tgbridge.tools.twofactor.register.RegisterDatabaseManager;
+import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.data.LazyValue;
 
 public class BaseTest {
@@ -37,20 +39,35 @@ public class BaseTest {
         return injector.get().getInstance(RegisterDatabaseManager.class);
     }
 
-
-
     static LazyValue<RegisterDatabaseManager> regdb = LazyValue.of(BaseTest::getDatabaseInstance);
 
     static LazyValue<Injector> injector = LazyValue.of(BaseTest::obtainInjector);
 
+    static LazyValue<AccountDatabaseManager> accdb = LazyValue.of(() -> injector.get().getInstance(AccountDatabaseManager.class));
 
+    static LazyValue<SignupLoginReception> signup = LazyValue.of(() ->  injector.get().getInstance(SignupLoginReception.class));
+    
     @Test
     public synchronized void tableCreationTest() {
         regdb.get().setupTable();
     }
 
+    @Test 
+    public synchronized void checkAccountDatabase() {
+        var aas = accdb.get();
+    }   
+
+    @Test 
+    public synchronized void acregtest() {
+        var reception = signup.get();
+        var code = reception.requestRegistrationCodeFor("player");
+        System.out.println("got code " + code);
+        var result = reception.cofirmRegistration(123, "player", code.get());
+        System.out.println(result);
+    }
+
     @Test
-    public synchronized void checkValidity() {
+    public synchronized void checkRegisterValidity() {
         var rdb = regdb.get();
 
         rdb.insertNew("lol", "131");
@@ -58,8 +75,9 @@ public class BaseTest {
 
         assertEquals(true, rdb.isValidCode("lol", "132"));
         assertEquals(true, rdb.isValidCode("lol", "131"));
-        assertEquals(false, rdb.isValidCode("lol", "13221312"));
-
-        
+        assertEquals(false, rdb.isValidCode("lol", "13221312"));   
     }
+
+
+    
 }
