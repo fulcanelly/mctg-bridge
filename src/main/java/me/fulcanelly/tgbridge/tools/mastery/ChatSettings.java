@@ -25,7 +25,7 @@ import me.fulcanelly.clsql.databse.SQLQueryHandler;
 
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
-public class ChatSettings implements NamedTabExecutor {
+public class ChatSettings {
 
     SQLQueryHandler sql;
     Boolean defaultHide = false;
@@ -69,10 +69,6 @@ public class ChatSettings implements NamedTabExecutor {
             });
     }
 
-    @Override 
-    public String getCommandName() {
-        return "tg";
-    }
 
     Deque<String> prepArgs(String[] args) {
         return Stream.of(args)
@@ -90,6 +86,7 @@ public class ChatSettings implements NamedTabExecutor {
         sender.sendMessage("chat will be hidden");
     }
     
+
     void handleChat(CommandSender sender, String[] args) {
         if (args.length < 2) {
             sender.sendMessage("no enough arguments");
@@ -111,7 +108,7 @@ public class ChatSettings implements NamedTabExecutor {
             }
         }
     }
-
+    /*
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         switch (args[0]) {
@@ -125,17 +122,7 @@ public class ChatSettings implements NamedTabExecutor {
         return true;
     }
 
-    List<String> checkList(String arg, Deque<String> hz) {
-        if (arg.equals("chat")) {
-            hz.clear();
-            return List.of("show", "hide");
-        } else {
-            return null;
-        }
-    }
-
-
-    @Override
+     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         var normArgs = prepArgs(args);
 
@@ -151,11 +138,24 @@ public class ChatSettings implements NamedTabExecutor {
         } else if (args[1] == "login") {
             return List.of("change", "ignore");
         } else if (args[1] == "help") {
-        }*/
+        }* /
 
          
        // return null;
     }
+    */
+
+    List<String> checkList(String arg, Deque<String> hz) {
+        if (arg.equals("chat")) {
+            hz.clear();
+            return List.of("show", "hide");
+        } else {
+            return null;
+        }
+    }
+
+
+   
 
 }
 
