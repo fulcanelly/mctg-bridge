@@ -59,7 +59,9 @@ public class CommandParser {
         args.parsersByName.put(clearName, parser);
         args.valuesByName.put(clearName, argument);
         
-        return ParseResult.getEmpty();
+        return ParseResult.expected(
+            parser.getCompletions(argument)
+        );
     }
 
     ParseResult handleCommand(String name) {
