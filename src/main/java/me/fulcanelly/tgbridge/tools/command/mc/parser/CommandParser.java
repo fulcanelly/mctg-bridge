@@ -50,9 +50,12 @@ public class CommandParser {
         }
 
         var argument = input.poll();
-        //return ParserResult.expected(parser.exepeced())
+
         if (argument == null) {
-            throw new RuntimeException(current.getNotEnoughError());
+            return ParseResult.expected(
+                parser.getExpected(),
+                current.getNotEnoughError()
+            );
         }
 
         
