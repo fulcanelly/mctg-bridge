@@ -5,6 +5,7 @@ import java.util.Set;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 
+import org.bukkit.command.TabExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -72,8 +73,8 @@ public class Bridge extends JavaPlugin {
     } 
 
     @Inject 
-    void registerTabExecutor(NamedTabExecutor executor) {
-        var cmd = this.getCommand(executor.getCommandName());
+    void registerTabExecutor(TabExecutor executor) {
+        var cmd = this.getCommand("tg");
         cmd.setTabCompleter(executor);
         cmd.setExecutor(executor);
     }
