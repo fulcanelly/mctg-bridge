@@ -26,7 +26,7 @@ public class AccountDatabaseManager {
     }
 
     public void insertNew(long userId, String player) {
-        sql.syncExecuteUpdate("INSERT INTO mctg_accounts_mapping(user_id, player) VALUES(?, ?, ?)", userId, player);
+        sql.syncExecuteUpdate("INSERT INTO mctg_accounts_mapping(user_id, player) VALUES(?, ?)", userId, player);
     }
 
     //todo
