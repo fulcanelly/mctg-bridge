@@ -5,6 +5,7 @@ import static me.fulcanelly.tgbridge.tools.command.mc.parser.CommandBuilder.name
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class EnumeratedCommandBuilder {
 
@@ -33,7 +34,6 @@ public class EnumeratedCommandBuilder {
         return this;
     }
 
-
     public CommandBuilder[] done() {
         for (var builder : builders) {
             builder.setExecutor(consumer);
@@ -41,7 +41,7 @@ public class EnumeratedCommandBuilder {
                 builder.setPermission(permission.get());
             };
         }
-        return (CommandBuilder[])builders.toArray();
+        return builders.stream().toArray(CommandBuilder[]::new);
     }
 
 }
