@@ -36,39 +36,57 @@ public class CommandParser {
         return input.size() == 0;
     }
 
-    void handleArgument(String name) {
-        name = name.substring(0, name.length() - 1);
-        var parser = current.getArgument(name);
+    ParseResult handleArgument(String name) {
+        var clearName = name.substring(0, name.length() - 1);
+        var parser = current.getArgument(clearName);
+        
         if (parser == null) {
-            throw new RuntimeException(current.getUnknownArgError(name));
+                
+            return ParseResult.expected(
+                current.getArgumentSuggestions(clearName),
+                current.getUnknownArgError(), clearName
+            );
+
         }
 
         var argument = input.poll();
+        //return ParserResult.expected(parser.exepeced())
         if (argument == null) {
             throw new RuntimeException(current.getNotEnoughError());
         }
 
-        args.parsersByName.put(name, parser);
-        args.valuesByName.put(name, argument);
-
+        
+        args.parsersByName.put(clearName, parser);
+        args.valuesByName.put(clearName, argument);
+        
+        return ParseResult.getEmpty();
     }
 
-    void handleCommand(String name) {
+    ParseResult handleCommand(String name) {
         var next = current.getCommand(name);
         
         if (next == null) {
-            throw new RuntimeException("unkonwn subcomand: " + name);
+            return ParseResult.expected(
+                current.getCommandSuggestions(name),
+                "unkonwn subcomand", name
+            );
         }
         current = next;
+
+        return ParseResult.expected(
+            current.commandByName.keySet().stream()
+                .collect(Collectors.toList())
+        );
     }
 
-    void handleThing(String text) {
+    ParseResult handleThing(String text) {
         if (text.endsWith(":")) {
-            handleArgument(text);
+            return handleArgument(text);
         } else {
-            handleCommand(text);
+            return handleCommand(text);
         }
     }
+
 
     List<String> getLackingArguments() {
         var needed = args.valuesByName;
@@ -77,6 +95,7 @@ public class CommandParser {
         return currentArgs.keySet().stream()
             .filter(name -> !needed.containsKey(name))
             .filter(name -> currentArgs.get(name).required)
+            .map(name -> name + ":")
             .collect(Collectors.toList());
 
     }
@@ -90,7 +109,43 @@ public class CommandParser {
         }
     }
 
+    //todo
+    //note: make them highlighted
+    ParseResult getOptionalArguments() {
+        return null;
+    }
+    
+
+    public ParseResult parse() {
+        ParseResult reuslt = ParseResult.getEmpty();
+
+        while (!inputEmpty()) {
+            reuslt = handleThing(input.poll());
+        }
+
+        args.setCommand(current);
+
+        if (reuslt.isNotEmpty()) {
+            return reuslt;
+        }
+        
+        var lackingArgs = getLackingArguments();
+        
+        if (lackingArgs.size() > 0) {
+            return ParseResult.expected(
+                lackingArgs, 
+                "arguments lacks"
+            );
+        }
+
+        return ParseResult.expected(
+            current.commandByName.keySet().stream()
+                .collect(Collectors.toList())
+        );
+    }
+
     public void evaluate() {
+        /*
         while (!inputEmpty()) {
             handleThing(input.poll());
         }
@@ -101,8 +156,8 @@ public class CommandParser {
         
         if (lackingArgs.size() > 0) {
             throw new RuntimeException("arguments lacks: " + lackingArgs.toString());
-        }
-
+        }*/
+        parse();
         tryRun();
         
     }
