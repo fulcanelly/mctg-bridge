@@ -1,18 +1,46 @@
 package me.fulcanelly.tgbridge.tools.command.mc.parser;
 
+import java.net.http.WebSocket;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.With;
 
-@Data @AllArgsConstructor @NoArgsConstructor @With
-public class ParseResult {
+
+@Data @AllArgsConstructor @With @ToString
+public class ParseResult  {
     
-    List<String> expected, redundant;
-    Optional<String> comment;
+    final List<String> expected, redundant, comment;
     
-    static public ParseResult empty = new ParseResult(List.of(), List.of(), Optional.empty());
+    public boolean isEmpty() {
+        return this.equals(empty);        
+    }
+
+    public boolean isNotEmpty() {
+        return !this.isEmpty();
+    }
+
+    static public ParseResult getEmpty() {
+        return empty;
+    }
+    
+    static public ParseResult expected(List<String> expects, String... warning) {
+        return expected(expects).withComment(List.of(warning));
+    }
+
+    static public ParseResult expected(List<String> expects) {
+        return empty.withExpected(expects);
+    }
+
+    static public ParseResult empty = new ParseResult(List.of(), List.of(), List.of()) {
+        public boolean isEmpty() {
+            return true;        
+        }
+    };
+
 }
