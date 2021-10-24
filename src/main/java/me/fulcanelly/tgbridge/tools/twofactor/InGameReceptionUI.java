@@ -7,8 +7,10 @@ import org.bukkit.Color;
 import org.bukkit.entity.Player;
 
 import lombok.RequiredArgsConstructor;
+import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.StringUtils;
+import me.fulcanelly.tgbridge.utils.data.LazyValue;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -16,14 +18,17 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
-@RequiredArgsConstructor
 public class InGameReceptionUI {
     
     @Inject
     SignupLoginReception reception;
 
-    final String botname;
+    LazyValue<String> botname;
 
+    @Inject
+    void inject(TGBot bot) {
+        botname = LazyValue.of(bot.getMe().getName());
+    }
 
     public void onPlayerRegisterRequest(Player player) {
         var code = reception.requestRegistrationCodeFor(player.getName());
@@ -47,7 +52,7 @@ public class InGameReceptionUI {
             new ClickEvent(
                 ClickEvent.Action.OPEN_URL, 
                 String.format(
-                    "https://t.me/%s?start=%s", botname, fullcode)
+                    "https://t.me/%s?start=%s", botname.get(), fullcode)
             )
         );
      
