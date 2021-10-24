@@ -27,7 +27,7 @@ public class InGameReceptionUI {
 
     @Inject
     void inject(TGBot bot) {
-        botname = LazyValue.of(bot.getMe().getName());
+        botname = LazyValue.of(bot.getMe().getUsername());
     }
 
     public void onPlayerRegisterRequest(Player player) {
