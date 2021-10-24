@@ -1,6 +1,7 @@
 package me.fulcanelly.tgbridge.tools.command.mc.parser;
 
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.function.Consumer;
 
 public class CommandBuilder {
@@ -36,21 +37,21 @@ public class CommandBuilder {
 
     public CommandBuilder addCommand(CommandBuilder ...cbuilders) {
         for (var it : cbuilders) {
-            this.addCommand(it.done());
+            this.addCommandSchema(it.done());
         }
         return this;
     }
 
-    public CommandBuilder addCommand(CommandSchema another) {
+    public CommandBuilder addCommandSchema(CommandSchema another) {
         cmd.commandByName.put(another.name, another);
         return this;
     }
 
     public <T>CommandBuilder addArgument(ArgumentBuilder<T> abuilder) {
-        return this.addArgument(abuilder.done());
+        return this.addActualArgument(abuilder.done());
     }
 
-    public CommandBuilder addArgument(Argument argument) {
+    public CommandBuilder addActualArgument(Argument argument) {
         cmd.argumentByName.put(argument.name, argument);
         return this;
     }
@@ -61,10 +62,27 @@ public class CommandBuilder {
     }
     
     public CommandBuilder generateHelpPage() {
+
         return this;
     }
 
+    protected String getHelpPageMessage() {
+        StringJoiner joiner = new StringJoiner("\n");
+        for (var name : cmd.commandByName.keySet()) {
+            var description = cmd.commandByName.get(name).getDescription();
+            if (description == null) {
+                description = "";
+            }
+            joiner.add(name + "   " + description);
+        }
+        return joiner.toString();
+
+    }
     public CommandSchema done() {
+        if (cmd.evaluator.isEmpty()) {
+            var message = getHelpPageMessage();
+            cmd.evaluator = Optional.of(a -> a.getSender().sendMessage(message));
+        }
         return cmd;
     }
 }
