@@ -39,7 +39,9 @@ public class AccountDatabaseManager {
         var result = sql.syncExecuteQuery("SELECT * FROM mctg_accounts_mapping WHERE player = ?", username);
 
         if (result.next()) {
-            return Optional.of((long)sql.parseMapOfResultSet(result).get("user_id"));
+            return Optional.of(
+                Long.valueOf(sql.parseMapOfResultSet(result).get("user_id").toString())
+            );
         }
 
         return Optional.empty();
