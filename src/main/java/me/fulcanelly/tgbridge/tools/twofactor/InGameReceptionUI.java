@@ -38,7 +38,7 @@ public class InGameReceptionUI {
             return;
         }
 
-        var fullcode = StringUtils.encodeBase64(player + ":" + code.get());
+        var fullcode = StringUtils.encodeBase64(player.getName() + ":" + code.get());
 
 
         TextComponent comp = new TextComponent();
