@@ -108,6 +108,13 @@
         </dependency>
 
         <dependency>
+         <groupId>me.fulcanelly</groupId>
+            <artifactId>InviteSystemCore</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/invitesys/core/target/InviteSystemCore-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-multibindings</artifactId>
             <version>4.2.3</version>

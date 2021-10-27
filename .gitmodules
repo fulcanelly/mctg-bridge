@@ -1,0 +1,3 @@
+[submodule "invitesys"]
+	path = invitesys
+	url = https://github.com/fulcanelly/invite-system-mc
