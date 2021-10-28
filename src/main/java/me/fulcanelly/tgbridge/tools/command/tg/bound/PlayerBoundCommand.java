@@ -17,7 +17,7 @@ import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 public abstract class PlayerBoundCommand implements CommandRegister {
 
     @Inject
-    SignupLoginReception reception;
+    protected SignupLoginReception reception;
 
     public abstract String onBoundPlayerMessage(CommandEvent event, String player);
 

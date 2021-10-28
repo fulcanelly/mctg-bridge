@@ -5,30 +5,28 @@ import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.command.tg.base.ReplierBuilder;
+import me.fulcanelly.tgbridge.tools.command.tg.bound.PlayerBoundCommand;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.insyscore.database.InvitationsDatabase;
 
-@AllArgsConstructor
-public class InvitePersonCommand implements CommandRegister {
+public class InvitePersonCommand extends PlayerBoundCommand {
+
+    public InvitePersonCommand(InvitationsDatabase database, SignupLoginReception reception) {
+        this.idb = database;
+        this.reception = reception;
+    }
 
     InvitationsDatabase idb;
-    SignupLoginReception reception;
 
-    String onMessage(CommandEvent event) {
-        var from = event.getFrom();
-        var player = reception.getPlayerByTg(from.getId());
-
-        if (player.isEmpty()) {
-            return "Your account not bound to minecraft one";
-        }
-
+    @Override
+    public String onBoundPlayerMessage(CommandEvent event, String player) {
         if (event.getArgs().size() == 0) {
             return "Not enough arguments, specify person's nick who you want invite to";
         }
 
         var toInvite = event.getArgs().get(0);
 
-        if (idb.invite(player.get(), toInvite)) {
+        if (idb.invite(player, toInvite)) {
             return toInvite + " have invited";
         } else {
             return toInvite + " already invited";
@@ -36,8 +34,8 @@ public class InvitePersonCommand implements CommandRegister {
     }
 
     @Override
-    public void registerCommand(CommandManager manager) {
-        new ReplierBuilder("invite", this::onMessage).registerCommand(manager);
+    public String getCommandName() {
+        return "invite";
     }
     
 }
