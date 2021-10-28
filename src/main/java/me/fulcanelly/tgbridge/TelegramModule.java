@@ -35,6 +35,7 @@ import me.fulcanelly.tgbridge.tools.TelegramLogger;
 import me.fulcanelly.tgbridge.tools.command.mc.CommandProcessor;
 import me.fulcanelly.tgbridge.tools.command.tg.AttachCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.ChatIDCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.KickMeCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.ListCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.MemeryCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.PingCommand;
@@ -202,6 +203,7 @@ public class TelegramModule extends AbstractModule {
         var commandMultibinder = Multibinder.newSetBinder(binder(), CommandRegister.class);
 
         List.of(
+            KickMeCommand.class,
             ListCommand.class,
             AttachCommand.class,
             ChatIDCommand.class,
