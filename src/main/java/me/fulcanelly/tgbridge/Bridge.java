@@ -4,11 +4,13 @@ import java.util.Set;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 import org.bukkit.command.TabExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import lombok.Getter;
 import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
 import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
@@ -23,6 +25,7 @@ import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
+@Getter
 public class Bridge extends JavaPlugin {
     
     @Override
@@ -35,6 +38,8 @@ public class Bridge extends JavaPlugin {
 
     @Inject
     TGBot bot;
+
+    Injector injector;
 
     @Inject
     void setupTelegramBotListeners(TGBot bot, EventPipe tgpipe, TelegramListener listener) {
@@ -95,10 +100,10 @@ public class Bridge extends JavaPlugin {
     public void onEnable() {
         try {
             System.out.println("Loading stuff...");
-            var injector = Guice.createInjector(
+            injector = Guice.createInjector(
                 new TelegramModule(this)
             );
-            System.out.println("Applying stuff");
+            System.out.println("Injecting stuff");
 
             injector.injectMembers(this);
             System.out.println("Starting");
