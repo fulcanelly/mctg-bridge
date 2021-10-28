@@ -112,7 +112,7 @@
             <artifactId>InviteSystemCore</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/invitesys/core/target/InviteSystemCore-1.0.jar</systemPath>
+            <systemPath>${project.basedir}/lib/invitesys/core/target/InviteSystemCore-1.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.lenis0012.bukkit</groupId>
