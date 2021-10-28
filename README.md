@@ -14,7 +14,7 @@ After cloning and entering repo directory run this
 ```
 git submodule init
 git submodule update
-cd invitesys/core && mvn && cd - && mvn
+cd lib/invitesys/core && mvn && cd - && mvn
 ```
 Then you should get tg-brgidge*.jar in `target` directory
 
