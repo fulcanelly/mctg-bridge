@@ -35,7 +35,6 @@ public class LoginSecurityHook implements ForeignPluginHook {
 
     @Override
     public boolean isAvailable() {
-        // TODO Auto-generated method stub
         return lazyPlugin.get() != null;
     }
 
@@ -63,7 +62,7 @@ public class LoginSecurityHook implements ForeignPluginHook {
         );
         
         if (response.isSuccess()) {
-            return "password removed";
+            return "Password removed";
         }
 
         return response.getErrorMessage();
@@ -77,7 +76,7 @@ public class LoginSecurityHook implements ForeignPluginHook {
         }
 
         if (event.getArgs().isEmpty()) {
-            return "Not enough arguments, ";
+            return "Not enough arguments, type new password";
         }
 
         var session = getSessionFor(player.get());
