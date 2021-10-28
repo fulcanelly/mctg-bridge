@@ -1,0 +1,37 @@
+{
+  "version": "LoginSecurity v3.1",
+  "data":
+  [
+    [
+      "---[ Changelog ]---",
+      "",
+      "- Remade inventory hiding to be 100% safe and reliable",
+      "",
+      "- Update translations",
+      "",
+      "Please check spigot-mc.org for the full changelog."
+    ],
+    [
+      "---[ Dev Notes ]---",
+      "",
+      "Sorry for the delay in this update.",
+      "I have been busy with life, but I am committed to keep this plugin bug free.",
+      "",
+      "This will be the last version supporting Minecraft 1.8. I will focus on 1.17+ from now on."
+    ],
+    [
+      "====[ DONATE ]====",
+      "",
+      "Donate please :)",
+      "$1 = 1 HUG",
+      "",
+      "paypal.me/lenis0012",
+      "=====[ SOCIAL ]=====",
+      "IGN: lenis",
+      "Twitter: @lenis0012",
+      "",
+      "Report bugs!",
+      "-lenis"
+    ]
+  ]
+}
