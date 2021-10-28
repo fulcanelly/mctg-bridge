@@ -44,6 +44,8 @@ import me.fulcanelly.tgbridge.tools.command.tg.TopCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.UptimeCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
+import me.fulcanelly.tgbridge.tools.hooks.ForeignPluginHook;
+import me.fulcanelly.tgbridge.tools.hooks.InviteSystemHook;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
@@ -179,9 +181,22 @@ public class TelegramModule extends AbstractModule {
         return (ActualLastMessageObserver)sender;
     }
 
+    @Provides @Singleton
+    Plugin providesPlugin() {
+        return plugin;
+    }
+
     @Override
     protected void configure() {
         
+        
+        var hookMultibind = Multibinder.newSetBinder(binder(), ForeignPluginHook.class);
+       
+        List.of(
+            InviteSystemHook.class
+        )
+        .forEach(it -> hookMultibind.addBinding().to(it).in(Scopes.SINGLETON));
+
         var commandMultibinder = Multibinder.newSetBinder(binder(), CommandRegister.class);
 
         List.of(

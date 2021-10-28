@@ -18,6 +18,7 @@ import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
 import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
+import me.fulcanelly.tgbridge.tools.hooks.ForeignPluginHook;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import me.fulcanelly.tgbridge.view.NamedTabExecutor;
@@ -71,6 +72,17 @@ public class Bridge extends JavaPlugin {
             register.registerCommand(manager);
         }
     } 
+
+
+    @Inject 
+    void regHook(Set<ForeignPluginHook> hooks) {
+        for (var hook : hooks) {
+            if (hook.isAvailable()) {
+                hook.setup();
+            };
+        }
+    }
+
 
     @Inject 
     void registerTabExecutor(TabExecutor executor) {
