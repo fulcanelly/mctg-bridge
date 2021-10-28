@@ -23,7 +23,7 @@ public class InvitePersonCommand implements CommandRegister {
         }
 
         if (event.getArgs().size() == 0) {
-            return "Not enough arguments, specify nick person who you want invite to";
+            return "Not enough arguments, specify person's nick who you want invite to";
         }
 
         var toInvite = event.getArgs().get(0);
