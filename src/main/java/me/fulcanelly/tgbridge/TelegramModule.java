@@ -46,6 +46,7 @@ import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.hooks.ForeignPluginHook;
 import me.fulcanelly.tgbridge.tools.hooks.InviteSystemHook;
+import me.fulcanelly.tgbridge.tools.hooks.LoginSecurityHook;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
@@ -193,7 +194,8 @@ public class TelegramModule extends AbstractModule {
         var hookMultibind = Multibinder.newSetBinder(binder(), ForeignPluginHook.class);
        
         List.of(
-            InviteSystemHook.class
+            InviteSystemHook.class,
+            LoginSecurityHook.class
         )
         .forEach(it -> hookMultibind.addBinding().to(it).in(Scopes.SINGLETON));
 
