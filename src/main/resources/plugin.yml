@@ -6,6 +6,8 @@ website: ${url}
 api-version: 1.16
 softdepend:
   - InviteSystemCore
+  - LoginSecurity
+  
 main: ${mainClass}
 commands:
   tg:
