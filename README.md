@@ -67,7 +67,7 @@ Or you can download compiled package, but it could be little outdated
   - [x] Message reduction
   - [x] Message merging
   - [x] Login via telegram
-    - [ ] Hook with existing login plugin
+    - [x] Hook with existing login plugin
   - [x] Flexible configurtation
   - [x] Ingore switch
   - [ ] Custom localization
