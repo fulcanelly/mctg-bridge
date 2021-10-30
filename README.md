@@ -16,7 +16,7 @@ After that, you have to restart your server, and then bot should be working.
 
 ### Seting up telegram bot
 
-Head to [@BotFather](t.me/BotFather) and create bot using /newbot command
+Head to [@BotFather](https://t.me/BotFather) and create bot using /newbot command
 
 Then add this command hints using /setcommands
 
