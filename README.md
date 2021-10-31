@@ -1,5 +1,5 @@
 # MCTG-bridge
-MCTG-bridge is a lightweight plugin that creates a chat bridge between Telegram group and Minecraft chat.
+MCTG-bridge is a standalone working out of box plugin that creates a chat bridge between Telegram group and Minecraft chat.
 
 ### Preview 
 
@@ -61,11 +61,11 @@ todo: add configurability and scripting
   Then you should get tg-brgidge*.jar in `target` directory
 
 - Download stable version. 
-- 
+
   You can download compiled package from releases [page](https://github.com/fulcanelly/mctg-bridge/releases), but it could be little outdated 
 
 - Download experimental automatiacly built version from [github actions](https://github.com/fulcanelly/mctg-bridge/actions)
-- 
+
 ### What's Left to be Added/Fixed
 - The Following Ideas
   - [x] Message reduction
