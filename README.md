@@ -44,23 +44,26 @@ changepass - change account password
 ```
 
 For now all they by default enabled (except last ones since they depedns from corresponding plugin presence)
+
 todo: add configurability and scripting 
 
 
 ### How to build
 
-After cloning and entering repo directory run this
-```
-git submodule update --init lib/invitesys
-cd lib/invitesys/core && mvn && cd # optional -- if you want fresh version of invitesys
-mvn
-```
-Then you should get tg-brgidge*.jar in `target` directory
+- Build by yourself
 
+  After cloning and entering repo directory run this
+  ```
+  git submodule update --init lib/invitesys
+  cd lib/invitesys/core && mvn && cd # optional -- if you want fresh version of invitesys
+  mvn
+  ```
+  Then you should get tg-brgidge*.jar in `target` directory
 
-Or you can download compiled package, but it could be little outdated
+- Download stable version. 
+  You can download compiled package from releases [page](https://github.com/fulcanelly/mctg-bridge/releases), but it could be little outdated 
 
-
+- Download experimental automatiacly built version from [github actions][https://github.com/fulcanelly/mctg-bridge/actions]
 
 ### What's Left to be Added/Fixed
 - The Following Ideas
