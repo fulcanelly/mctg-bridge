@@ -62,8 +62,11 @@ public class BaseTest {
         var reception = signup.get();
         var code = reception.requestRegistrationCodeFor("player");
         System.out.println("got code " + code);
-        var result = reception.cofirmRegistration(123, "player", code.get());
-        System.out.println(result);
+        if (code.isPresent()) { 
+            var result = reception.cofirmRegistration(123, "player", code.get());
+            System.out.println(result);
+
+        }
     }
 
     @Test
