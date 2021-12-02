@@ -152,7 +152,7 @@
                 <relocations>
                     <relocation>
                         <pattern>com.google.inject</pattern>
-                        <shadedPattern>com.google.inject.tg-bridge-shaded</shadedPattern>
+                        <shadedPattern>com.google.inject.tg_bridge_shaded</shadedPattern>
                     </relocation>
                     </relocations>
                 <filters>
