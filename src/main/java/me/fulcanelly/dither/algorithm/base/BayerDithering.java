@@ -24,7 +24,7 @@ public class BayerDithering {
 
     static double[][] multBy(double[][] it) {
        // var v = 256 / 16.0;
-        var v = 256 / 4.0;
+       double v = 256 / Math.pow(it.length, 2);
         for (int i = 0; i < it.length; i++) {
             for (int j = 0; j < it[i].length; j++) {
                 it[i][j] *= v;
