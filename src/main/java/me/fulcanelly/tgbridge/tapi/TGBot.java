@@ -3,6 +3,8 @@ package me.fulcanelly.tgbridge.tapi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.io.InputStream;
 
 import me.fulcanelly.clsql.stop.Stopable;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
@@ -18,13 +20,16 @@ import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+
 enum Method {
     SEND,
     EDIT,
     DELETE,
     UPDATES,
     GET_ME,
-    PIN
+    PIN,
+    GET_FILE
 }
 
 public class TGBot implements Stopable {
@@ -94,6 +99,7 @@ public class TGBot implements Stopable {
                 case GET_ME: return "getMe";
                 case PIN: return "pinChatMessage";
                 case DELETE: return "deleteMessage";
+                case GET_FILE: return "getFile";
             }
             throw new RuntimeException("Unknown method");
         }
@@ -118,6 +124,13 @@ public class TGBot implements Stopable {
             generateRequestLink(methodName);
         }
 
+        boolean logging = false;
+
+        public MethodCaller enableLogging() {
+            logging = true;
+            return this;
+        }
+
         public MethodCaller put(String name, String value) {
             requestParams.put(name, value);
             return this;
@@ -128,6 +141,9 @@ public class TGBot implements Stopable {
                 .stream()
                 .map(key -> key + "=" + encodeValue(requestParams.get(key)))
                 .collect(Collectors.joining("&", link + "?", ""));
+            if (logging) {
+                System.out.println("encodedURL: " + encodedURL);
+            }
             try {
                 return UsefulStuff.loadPage(encodedURL);
             } catch(Exception e) {
@@ -222,6 +238,22 @@ public class TGBot implements Stopable {
         return updates;
     }
 
+    public Optional<TgFile> getFile(String fileId) {
+        var result = new MethodCaller(Method.GET_FILE)
+            .enableLogging()
+            .put("file_id", fileId).call();
+
+        var json = UsefulStuff.stringToJSON(result).get("result");
+        return Optional.ofNullable((JSONObject)json).map(TgFile::new);
+    }
+
+    @SneakyThrows
+    public InputStream loadFile(String filePath) {
+        return UsefulStuff.loadFileHTTPS(
+            String.format("https://api.telegram.org/file/bot%s/%s", apiToken, filePath)
+        );
+    }
+
     boolean updateLast(JSONObject update) {
         long current = (long)update.get("update_id");
 
@@ -270,4 +302,4 @@ public class TGBot implements Stopable {
             .call();
     }
 
-};
+}

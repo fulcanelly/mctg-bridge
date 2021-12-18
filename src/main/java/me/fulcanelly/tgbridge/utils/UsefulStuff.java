@@ -55,32 +55,16 @@ public class UsefulStuff {
             .replace("&", "&amp;");
     }
 
+
+    @SneakyThrows
+    public static InputStream loadFileHTTPS(String url) {
+        return new URL(url).openStream();
+    }  
+
     @SneakyThrows
     public static String loadPage(String url) {
-        String pageText = new String();
-        URLConnection urlConnection = new URL(url).openConnection();
-
-        if (urlConnection instanceof HttpURLConnection) {
-            var responseCode = ((HttpURLConnection)urlConnection).getResponseCode();
-            switch (responseCode) {
-                case HttpURLConnection.HTTP_NOT_FOUND:
-                    throw new RuntimeException("Not found");
-            }
-        }
-
-        InputStream inp = urlConnection.getInputStream();
-        
-        byte[] buffer = new byte[4096];
-        ByteArrayOutputStream page = new ByteArrayOutputStream();
-
-        int length;
-        while ((length = inp.read(buffer)) != -1) {
-            page.write(buffer, 0, length);
-        }
-        pageText = page.toString();
-
-
-        return pageText;
+        var stream = new URL(url).openStream();
+        return new String(stream.readAllBytes());
     }
 
 } 

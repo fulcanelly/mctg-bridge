@@ -1,7 +1,11 @@
 package me.fulcanelly.tgbridge.listeners.telegram;
 
+import java.io.ByteArrayOutputStream;
+
 import org.bukkit.ChatColor;
 
+import lombok.SneakyThrows;
+import me.fulcanelly.dither.handlers.ErrorDiffusionFacade;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -10,10 +14,12 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import java.awt.image.BufferedImage;
 
 public class EventFormatter {
 
     final Message message;
+    PhotoFormatter imger = new PhotoFormatter(100);
 
     public EventFormatter(MessageEvent event) {
         this.message = event;
@@ -26,7 +32,15 @@ public class EventFormatter {
         public static final String unknownEnding = ChatColor.GRAY + " sent something";
         //todo:  public static final String message = "{unk.sign}[tg][{from}]{unk.mark} {msg.text} {text.caption}";
     }
-    
+
+    @SneakyThrows
+    String photoToText(BufferedImage img) {
+        return imger.imageToBraille(img)
+            .render(new ByteArrayOutputStream())
+            .toString();
+    }
+
+    @SneakyThrows
     TextComponent formatMessage(Message msg) {
         TextComponent result = new TextComponent();
         
@@ -36,6 +50,11 @@ public class EventFormatter {
         String beginning = null;
         String ending = null;
 
+        msg.getPhoto().stream()
+            .map(arr -> arr.get(0).load(msg.getBot()))
+            .map(this::photoToText)
+            .forEach(result::addExtra);
+           
         if (text == null) {
             beginning = String.format(Template.unknownBeginning, name);
             ending = Template.unknownEnding;
@@ -77,3 +96,5 @@ public class EventFormatter {
         return formatMessage(message);
     }
 }
+
+
