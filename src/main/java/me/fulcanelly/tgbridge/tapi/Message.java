@@ -2,6 +2,12 @@
 
 package me.fulcanelly.tgbridge.tapi;
  
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 
 public class Message {
@@ -41,6 +47,14 @@ public class Message {
         return  msg.get("voice") != null;
     }
 
+    public long getTime() {
+        return (Long)msg.get("date");
+    }
+
+    public Optional<Long> getEditTime() {
+        return Optional.ofNullable(msg.get("edit_date")).map(it -> (Long)it);
+    }
+
     public Long getMsgId()
     {
         return (Long)msg.get("message_id");
@@ -58,6 +72,27 @@ public class Message {
         return new From(msg.get("from"));
     }
 
+    public Optional<List<Photo>> getPhoto() {
+        var photo = msg.get("photo");
+
+        if (Optional.ofNullable(photo).isEmpty()) {
+            return Optional.empty();
+        };
+
+        var result = Stream.of(((JSONArray)photo).toArray())
+                .map(obj -> (JSONObject)obj)
+                .map(Photo::new)
+                .collect(Collectors.toList());
+        return Optional.of(result);
+
+        
+    }
+    
+
+    public TGBot getBot() {
+        return bot;
+    }
+    
     public From getChat() {
         return new From(msg.get("chat"));
     }
