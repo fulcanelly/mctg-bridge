@@ -13,12 +13,12 @@ import lombok.SneakyThrows;
 public class MemoryUsageDiagramDrawer {
 
     public MemoryUsageDiagramDrawer(int width, int height) {
-        if (width % 2 != 0 || height % 3 != 0) {
-            throw new RuntimeException("width should be devideable by 2 and height by 3");
+        if (width % 2 != 0 || height % 4 != 0) {
+            throw new RuntimeException("width should be devideable by 2 and height by 4");
         }
         this.width = width;
         this.height = height;
-        canvas = new Canvas(width / 2, height / 3);
+        canvas = new Canvas(width / 2, height / 4);
     }
 
     final int width, height;

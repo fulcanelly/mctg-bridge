@@ -13,7 +13,7 @@ import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
 public class CommonMetrix {
     
-    MemoryUsageDiagramDrawer drawer = new MemoryUsageDiagramDrawer(40, 21);
+    MemoryUsageDiagramDrawer drawer = new MemoryUsageDiagramDrawer(40, 20);
 
     public CommonMetrix() {
         drawer.start();
