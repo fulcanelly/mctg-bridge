@@ -118,6 +118,13 @@ public class TGBot implements Stopable {
             generateRequestLink(methodName);
         }
 
+        boolean logging = false;
+
+        public MethodCaller enableLogging() {
+            logging = true;
+            return this;
+        }
+
         public MethodCaller put(String name, String value) {
             requestParams.put(name, value);
             return this;
@@ -128,6 +135,9 @@ public class TGBot implements Stopable {
                 .stream()
                 .map(key -> key + "=" + encodeValue(requestParams.get(key)))
                 .collect(Collectors.joining("&", link + "?", ""));
+            if (logging) {
+                System.out.println("encodedURL: " + encodedURL);
+            }
             try {
                 return UsefulStuff.loadPage(encodedURL);
             } catch(Exception e) {
