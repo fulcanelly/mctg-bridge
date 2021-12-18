@@ -13,12 +13,12 @@ import lombok.SneakyThrows;
 public class MemoryUsageDiagramDrawer {
 
     public MemoryUsageDiagramDrawer(int width, int height) {
-        if (width % 2 != 0 || height % 3 != 0) {
-            throw new RuntimeException("width should be devideable by 2 and height by 3");
+        if (width % 2 != 0 || height % 4 != 0) {
+            throw new RuntimeException("width should be devideable by 2 and height by 4");
         }
         this.width = width;
         this.height = height;
-        canvas = new Canvas(width / 2, height / 3);
+        canvas = new Canvas(width / 2, height / 4);
     }
 
     final int width, height;
@@ -57,7 +57,6 @@ public class MemoryUsageDiagramDrawer {
         return totalMemory - freeMemory;
     }
 
-
     synchronized void updateValues() {
         
         values.add(
@@ -69,8 +68,6 @@ public class MemoryUsageDiagramDrawer {
         }
 
     }
-
-
 
     //taken from https://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#Java
     static void drawLine(Canvas c, int fromX, int fromY, int toX, int toY) {
@@ -119,14 +116,10 @@ public class MemoryUsageDiagramDrawer {
         canvas.clear();
         for (int i = 1; i < values.size(); i++) {
             drawLine(canvas, i - 1, values.get(i - 1), i, values.get(i));
-          //  System.out.printf("x y: %d %d\n", i, 36 - values.get(i));
-          //  canvas.change(i, values.get(i), true);
         }
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                //System.out.printf("x y: %d %d\n", i, j);
-
                 if (i % 4 == 0 && j % 4 == 0) {
                     canvas.change(i, j, true);
                 }        
@@ -150,30 +143,6 @@ public class MemoryUsageDiagramDrawer {
         return this.draw() + '\n' + 
             getMemory();
     }
-/*
-    public static void main(String[] args) {
-       /* Canvas canvas = new Canvas(10, 5);
-        canvas.clear();
-        drawLine(canvas, 0, 0, 10*2-1, (5*3));
-        canvas.render();
-        
-        var drawer = new MemoryUsageDiagramDrawer(40, 21);
-        System.out.printf("wait\n");
-
-        drawer.start();
-        drawer.service.scheduleAtFixedRate(() -> {
-            try {
-                System.out.printf("ok\n");
-
-                System.out.println(drawer.draw() + "==ok");
-                System.out.printf("done\n");
-                //drawer.service.shutdown();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-        }, 3, 1, TimeUnit.SECONDS);
-    }*/
 
 }
 
