@@ -55,6 +55,12 @@ public class UsefulStuff {
             .replace("&", "&amp;");
     }
 
+
+    @SneakyThrows
+    public static InputStream loadFileHTTPS(String url) {
+        return new URL(url).openStream();
+    }  
+
     @SneakyThrows
     public static String loadPage(String url) {
         String pageText = new String();
