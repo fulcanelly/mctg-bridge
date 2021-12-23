@@ -4,6 +4,9 @@ description: ${description}
 author: ${author}
 website: ${url}
 api-version: 1.16
+
+load: STARTUP
+
 softdepend:
   - InviteSystemCore
   - LoginSecurity

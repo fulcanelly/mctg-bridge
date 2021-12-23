@@ -7,16 +7,17 @@ import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.command.tg.base.ReplierBuilder;
 import me.fulcanelly.tgbridge.tools.command.tg.bound.PlayerBoundCommand;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
+import me.fulcanelly.tgbridge.utils.data.LazyValue;
 import me.fulcanelly.insyscore.database.InvitationsDatabase;
 
 public class InvitePersonCommand extends PlayerBoundCommand {
 
-    public InvitePersonCommand(InvitationsDatabase database, SignupLoginReception reception) {
+    public InvitePersonCommand(LazyValue<InvitationsDatabase> database, SignupLoginReception reception) {
         this.idb = database;
         this.reception = reception;
     }
 
-    InvitationsDatabase idb;
+    LazyValue<InvitationsDatabase> idb;
 
     @Override
     public String onBoundPlayerMessage(CommandEvent event, String player) {
@@ -26,7 +27,7 @@ public class InvitePersonCommand extends PlayerBoundCommand {
 
         var toInvite = event.getArgs().get(0);
 
-        if (idb.invite(player, toInvite)) {
+        if (idb.get().invite(player, toInvite)) {
             return toInvite + " have invited";
         } else {
             return toInvite + " already invited";

@@ -30,6 +30,6 @@ public class InviteSystemHook {
         InviteSysCore plugin = (InviteSysCore) prePlugin;
 
         new InvitePersonCommand(
-            plugin.getDatabase(), reception
+            LazyValue.of(plugin::getDatabase), reception
         ).registerCommand(cManager);    }
 }
