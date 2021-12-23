@@ -98,30 +98,31 @@ public class Bridge extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        var logger = getLogger();
         try {
-            System.out.println("Loading stuff...");
+            
+            logger.info("Loading stuff...");
             injector = Guice.createInjector(
                 new TelegramModule(this)
             );
-            System.out.println("Injecting stuff");
+            logger.info("Injecting stuff");
 
             injector.injectMembers(this);
-            System.out.println("Starting");
+            logger.info("Starting");
 
             regSpigotListeners(
                 injector.getInstance(StatCollector.class), 
                 injector.getInstance(ActionListener.class)
             );
 
-            tlog.sendToPinnedChat("plugin started");
+            tlog.sendToPinnedChat("Plugin started");
             bot.start();
         } catch(Exception e) {
-           e.printStackTrace();
-            System.out.println( e.getMessage());
-
+            e.printStackTrace();
+            logger.warning( e.getMessage());
         }
 
-        System.out.println("done");
+        logger.info("Done");
 
     }   
 
