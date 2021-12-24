@@ -21,6 +21,14 @@ public class PhotoFormatter {
         this.max_allowed = max; 
     }
 
+    BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics2D = resizedImage.createGraphics();
+        graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+        graphics2D.dispose();
+        return resizedImage;
+    }
+
     private BufferedImage scaleToFitInChat(BufferedImage photo) {
         var maxSide = Math.max(photo.getWidth(), photo.getHeight());
         var ratio = max_allowed / (double)maxSide;
@@ -28,29 +36,7 @@ public class PhotoFormatter {
         int width = (int)(photo.getWidth() * ratio), 
             height = (int)(photo.getHeight() * ratio);
 
-        //to fork with Braille font
-        width -= width % 2;
-        height -= height % 4;
-
-        //from https://stackoverflow.com/questions/4216123/how-to-scale-a-bufferedimage
-
-        BufferedImage resized = new BufferedImage(width, height, photo.getType());
-        Graphics2D graph = resized.createGraphics();
-        graph.scale(width / (double) photo.getWidth(), height / (double) photo.getHeight());
-        graph.drawImage(resized, 0, 0, null);
-        graph.dispose();
-
-        BufferedImage before = photo;
-        int w = before.getWidth();
-        int h = before.getHeight();
-        BufferedImage after = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        AffineTransform at = new AffineTransform();
-        at.scale(width / (double)photo.getWidth(), height / (double) photo.getHeight());
-        AffineTransformOp scaleOp = 
-        new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-        after = scaleOp.filter(before, after);
-
-        return after.getSubimage(0, 0, width, height); //to insure no problems will appear
+        return resizeImage(photo, width - width % 2, height - height % 4); //to insure no problems will appear
     }
 
     @SneakyThrows
