@@ -28,9 +28,9 @@ public class InvitePersonCommand extends PlayerBoundCommand {
         var toInvite = event.getArgs().get(0);
 
         if (idb.get().invite(player, toInvite)) {
-            return toInvite + " have invited";
+            return "Successfully invited";
         } else {
-            return toInvite + " already invited";
+            return "Already invited";
         }
     }
 
