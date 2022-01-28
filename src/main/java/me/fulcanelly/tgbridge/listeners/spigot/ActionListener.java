@@ -56,7 +56,7 @@ public class ActionListener implements Listener {
             .getPlayer()
             .getName();
         sender.sendNote(
-            String.format("`%s` join the server", player_name)
+            String.format("`%s` joined the server", player_name)
         );
     }
 
