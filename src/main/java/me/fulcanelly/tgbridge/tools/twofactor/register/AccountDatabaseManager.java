@@ -1,7 +1,8 @@
 package me.fulcanelly.tgbridge.tools.twofactor.register;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
