@@ -58,5 +58,20 @@ public class AccountDatabaseManager {
         return Optional.empty();
 
     }
+    
+    @SneakyThrows
+    public List<String> getUsernamesByTg(long userId) {
+        var result = sql.syncExecuteQuery("SELECT * FROM mctg_accounts_mapping WHERE user_id = ?", userId);
+        var list = new ArrayList<String>();
+
+        while (result.next()) {
+            list.add((String)sql.parseMapOfResultSet(result).get("player"));
+        }
+        
+        return list;
+
+    }
+
+    
   
 }
