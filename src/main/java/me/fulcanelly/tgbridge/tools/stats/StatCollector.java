@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.fulcanelly.clsql.async.tasks.AsyncTask;
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
+import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 
 import com.google.inject.Inject;
 
@@ -17,9 +18,12 @@ import org.bukkit.event.EventHandler;
 
 public class StatCollector extends StatsDatabase implements Listener {
     
+    SignupLoginReception reception;
+
     @Inject
-    public StatCollector(SQLQueryHandler sqlite) {
+    public StatCollector(SQLQueryHandler sqlite,  SignupLoginReception reception) {
         super(sqlite);
+        this.reception = reception;
         this.initTables();
 
         Bukkit.getOnlinePlayers()
@@ -103,9 +107,12 @@ public class StatCollector extends StatsDatabase implements Listener {
             double alive_coef = stats.getAliveCoefficient(max_death_period);
             
             String online_sign = isPlayerOnline(stats.name) ? "❇️" : "";
+            String tg_bound_sign = reception.getTgByUser(stats.name)
+                .map(__ -> "💦")
+                .orElse("");
 
             result += String.format(
-                " 🏳️‍🌈 `%s` " + online_sign + '\n' +
+                " 🏳️‍🌈 `%s` " + online_sign + tg_bound_sign +'\n' +
                 "  played time — %s\n" + 
                 "  deaths — %d\n" +
                 "  survival rate — %.3f\n\n", 

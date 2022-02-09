@@ -101,10 +101,6 @@ public class TelegramModule extends AbstractModule {
         return new ChatSettings(sqlite);
     }
 
-    @Provides @Singleton
-    StatCollector provideStatCollector(SQLQueryHandler sqlite){
-        return new StatCollector(sqlite);
-    }
     
     @Provides @Singleton
     MainConfig provideConfig(ConfigManager<MainConfig> configmManager) {
@@ -222,6 +218,9 @@ public class TelegramModule extends AbstractModule {
             .in(Scopes.SINGLETON);
     //    bind(MainConfig.class)
       //      .in(Scopes.SINGLETON);
+
+        bind(StatCollector.class)
+            .in(Scopes.SINGLETON);
 
         bind(EventPipe.class)
             .in(Scopes.SINGLETON);
