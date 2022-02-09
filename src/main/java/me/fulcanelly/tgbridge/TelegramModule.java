@@ -139,6 +139,7 @@ public class TelegramModule extends AbstractModule {
     CommandSchema providesDefaultSchema(InGameReceptionUI reception, ChatSettings chatSettings) {
 
         return create()
+            .setName("tg")
             .addCommand(
                 named("chat")
                     .setDescription("controls telegram chat visibility")

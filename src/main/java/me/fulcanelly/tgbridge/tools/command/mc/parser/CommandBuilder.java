@@ -68,12 +68,13 @@ public class CommandBuilder {
 
     protected String getHelpPageMessage() {
         StringJoiner joiner = new StringJoiner("\n");
+        joiner.add(BOLD + " * " + GOLD + "help page for " + UNDERLINE + cmd.name + RESET + BOLD + " * ");
         for (var name : cmd.commandByName.keySet()) {
             var description = cmd.commandByName.get(name).getDescription();
             if (description == null) {
                 description = "";
             }
-            joiner.add(name + "   " + description);
+            joiner.add(RESET + " " + BOLD + name + RESET + AQUA + "   " + description);
         }
         return joiner.toString();
 
