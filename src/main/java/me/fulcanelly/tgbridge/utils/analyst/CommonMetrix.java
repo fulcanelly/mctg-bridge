@@ -43,7 +43,10 @@ public class CommonMetrix {
 
     public List<String> getOnlineList() {
         return Bukkit.getOnlinePlayers().stream()
-            .map(player -> player.getName())
+            .map(player -> switch ((int) player.getHealth()) {
+                case 0 -> String.format("* %s  ⚰️",  player.getName());
+                default -> String.format("* %s   ♥️ %.2f",  player.getName(), player.getHealth());
+            })
             .map(username -> UsefulStuff.formatMarkdown(username))
             .collect(Collectors.toList());
     }
