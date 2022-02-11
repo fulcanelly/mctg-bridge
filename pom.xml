@@ -18,6 +18,10 @@
         </developer>
     </developers>
     <properties>
+        <java.version>17</java.version>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.release>17</maven.compiler.release>
         <author>fulcanelly</author>
         <mainClass>me.fulcanelly.tgbridge.Bridge</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
