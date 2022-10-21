@@ -23,7 +23,9 @@ public class MainConfig {
     @Saveable 
     public Boolean log_status;
 
-
+    @Saveable
+    public Boolean enable_chat = true;
+    
     public String getApiToken() {
         return api_token;
     }

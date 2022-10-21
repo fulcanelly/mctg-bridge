@@ -63,7 +63,8 @@ public class TelegramListener implements Listener {
 
         if (isCommandEvent(event)) {
             return;
-        } else if (rightChat) {            
+        } else if (rightChat && config.enable_chat) {          
+
             broadcast(new EventFormatter(event).getText());
         }
     }

@@ -131,8 +131,8 @@ public class TelegramModule extends AbstractModule {
     }
 
     @Provides @Singleton 
-    ActionListener provideActionListener(TGBot bot, MainConfig config, MessageSender sender) {
-        return new ActionListener(bot, config.getChatId(), sender);
+    ActionListener provideActionListener(TGBot bot, MainConfig config, MessageSender sender, SignupLoginReception reception) {
+        return new ActionListener(bot, config.getChatId(), sender, reception, config);
     }
 
     @Provides @Singleton 
