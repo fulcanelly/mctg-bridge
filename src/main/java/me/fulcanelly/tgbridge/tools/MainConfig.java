@@ -1,11 +1,15 @@
 package me.fulcanelly.tgbridge.tools;
 
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+
+import lombok.ToString;
 import me.fulcanelly.tgbridge.utils.config.annotations.ConfigFile;
 import me.fulcanelly.tgbridge.utils.config.annotations.Optional;
 import me.fulcanelly.tgbridge.utils.config.annotations.Saveable;
 import me.fulcanelly.tgbridge.utils.config.annotations.Nullable;
 
-@ConfigFile(file = "config.yml")
+@ConfigFile(file = "config.yml") @ToString
 public class MainConfig {
     
     @Saveable
@@ -41,4 +45,10 @@ public class MainConfig {
     public <T>void setChatId(T chat_id) {
         this.chat_id = chat_id.toString();
     }
+
+    public static void main(String[] args) {
+        var yaml = new Yaml(new Constructor(MainConfig.class));
+        System.out.println((MainConfig)yaml.load("{}"));
+    }
+
 }

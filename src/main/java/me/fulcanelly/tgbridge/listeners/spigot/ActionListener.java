@@ -11,9 +11,9 @@ import lombok.Getter;
 
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.inject.Inject;
 
@@ -21,16 +21,9 @@ import java.util.*;
 
 import org.bukkit.event.EventHandler;
 
-import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.MessageSender;
-import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
-import me.fulcanelly.tgbridge.tools.compact.context.CompactionContext;
-import me.fulcanelly.tgbridge.tools.compact.context.NoteMessageCtx;
-import me.fulcanelly.tgbridge.tools.compact.context.SignedMessageCtx;
-import me.fulcanelly.tgbridge.tools.compact.message.CompactableMessage;
-import me.fulcanelly.tgbridge.tools.compact.message.PlayerMessage;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 

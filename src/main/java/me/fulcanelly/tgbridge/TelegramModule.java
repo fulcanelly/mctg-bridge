@@ -4,10 +4,8 @@ import java.io.File;
 import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
@@ -54,21 +52,13 @@ import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
-import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 import static me.fulcanelly.tgbridge.tools.command.mc.parser.CommandBuilder.*;
 
-import me.fulcanelly.tgbridge.tools.command.mc.parser.ArgumentBuilder;
-import me.fulcanelly.tgbridge.tools.command.mc.parser.CommandParser;
 import me.fulcanelly.tgbridge.tools.command.mc.parser.CommandSchema;
-import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 
 import static me.fulcanelly.tgbridge.tools.command.mc.parser.EnumeratedCommandBuilder.*;
 import me.fulcanelly.tgbridge.tools.twofactor.InGameReceptionUI;
-import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+
 
 @AllArgsConstructor
 public class TelegramModule extends AbstractModule { 
@@ -137,7 +127,6 @@ public class TelegramModule extends AbstractModule {
 
     @Provides @Singleton 
     CommandSchema providesDefaultSchema(InGameReceptionUI reception, ChatSettings chatSettings) {
-
         return create()
             .setName("tg")
             .addCommand(
@@ -212,13 +201,9 @@ public class TelegramModule extends AbstractModule {
             UptimeCommand.class
         ).forEach(cmd -> commandMultibinder.addBinding().to(cmd).in(Scopes.SINGLETON));
 
-       // bind(NamedTabExecutor.class)
-      //      .to(ChatSettings.class);
         bind(TabExecutor.class)
             .to(CommandProcessor.class)
             .in(Scopes.SINGLETON);
-    //    bind(MainConfig.class)
-      //      .in(Scopes.SINGLETON);
 
         bind(StatCollector.class)
             .in(Scopes.SINGLETON);

@@ -23,7 +23,6 @@ import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.hooks.ForeignPluginHook;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
-import me.fulcanelly.tgbridge.view.NamedTabExecutor;
 
 @Getter
 public class Bridge extends JavaPlugin {
@@ -55,11 +54,33 @@ public class Bridge extends JavaPlugin {
         secode.generateSecretTempCode();
     }
 
+
+    boolean canStartBot = true;
+
+    void checkToken(String apiToken) {
+        if (apiToken == null || apiToken.isEmpty()) {
+            this.getLogger().warning("API token is empty, use /attach <secretTempCode> to pin one");
+            return;
+        } 
+
+        var bot = new TGBot(apiToken, null);
+
+        try { 
+            bot.getMe();
+        } catch (Exception e) {
+            canStartBot = false;
+        }
+    }
+
     @Inject 
     void checkConfig(MainConfig config) {
         if (config.getChatId() == null) {
             this.getLogger().warning("chat_id is null, use /attach <secretTempCode> to pin one");
         }
+
+        checkToken(config.getApiToken());
+    
+    
     }
 
     void regSpigotListeners(Listener ...listeners) {
@@ -116,10 +137,12 @@ public class Bridge extends JavaPlugin {
             );
 
             tlog.sendToPinnedChat("Plugin started");
-            bot.start();
-        } catch(Exception e) {
+            if (canStartBot) {
+                bot.start();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-            logger.warning( e.getMessage());
+            logger.warning(e.getMessage());
         }
 
         logger.info("Done");
