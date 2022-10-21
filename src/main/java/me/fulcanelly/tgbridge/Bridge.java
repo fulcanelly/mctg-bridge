@@ -59,7 +59,7 @@ public class Bridge extends JavaPlugin {
 
     void checkToken(String apiToken) {
         if (apiToken == null || apiToken.isEmpty()) {
-            this.getLogger().warning("API token is empty, use /attach <secretTempCode> to pin one");
+            this.getLogger().warning("API token is empty, try set it");
             return;
         } 
 
