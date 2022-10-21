@@ -147,7 +147,15 @@ public class TelegramModule extends AbstractModule {
                     .setDescription("controls telegram account")
                     .addCommand(
                         named("register")
-                            .setExecutor(args -> reception.onPlayerRegisterRequest((Player)args.getSender()))
+                            .setExecutor(args -> {
+                                var sender = args.getSender();
+                                
+                                if (sender instanceof Player p) {
+                                    reception.onPlayerRegisterRequest(p);
+                                } else {
+                                    sender.sendMessage("Only player can use this command");
+                                }
+                            })
                     )
             )
             .generateHelpPage()
