@@ -89,6 +89,29 @@ public class ActionListener implements Listener {
 
     }
 
+    // forward personal messages to direct messages 
+    // in telegram if account is bound
+    @EventHandler
+    void onCommand(PlayerCommandPreprocessEvent event) {
+        var list = new ArrayList<String>(
+            List.of(event.getMessage().split(" ")));
+
+        if (list.size() < 3) {
+            return;
+        }
+        if (!list.get(0).equals("/w")) {
+            return;
+        }
+       
+        var msg = list.subList(2, list.size())
+            .stream().collect(Collectors.joining(" "));
+
+        reception.getTgByUser(list.get(1)).stream()
+            .forEach(target -> 
+                bot.sendMessage(target, UsefulStuff.formatMarkdown("private message from " + event.getPlayer().getName() + ":\n\n" + msg))
+            );
+    }
+
     @EventHandler
     void onChatEvent(AsyncPlayerChatEvent event) {
         if (!config.enable_chat) {
