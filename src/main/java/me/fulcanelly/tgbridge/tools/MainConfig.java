@@ -11,7 +11,7 @@ import me.fulcanelly.tgbridge.utils.config.annotations.Nullable;
 
 @ConfigFile(file = "config.yml") @ToString
 public class MainConfig {
-    
+
     @Saveable
     public String api_token;
 
@@ -24,12 +24,12 @@ public class MainConfig {
     @Saveable @Nullable @Optional
     public String test_field = "works";
 
-    @Saveable 
+    @Saveable
     public Boolean log_status;
 
     @Saveable
     public Boolean enable_chat = true;
-    
+
     public String getApiToken() {
         return api_token;
     }
@@ -37,18 +37,13 @@ public class MainConfig {
     public String getChatId() {
         return chat_id;
     }
-    
+
     public boolean isLoginManagerEnabled() {
         return login_manger;
     }
 
     public <T>void setChatId(T chat_id) {
         this.chat_id = chat_id.toString();
-    }
-
-    public static void main(String[] args) {
-        var yaml = new Yaml(new Constructor(MainConfig.class));
-        System.out.println((MainConfig)yaml.load("{}"));
     }
 
 }
