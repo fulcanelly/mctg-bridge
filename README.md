@@ -53,6 +53,12 @@ For now all they by default enabled (except last ones since they depedns from co
 todo: add configurability and scripting 
 
 
+### How to setup ngrok (`/tunnel` command)
+
+To setup ngrok or telegram `/tunnel` command you need to put you ngrok auth to config file field `ngrok_auth`
+
+you can get one from https://ngrok.com
+
 ### How to build
 
 - Build by yourself

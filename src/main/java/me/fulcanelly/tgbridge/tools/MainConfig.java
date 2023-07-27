@@ -30,6 +30,13 @@ public class MainConfig {
     @Saveable
     public Boolean enable_chat = true;
 
+    @Saveable @Nullable
+    public String ngrok_auth;
+
+    public String getNgrokAuthToken() {
+        return ngrok_auth;
+    }
+
     public String getApiToken() {
         return api_token;
     }

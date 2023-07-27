@@ -27,6 +27,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+       <dependency>
+          <groupId>com.github.alexdlaird</groupId>
+          <artifactId>java-ngrok</artifactId>
+          <version>1.7.2</version>
+        </dependency>
+
         <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>

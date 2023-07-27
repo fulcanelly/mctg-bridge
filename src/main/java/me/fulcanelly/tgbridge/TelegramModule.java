@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.github.alexdlaird.ngrok.NgrokClient;
+import com.github.alexdlaird.ngrok.conf.JavaNgrokConfig;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
@@ -13,6 +15,7 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
+import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
@@ -40,6 +43,7 @@ import me.fulcanelly.tgbridge.tools.command.tg.PingCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.StartCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.StatsCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.TopCommand;
+import me.fulcanelly.tgbridge.tools.command.tg.TunnelCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.UptimeCommand;
 import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
@@ -113,7 +117,21 @@ public class TelegramModule extends AbstractModule {
         return bot.getMe()
             .getUsername();
     }
-    
+
+    @Provides
+    Server getServer() {
+        return plugin.getServer();
+    }
+
+    @Provides @Singleton
+    NgrokClient getNgrokClient(MainConfig config) {
+        return new NgrokClient.Builder()
+            .withJavaNgrokConfig(
+                new JavaNgrokConfig.Builder()
+                    .withAuthToken(config.getNgrokAuthToken())
+                    .build())
+            .build();
+    }
 
     @Provides @Singleton 
     CommandManager provideCommandManager(@Named("bot.username") String username) {
@@ -197,6 +215,7 @@ public class TelegramModule extends AbstractModule {
         var commandMultibinder = Multibinder.newSetBinder(binder(), CommandRegister.class);
 
         List.of(
+            TunnelCommand.class,
             KickMeCommand.class,
             ListCommand.class,
             AttachCommand.class,
