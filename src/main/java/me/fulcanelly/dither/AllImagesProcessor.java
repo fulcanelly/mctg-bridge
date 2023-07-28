@@ -9,9 +9,8 @@ import javax.imageio.ImageIO;
 import me.fulcanelly.dither.handlers.ImageHandler;
 import me.fulcanelly.dither.utils.Traverser;
 
-public class AllImagesProcessor {
 
-    
+public class AllImagesProcessor {
     Traverser traverser; 
     ImageHandler algorithm;
 
