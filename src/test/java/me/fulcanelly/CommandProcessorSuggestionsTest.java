@@ -98,4 +98,13 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
                 Set.of(),
                 suggestion);
     }
+
+    @Test()
+    void testBrokenCommandWithSpace() {
+        var suggestion = obtainUnorderedHintFor("ch", "ch");
+        assertEquals(
+                "Must suggest nothing",
+                Set.of(),
+                suggestion);
+    }
 }
