@@ -92,6 +92,10 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
 
     @Test()
     void testBrokenCommand() {
-
+        var suggestion = obtainUnorderedHintFor("chr");
+        assertEquals(
+                "Must suggest nothing",
+                Set.of(),
+                suggestion);
     }
 }
