@@ -23,7 +23,7 @@ import me.fulcanelly.tgbridge.TelegramModule;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 import me.fulcanelly.tgbridge.tools.twofactor.InGameReceptionUI;
 
-public class BaseTest {
+public class BaseTest extends AbstractModule {
 
     Plugin makePluginMock() {
         var pluginMock = mock(Plugin.class);

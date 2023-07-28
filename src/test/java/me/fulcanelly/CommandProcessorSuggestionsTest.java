@@ -17,6 +17,8 @@ import com.google.inject.Inject;
 
 import me.fulcanelly.tgbridge.tools.command.mc.CommandProcessor;
 import static me.fulcanelly.tgbridge.tools.command.mc.parser.CommandBuilder.*;
+
+import me.fulcanelly.tgbridge.tools.command.mc.parser.ArgumentBuilder;
 import me.fulcanelly.tgbridge.tools.command.mc.parser.CommandSchema;
 import static me.fulcanelly.tgbridge.tools.command.mc.parser.EnumeratedCommandBuilder.*;
 
@@ -29,23 +31,30 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
     @Inject
     CommandProcessor commandProcessor;
 
+    @Provides
+    @Singleton
+    CommandSchema obtainCommandSchema() {
+        return create()
+                .setName("tg")
+                .addCommand(
+                        named("a")
+                                .addCommand(
+                                        named("func")
+                                                .addArgument(ArgumentBuilder.create().setName("name"))
+                                                .addArgument(ArgumentBuilder.create().setName("age")))
+                                .addCommand(named("c").addCommand(named("l")))
+                                .addCommand(named("d")),
+                        named("chat")
+                                .addCommand(
+                                        enumerated("show", "hide").done()),
+                        named("account")
+                                .addCommand(named("register")))
+                .done();
+    }
+
     @Override
     Module getModule() {
-        return new AbstractModule() {
-            @Provides
-            @Singleton
-            CommandSchema obtainCommandSchema() {
-                return create()
-                        .setName("tg")
-                        .addCommand(
-                                named("chat")
-                                        .addCommand(
-                                                enumerated("show", "hide").done()),
-                                named("account")
-                                        .addCommand(named("register")))
-                        .done();
-            }
-        };
+        return this;
     }
 
     private Set<String> obtainUnorderedHintFor(String... arguments) {
@@ -59,7 +68,7 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
         var suggestion = obtainUnorderedHintFor();
         assertEquals(
                 "Must suggest 'chat', 'account'",
-                Set.of("chat", "account"),
+                Set.of("a", "chat", "account"),
                 suggestion);
     }
 
@@ -100,11 +109,48 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
     }
 
     @Test()
-    void testBrokenCommandWithSpace() {
+    void testBrokenCommandFirstMatchWithSpace() {
         var suggestion = obtainUnorderedHintFor("ch", "ch");
         assertEquals(
                 "Must suggest nothing",
                 Set.of(),
                 suggestion);
     }
+
+    @Test
+    void testBrokenCommandWithSpace() {
+        var suggestion = obtainUnorderedHintFor("sdfksd9349543", "ch");
+        assertEquals(
+                "Must suggest nothing",
+                Set.of(),
+                suggestion);
+    }
+
+    @Test
+    void testDeepSuggest() {
+        var suggestion = obtainUnorderedHintFor("tg", "a", "c");
+        assertEquals(
+                "Must suggest l",
+                Set.of("l"),
+                suggestion);
+    }
+
+    @Test
+    void testArgumentSuggest() {
+        var suggestion = obtainUnorderedHintFor("tg", "a", "func");
+        assertEquals(
+                "Must suggest l",
+                Set.of("name:", "age:"),
+                suggestion);
+    }
+
+    @Test
+    void testArgumentHalsWritten()  {
+        var suggestion = obtainUnorderedHintFor("tg", "a", "func", "a");
+        assertEquals(
+                "Must suggest relevant: 'age:'",
+                Set.of("age:"),
+                suggestion);
+    }
+
 }
