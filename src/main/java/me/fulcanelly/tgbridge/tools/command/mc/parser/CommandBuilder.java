@@ -37,7 +37,7 @@ public class CommandBuilder {
         return this;
     }
 
-    public CommandBuilder addCommand(CommandBuilder ...cbuilders) {
+    public CommandBuilder addCommand(CommandBuilder... cbuilders) {
         for (var it : cbuilders) {
             this.addCommandSchema(it.done());
         }
@@ -49,7 +49,7 @@ public class CommandBuilder {
         return this;
     }
 
-    public <T>CommandBuilder addArgument(ArgumentBuilder<T> abuilder) {
+    public <T> CommandBuilder addArgument(ArgumentBuilder<T> abuilder) {
         return this.addActualArgument(abuilder.done());
     }
 
@@ -57,12 +57,14 @@ public class CommandBuilder {
         cmd.argumentByName.put(argument.name, argument);
         return this;
     }
-    
+
     public CommandBuilder setExecutor(Consumer<ArgumentsBundle> executor) {
-        cmd.evaluator = Optional.of(executor);
+        if (executor != null) {
+            cmd.evaluator = Optional.of(executor);
+        }
         return this;
     }
-    
+
     public CommandBuilder generateHelpPage() {
 
         return this;
@@ -81,6 +83,7 @@ public class CommandBuilder {
         return joiner.toString();
 
     }
+
     public CommandSchema done() {
         if (cmd.evaluator.isEmpty()) {
             var message = getHelpPageMessage();
