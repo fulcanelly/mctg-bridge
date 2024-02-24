@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import javax.inject.Inject;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -142,7 +143,56 @@ public class MessageOptimizationTest extends BaseTest {
     }
 
     @Test
+    @SneakyThrows
     void shouldDeduplicateMisxedEvents() {
+        Thread.onSpinWait();
+
+        listener.onPlayerJoing(
+                new PlayerJoinEvent(getPlayerMock(), null));
+
+        listener.onPlayerLeave(new PlayerQuitEvent(getPlayerMock(), null));
+
+        listener.onPlayerJoing(
+                new PlayerJoinEvent(getPlayerMock(), null));
+
+        listener.onPlayerLeave(new PlayerQuitEvent(getPlayerMock(), null));
+
+        listener.onDeath(new PlayerDeathEvent(getPlayerMock(), null, 0, "hz was slain by Wither Skeleton"));
+        listener.onDeath(new PlayerDeathEvent(getPlayerMock(), null, 0, "hz was slain by Wither Skeleton"));
+        listener.onDeath(new PlayerDeathEvent(getPlayerMock(), null, 0, "hz was slain by Wither Skeleton"));
+
+        var inOrder = inOrder(bot);
+        Thread.sleep(100);
+
+        inOrder.verify(bot).sendMessage(eq(12345L), eq("`mockplayer` joined the server"));
+
+        inOrder.verify(bot).editMessage(eq(12345L), anyLong(),
+                eq("\n\n`mockplayer` joined the server\n`mockplayer` left the server"));
+        inOrder.verify(bot).editMessage(eq(12345L), anyLong(),
+                eq("\n\n`mockplayer` joined the server\n`mockplayer` left the server\n`mockplayer` joined the server"));
+        inOrder.verify(bot).editMessage(eq(12345L), anyLong(),
+                eq("\n # repeats 2 times \n\n`mockplayer` joined the server\n`mockplayer` left the server"));
+
+        inOrder.verify(bot).editMessage(eq(12345L), anyLong(), eq(
+                "\n # repeats 2 times \n\n" +
+                        "`mockplayer` joined the server\n" +
+                        "`mockplayer` left the server\n\n\n" +
+                        "hz was slain by Wither Skeleton"));
+
+        // not sure abot this case
+        // need to reconsider all benefits
+        inOrder.verify(bot).editMessage(eq(12345L), anyLong(), eq(
+                "\n # repeats 2 times \n\n" +
+                        "`mockplayer` joined the server\n" +
+                        "`mockplayer` left the server\n" +
+                        "hz was slain by Wither Skeleton"));
+
+        inOrder.verify(bot).editMessage(eq(12345L), anyLong(), eq(
+                "\n # repeats 2 times \n\n" +
+                        "`mockplayer` joined the server\n" +
+                        "`mockplayer` left the server\n\n" +
+                        " # repeats 3 times \n\n" +
+                        "hz was slain by Wither Skeleton"));
 
     }
 
