@@ -25,11 +25,15 @@ public class MessageOptimizationTest extends BaseTest {
     @Inject
     TGBot bot;
 
-    Player getPlayerMock() {
+    Player getPlayerMock(String name) {
         var player = mock(Player.class);
-        when(player.getName()).thenReturn("mockplayer");
+        when(player.getName()).thenReturn(name);
 
         return player;
+    }
+
+    Player getPlayerMock() {
+        return getPlayerMock("mockplayer");
     }
 
     @Test
@@ -116,6 +120,22 @@ public class MessageOptimizationTest extends BaseTest {
                 .editMessage(
                         eq(BaseMocksModule.CHAT_ID), anyLong(),
                         eq("\n\n" +
+                                "`mockplayer` joined the server\n" +
+                                "`mockplayer` left the server"));
+
+        boti.verify(bot)
+                .editMessage(
+                        eq(BaseMocksModule.CHAT_ID), anyLong(),
+                        eq("\n\n" +
+                                "`mockplayer` joined the server\n" +
+                                "`mockplayer` left the server\n" +
+                                "`mockplayer` joined the server"));
+
+        boti.verify(bot)
+                .editMessage(
+                        eq(BaseMocksModule.CHAT_ID), anyLong(),
+                        eq("\n" +
+                                " # repeats 2 times \n\n" +
                                 "`mockplayer` joined the server\n" +
                                 "`mockplayer` left the server"));
 
