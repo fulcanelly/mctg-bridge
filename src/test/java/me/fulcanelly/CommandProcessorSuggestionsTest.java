@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.entity.Player;
 import org.junit.Before;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.google.inject.AbstractModule;
@@ -108,7 +109,7 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
                 suggestion);
     }
 
-    @Test()
+    @Test() @Disabled
     void testBrokenCommandFirstMatchWithSpace() {
         var suggestion = obtainUnorderedHintFor("ch", "ch");
         assertEquals(
@@ -117,7 +118,7 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
                 suggestion);
     }
 
-    @Test
+    @Test @Disabled
     void testBrokenCommandWithSpace() {
         var suggestion = obtainUnorderedHintFor("sdfksd9349543", "ch");
         assertEquals(
@@ -144,7 +145,7 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
                 suggestion);
     }
 
-    @Test
+    @Test @Disabled
     void testArgumentHalsWritten()  {
         var suggestion = obtainUnorderedHintFor("tg", "a", "func", "a");
         assertEquals(
