@@ -1,19 +1,14 @@
 package me.fulcanelly;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.bukkit.entity.Player;
-import org.junit.Before;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 
 import me.fulcanelly.tgbridge.tools.command.mc.CommandProcessor;
@@ -109,7 +104,8 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
                 suggestion);
     }
 
-    @Test() @Disabled
+    @Test()
+    @Disabled
     void testBrokenCommandFirstMatchWithSpace() {
         var suggestion = obtainUnorderedHintFor("ch", "ch");
         assertEquals(
@@ -118,7 +114,8 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
                 suggestion);
     }
 
-    @Test @Disabled
+    @Test
+    @Disabled
     void testBrokenCommandWithSpace() {
         var suggestion = obtainUnorderedHintFor("sdfksd9349543", "ch");
         assertEquals(
@@ -145,8 +142,9 @@ public class CommandProcessorSuggestionsTest extends BaseTest {
                 suggestion);
     }
 
-    @Test @Disabled
-    void testArgumentHalsWritten()  {
+    @Test
+    @Disabled
+    void testArgumentHalfWritten() {
         var suggestion = obtainUnorderedHintFor("tg", "a", "func", "a");
         assertEquals(
                 "Must suggest relevant: 'age:'",
