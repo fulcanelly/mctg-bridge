@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.json.simple.JSONObject;
 
@@ -13,6 +14,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
@@ -35,7 +37,24 @@ public class BaseMocksModule extends AbstractModule {
     @Provides
     @Singleton
     TGBot getTgBot() {
+
         var tg = mock(TGBot.class);
+
+        doAnswer((args) -> {
+            Random rand = new Random();
+            JSONObject object = new JSONObject(Map.of("message_id", rand.nextLong()));
+            return new Message(object, getTgBot());
+        })
+                .when(tg)
+                .sendMessage(anyLong(), anyString());
+
+        doAnswer((args) -> {
+            Random rand = new Random();
+            JSONObject object = new JSONObject(Map.of("message_id", rand.nextLong()));
+            return new Message(object, getTgBot());
+        })
+                .when(tg)
+                .editMessage(anyLong(), anyLong(), anyString());
 
         return tg;
     }
