@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.fulcanelly</groupId>
     <artifactId>tg-bridge</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <packaging>jar</packaging>
     <name>tg-bridge</name>
     <description>A bridge between Telegram group and Minecraft chat</description>
