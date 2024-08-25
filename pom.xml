@@ -118,14 +118,6 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <version>1.28</version>
         </dependency>
-        <!-- <dependency>
-            <groupId>me.fulcanelly</groupId>
-            <artifactId>InviteSystemCore</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/invitesys/core/target/InviteSystemCore-1.0.jar</systemPath>
-        </dependency> -->
-
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-multibindings</artifactId>
