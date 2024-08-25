@@ -26,34 +26,36 @@ import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 @Getter
 public class Bridge extends JavaPlugin {
-    
+
     @Override
     public void onDisable() {
 
     }
 
-    @Inject 
+    @Inject
     TelegramLogger tlog;
 
     @Inject
     TGBot bot;
+
+    @Inject
+    MainConfig mainConfig;
 
     Injector injector;
 
     @Inject
     void setupTelegramBotListeners(TGBot bot, EventPipe tgpipe, TelegramListener listener) {
         bot.getDetectorManager()
-            .addDetector(MessageEvent.detector);
+                .addDetector(MessageEvent.detector);
 
         tgpipe
-            .registerListener(listener);
+                .registerListener(listener);
     }
 
-    @Inject 
+    @Inject
     void generateSecretTempCode(SecretCodeMediator secode) {
         secode.generateSecretTempCode();
     }
-
 
     boolean canStartBot = true;
 
@@ -61,33 +63,32 @@ public class Bridge extends JavaPlugin {
         if (apiToken == null || apiToken.isEmpty()) {
             this.getLogger().warning("API token is empty, try set it");
             return;
-        } 
+        }
 
         var bot = new TGBot(apiToken, null);
 
-        try { 
+        try {
             bot.getMe();
         } catch (Exception e) {
             canStartBot = false;
         }
     }
 
-    @Inject 
+    @Inject
     void checkConfig(MainConfig config) {
         if (config.getChatId() == null) {
             this.getLogger().warning("chat_id is null, use /attach <secretTempCode> to pin one");
         }
 
         checkToken(config.getApiToken());
-    
-    
+
     }
 
-    void regSpigotListeners(Listener ...listeners) {
+    void regSpigotListeners(Listener... listeners) {
         for (var listener : listeners) {
             this.getServer()
-                .getPluginManager()
-                .registerEvents(listener, this);
+                    .getPluginManager()
+                    .registerEvents(listener, this);
         }
 
     }
@@ -97,20 +98,19 @@ public class Bridge extends JavaPlugin {
         for (var register : registers) {
             register.registerCommand(manager);
         }
-    } 
+    }
 
-
-    @Inject 
+    @Inject
     void regHook(Set<ForeignPluginHook> hooks) {
         for (var hook : hooks) {
             if (hook.isAvailable()) {
                 hook.setup();
-            };
+            }
+            ;
         }
     }
 
-
-    @Inject 
+    @Inject
     void registerTabExecutor(TabExecutor executor) {
         var cmd = this.getCommand("tg");
         cmd.setTabCompleter(executor);
@@ -121,20 +121,18 @@ public class Bridge extends JavaPlugin {
     public void onEnable() {
         var logger = getLogger();
         try {
-            
+
             logger.info("Loading stuff...");
             injector = Guice.createInjector(
-                new TelegramModule(this)
-            );
+                    new TelegramModule(this));
             logger.info("Injecting stuff");
 
             injector.injectMembers(this);
             logger.info("Starting");
 
             regSpigotListeners(
-                injector.getInstance(StatCollector.class), 
-                injector.getInstance(ActionListener.class)
-            );
+                    injector.getInstance(StatCollector.class),
+                    injector.getInstance(ActionListener.class));
 
             tlog.sendToPinnedChat("Plugin started");
             if (canStartBot) {
@@ -147,6 +145,6 @@ public class Bridge extends JavaPlugin {
 
         logger.info("Done");
 
-    }   
+    }
 
 }
