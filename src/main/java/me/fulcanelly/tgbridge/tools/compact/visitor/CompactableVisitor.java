@@ -1,7 +1,5 @@
 package me.fulcanelly.tgbridge.tools.compact.visitor;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import me.fulcanelly.tgbridge.tools.compact.message.NoteMessage;
 import me.fulcanelly.tgbridge.tools.compact.message.PlayerMessage;
 

@@ -1,10 +1,6 @@
 package me.fulcanelly.tgbridge.tools.command.tg;
 
-import lombok.AllArgsConstructor;
-import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
-import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
-import me.fulcanelly.tgbridge.tools.command.tg.base.ReplierBuilder;
 import me.fulcanelly.tgbridge.tools.command.tg.bound.PlayerBoundCommand;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.data.LazyValue;

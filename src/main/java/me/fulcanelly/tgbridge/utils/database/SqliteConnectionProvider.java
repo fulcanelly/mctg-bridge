@@ -7,7 +7,6 @@ import java.sql.DriverManager;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.SneakyThrows;
 

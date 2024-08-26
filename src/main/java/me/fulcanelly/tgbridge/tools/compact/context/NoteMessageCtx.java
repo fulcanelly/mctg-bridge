@@ -1,9 +1,5 @@
 package me.fulcanelly.tgbridge.tools.compact.context;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
-
 import lombok.Getter;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.compact.message.CompactableMessage;

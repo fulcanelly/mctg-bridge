@@ -1,7 +1,5 @@
 package me.fulcanelly.tgbridge.tools.command.tg;
 
-import java.util.function.Function;
-
 import com.google.inject.Inject;
 
 import me.fulcanelly.tgbridge.tapi.CommandManager;
@@ -18,7 +16,7 @@ public class StartCommand implements CommandRegister {
      String onStartCommand(CommandEvent event) {
         var args = event.getArgs();
         if (args.size() == 1) {
-            if (reception.onPrivateStartCommand(event.getFrom().getId(), args.get(0))) {
+            if (reception.onPrivateStartCommand(event.getMessage().getFrom().getId(), args.get(0))) {
                 return "ok you are signed up now";
             };
             return "something went wrong";

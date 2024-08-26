@@ -1,12 +1,11 @@
 package me.fulcanelly.tgbridge.utils.data;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 
-@Data @AllArgsConstructor @Builder @NoArgsConstructor @With 
+@Data @AllArgsConstructor @NoArgsConstructor @With 
 public class FrequencyTable<T> {
     
     public int count = 1;

@@ -27,18 +27,18 @@ public class CommandManager {
 			privatePattern = Pattern.compile(private_form + template);
 			publicPattern = Pattern.compile(public_form + template);
 		}
-		
+
 		String generateGroupPattern(String command) {
 			return String.format("%s@%s", command, username);
 		}
 
 		boolean tryRunEventWith(CommandEvent event, Pattern pattern) {
 			Matcher matcher = pattern.matcher(
-				event.getText() );
+					event.getMessage().getText());
 
 			if (matcher.find()) {
 				String arguments = matcher.group("arguments");
-				if (arguments != null) { 
+				if (arguments != null) {
 					event.args = arguments.split("\\s");
 				}
 				action.accept(event);
@@ -70,28 +70,28 @@ public class CommandManager {
 
 	public CommandManager addCommand(String command, Consumer<CommandEvent> action) {
 		return new Command(command, action).getCommandManager();
-	}	
+	}
 
 	public CommandManager addCommand(String command, String answer) {
-		return new Command(command, msg -> msg.reply(answer)).getCommandManager();
-	}	
+		return new Command(command, msg -> msg.getMessage().reply(answer)).getCommandManager();
+	}
 
 	public CommandManager addCommand(String command, Supplier<String> strProducer) {
 		return new Command(command, makeConsumerFromSupplier(strProducer)).getCommandManager();
 	}
 
 	Consumer<CommandEvent> makeConsumerFromSupplier(Supplier<String> strProducer) {
-		return event -> event.reply(strProducer.get());
+		return event -> event.getMessage().reply(strProducer.get());
 	}
 
 	Consumer<CommandEvent> makeConsumerFromFunction(Function<CommandEvent, String> function) {
-		return event -> event.reply(function.apply(event));
+		return event -> event.getMessage().reply(function.apply(event));
 	}
 
 	public CommandManager addCommand(String command, Function<CommandEvent, String> function) {
 		return new Command(command, makeConsumerFromFunction(function)).getCommandManager();
 	}
-	
+
 	public interface StringReturner {
 		String get();
 	}
@@ -99,21 +99,19 @@ public class CommandManager {
 	interface CommandMatcher {
 		boolean match(Command cmd);
 	};
-	
+
 	public void tryMatch(CommandEvent event) {
-		
-		boolean is_private = event
-			.getChat()
-			.isPrivate();
+		final var matchers = new CommandMatcher[] {
+				command -> command.matchForPrivate(event),
+				command -> command.matchForGroup(event)
+		};
 
-		CommandMatcher matcher = is_private ? 
-			command -> command.matchForPrivate(event): 
-			command -> command.matchForGroup(event);
-
-		for (Command command: commands) {
-			if (matcher.match(command)) {
-				return;
+		for (Command command : commands) {
+			for (var matcher : matchers) {
+				if (matcher.match(command)) {
+					return;
+				}
 			}
 		}
-    }
+	}
 }

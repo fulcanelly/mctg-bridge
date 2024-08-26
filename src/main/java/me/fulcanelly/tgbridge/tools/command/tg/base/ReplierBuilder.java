@@ -7,7 +7,7 @@ import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 public class ReplierBuilder extends FullCommandBuilder {
 
     public ReplierBuilder(String command, Function<CommandEvent, String> eventReplier) {
-        super(command, event -> event.reply(eventReplier.apply(event)));
+        super(command, event -> event.getMessage().reply(eventReplier.apply(event)));
     }
 
 }

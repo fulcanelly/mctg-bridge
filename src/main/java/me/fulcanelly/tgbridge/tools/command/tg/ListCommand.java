@@ -34,7 +34,7 @@ public class ListCommand extends FullCommandBuilder {
             "Currently there are " + nick_names.size() + " players online: \n\n" + String.join("\n", nick_names):
             emptyServerMessage;
 
-        msg.reply(result);        
+        msg.getMessage().reply(result);        
     }
 
 

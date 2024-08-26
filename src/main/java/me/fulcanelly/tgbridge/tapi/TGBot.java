@@ -8,19 +8,18 @@ import java.io.InputStream;
 
 import me.fulcanelly.clsql.stop.Stopable;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
-import me.fulcanelly.tgbridge.utils.events.detector.EventDetectorManager;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
+
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import com.google.common.eventbus.EventBus;
 
 import lombok.SneakyThrows;
 
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
 
 enum Method {
     SEND,
@@ -33,24 +32,23 @@ enum Method {
 }
 
 public class TGBot implements Stopable {
-    
 
     private ArrayList<Long> recent_updates = new ArrayList<>();
     static int MAX_RECENT_UPDATES = 10;
-    
+
     /**
      * @return true if update not handlet yet
-     * otherwise return false and add update to list
-     * also keep list fixed size
+     *         otherwise return false and add update to list
+     *         also keep list fixed size
      * 
-     * needed to prevent message repeating
+     *         needed to prevent message repeating
      * 
-     * todo
+     *         todo
      */
     boolean updateWatcher(Long update_id) {
         boolean result = true;
 
-        synchronized(recent_updates) {
+        synchronized (recent_updates) {
             adjustRecentListSize();
 
             if (recent_updates.contains(update_id)) {
@@ -68,38 +66,48 @@ public class TGBot implements Stopable {
             recent_updates.remove(0);
         }
     }
- 
+
     class parse_mode {
-        static final String Markdown = "Markdown"; 
-        static final String HTML = "HTML"; 
+        static final String Markdown = "Markdown";
+        static final String HTML = "HTML";
     }
 
     String apiToken;
-    EventDetectorManager<JSONObject, TGBot> detector;
+    // EventDetectorManager<JSONObject, TGBot> detector;
     long last_update_id = -1;
 
-    public TGBot(String apiToken, EventPipe pipe) {
-        detector = new EventDetectorManager<>(pipe);
+    EventBus bus;
+
+    public TGBot(String apiToken, EventBus bus) {
+        // detector = new EventDetectorManager<>(pipe);
+        this.bus = bus;
         this.apiToken = apiToken;
     }
-    
-    public EventDetectorManager<JSONObject, TGBot> getDetectorManager() {
-        return detector;
-    }
+
+    // public EventDetectorManager<JSONObject, TGBot> getDetectorManager() {
+    // return detector;
+    // }
 
     class MethodCaller {
 
         final Map<String, String> requestParams = new HashMap<>();
 
         String decodeMethod(Method m) {
-            switch(m) {
-                case SEND: return "sendMessage";
-                case EDIT: return "editMessageText";
-                case UPDATES: return "getUpdates";
-                case GET_ME: return "getMe";
-                case PIN: return "pinChatMessage";
-                case DELETE: return "deleteMessage";
-                case GET_FILE: return "getFile";
+            switch (m) {
+                case SEND:
+                    return "sendMessage";
+                case EDIT:
+                    return "editMessageText";
+                case UPDATES:
+                    return "getUpdates";
+                case GET_ME:
+                    return "getMe";
+                case PIN:
+                    return "pinChatMessage";
+                case DELETE:
+                    return "deleteMessage";
+                case GET_FILE:
+                    return "getFile";
             }
             throw new RuntimeException("Unknown method");
         }
@@ -110,16 +118,16 @@ public class TGBot implements Stopable {
         String encodeValue(String value) {
             return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
         }
-         
+
         void generateRequestLink(String methodName) {
             link = String.format("https://api.telegram.org/bot%s/%s", apiToken, methodName);
-        } 
+        }
 
         public MethodCaller(String methodName) {
             generateRequestLink(methodName);
         }
-        
-        public MethodCaller(Method method) {   
+
+        public MethodCaller(Method method) {
             String methodName = decodeMethod(method);
             generateRequestLink(methodName);
         }
@@ -138,15 +146,15 @@ public class TGBot implements Stopable {
 
         public String call() {
             String encodedURL = requestParams.keySet()
-                .stream()
-                .map(key -> key + "=" + encodeValue(requestParams.get(key)))
-                .collect(Collectors.joining("&", link + "?", ""));
+                    .stream()
+                    .map(key -> key + "=" + encodeValue(requestParams.get(key)))
+                    .collect(Collectors.joining("&", link + "?", ""));
             if (logging) {
                 System.out.println("encodedURL: " + encodedURL);
             }
             try {
                 return UsefulStuff.loadPage(encodedURL);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return "{}";
             }
@@ -154,19 +162,19 @@ public class TGBot implements Stopable {
     }
 
     public Message parseResponse(String text) {
-        JSONObject result = (JSONObject)UsefulStuff
-            .stringToJSON(text)
-            .get("result");
+        JSONObject result = (JSONObject) UsefulStuff
+                .stringToJSON(text)
+                .get("result");
 
         return new Message(result, this);
     }
-    
-    //todo
+
+    // todo
     public boolean pinChatMessage(String chat_id, String message_id, Boolean dont_notificate) {
         new MethodCaller(Method.PIN)
-            .put("disable_notification", dont_notificate.toString())
-            .put("chat_id", chat_id)
-            .put("message_id", message_id).call();
+                .put("disable_notification", dont_notificate.toString())
+                .put("chat_id", chat_id)
+                .put("message_id", message_id).call();
         return true;
     }
 
@@ -176,9 +184,9 @@ public class TGBot implements Stopable {
 
     MethodCaller defaultCaller(Method method, String text, Long chat_id) {
         return new MethodCaller(method)
-            .put("parse_mode", parse_mode.Markdown)
-            .put("chat_id", chat_id.toString())
-            .put("text", text);
+                .put("parse_mode", parse_mode.Markdown)
+                .put("chat_id", chat_id.toString())
+                .put("text", text);
     }
 
     public Message sendMessage(Long chat_id, String text) {
@@ -188,21 +196,21 @@ public class TGBot implements Stopable {
 
     public Message sendMessage(Long chat_id, String text, Long reply_to_message_id) {
         String page = defaultCaller(Method.SEND, text, chat_id)
-            .put("reply_to_message_id", reply_to_message_id.toString()).call();
+                .put("reply_to_message_id", reply_to_message_id.toString()).call();
 
         return parseResponse(page);
     }
 
     public void deleteMessage(Long chat_id, Long message_id) {
         new MethodCaller(Method.DELETE)
-            .put("message_id", message_id.toString())
-            .put("chat_id", chat_id.toString())
-            .call();
+                .put("message_id", message_id.toString())
+                .put("chat_id", chat_id.toString())
+                .call();
     }
 
     public Message editMessage(Long chat_id, Long message_id, String text) {
         String page = defaultCaller(Method.EDIT, text, chat_id)
-            .put("message_id", message_id.toString()).call();
+                .put("message_id", message_id.toString()).call();
 
         return parseResponse(page);
     }
@@ -211,13 +219,13 @@ public class TGBot implements Stopable {
         String page = new MethodCaller(Method.UPDATES).call();
         return UsefulStuff.stringToJSON(page);
     }
-    
+
     public From getMe() {
         String page = new MethodCaller(Method.GET_ME).call();
 
         Object response = UsefulStuff
-            .stringToJSON(page)
-            .get("result");
+                .stringToJSON(page)
+                .get("result");
 
         return new From(response);
     }
@@ -229,40 +237,39 @@ public class TGBot implements Stopable {
     public JSONArray getUpdates() {
         JSONObject last = loadLast();
 
-        JSONArray updates = (JSONArray)last.get("result"); 
+        JSONArray updates = (JSONArray) last.get("result");
 
-        if(updates == null) {
+        if (updates == null) {
             return new JSONArray();
-        } 
+        }
 
         return updates;
     }
 
     public Optional<TgFile> getFile(String fileId) {
         var result = new MethodCaller(Method.GET_FILE)
-            .enableLogging()
-            .put("file_id", fileId).call();
+                .enableLogging()
+                .put("file_id", fileId).call();
 
         var json = UsefulStuff.stringToJSON(result).get("result");
-        return Optional.ofNullable((JSONObject)json).map(TgFile::new);
+        return Optional.ofNullable((JSONObject) json).map(TgFile::new);
     }
 
     @SneakyThrows
     public InputStream loadFile(String filePath) {
         return UsefulStuff.loadFileHTTPS(
-            String.format("https://api.telegram.org/file/bot%s/%s", apiToken, filePath)
-        );
+                String.format("https://api.telegram.org/file/bot%s/%s", apiToken, filePath));
     }
 
     boolean updateLast(JSONObject update) {
-        long current = (long)update.get("update_id");
+        long current = (long) update.get("update_id");
 
-        if(last_update_id == current) {
+        if (last_update_id == current) {
             return true;
         }
 
         last_update_id = current;
-        
+
         setOffset(current + 1l);
         return false;
     }
@@ -276,7 +283,7 @@ public class TGBot implements Stopable {
 
     @SneakyThrows
     void loop(Runnable func) {
-        while(true && alive) {
+        while (true && alive) {
             func.run();
             Thread.sleep(30);
         }
@@ -284,22 +291,28 @@ public class TGBot implements Stopable {
 
     public void start() {
         Runnable runnable = () -> loop(this::updater);
-        new Thread(runnable).start();    
+        new Thread(runnable).start();
     }
 
     void updater() {
-        for(Object updateObject: getUpdates()) {
-            JSONObject update = (JSONObject)updateObject;
-            updateWatcher((Long)update.get("update_id"));
-            this.updateLast(update);
-            detector.handle(update, this);
-        } 
+        for (Object updateObject : getUpdates()) {
+            JSONObject update = (JSONObject) updateObject;
+            updateWatcher((Long) update.get("update_id"));
+            updateLast(update);
+
+            Object message = update.get("message");
+
+            if (message != null) {
+                bus.post(new Message(message, this));
+            }
+
+        }
     }
-    
+
     public void setOffset(Long offset) {
         new MethodCaller(Method.UPDATES)
-            .put("offset", offset.toString())
-            .call();
+                .put("offset", offset.toString())
+                .call();
     }
 
 }

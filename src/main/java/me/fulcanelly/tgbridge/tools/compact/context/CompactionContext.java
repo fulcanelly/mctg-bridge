@@ -1,9 +1,5 @@
 package me.fulcanelly.tgbridge.tools.compact.context;
 
-import java.util.Optional;
-
-import javax.management.BadAttributeValueExpException;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import me.fulcanelly.tgbridge.tapi.TGBot;

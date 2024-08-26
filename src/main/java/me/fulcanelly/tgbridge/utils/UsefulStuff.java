@@ -6,11 +6,8 @@ import org.json.simple.parser.ParseException;
 
 import lombok.SneakyThrows;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 
 public class UsefulStuff {
@@ -39,20 +36,13 @@ public class UsefulStuff {
         }
     }
     
-    public static String formatMarkdown(String input) {
+    public static String escapeMarkdown(String input) {
         return input
             .replace("_", "\\_")
             .replace("*", "\\*")
             .replace("[", "\\[")
             .replace("`", "\\`");
 
-    }
-
-    public static String formatHtml(String input) {
-        return input
-            .replace(">", "&gt;")
-            .replace("<", "&lt;")
-            .replace("&", "&amp;");
     }
 
 

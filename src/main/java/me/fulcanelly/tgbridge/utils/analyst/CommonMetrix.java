@@ -47,7 +47,7 @@ public class CommonMetrix {
                 case 0 -> String.format("* %s  ⚰️",  player.getName());
                 default -> String.format("* %s   ♥️ %.2f",  player.getName(), player.getHealth());
             })
-            .map(username -> UsefulStuff.formatMarkdown(username))
+            .map(username -> UsefulStuff.escapeMarkdown(username))
             .collect(Collectors.toList());
     }
 

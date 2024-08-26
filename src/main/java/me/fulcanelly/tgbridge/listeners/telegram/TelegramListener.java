@@ -1,35 +1,35 @@
 package me.fulcanelly.tgbridge.listeners.telegram;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
+import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
-import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.ActualLastMessageObserver;
 import me.fulcanelly.tgbridge.tools.MainConfig;
-import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventReactor;
-import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
+
 
 import net.md_5.bungee.api.chat.TextComponent;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
-public class TelegramListener implements Listener {
+public class TelegramListener  {
 
     final ConsoleCommandSender console;
     final ChatSettings chatSetting;
-    final EventPipe telepipe;
+    // final EventPipe telepipe;
     final MainConfig config;
     final ActualLastMessageObserver msgobserv;  
     final CommandManager comds;
     
+    final EventBus eventBus;
+
     void broadcast(TextComponent component) {
         
         for (var player : Bukkit.getOnlinePlayers()) {
@@ -45,7 +45,7 @@ public class TelegramListener implements Listener {
             .sendMessage(component);
     }
 
-    boolean isRightChat(MessageEvent event) {
+    boolean isRightChat(Message event) {
         return event.getChat()
             .getId()
             .toString()
@@ -53,8 +53,8 @@ public class TelegramListener implements Listener {
                 config.getChatId());
     }
 
-    @EventReactor
-    public void onMessage(MessageEvent event) {
+    @Subscribe
+    public void onMessage(Message event) {
         var rightChat = this.isRightChat(event);
 
         if (rightChat) {
@@ -62,28 +62,29 @@ public class TelegramListener implements Listener {
         }
 
         if (isCommandEvent(event)) {
-            return;
+            eventBus.post(new CommandEvent(event));
+
         } else if (rightChat && config.enable_chat) {          
 
             broadcast(new EventFormatter(event).getText());
         }
     }
 
-    boolean isCommandEvent(MessageEvent event) {
+    @Subscribe
+    public void onCommand(CommandEvent event) {
+        comds.tryMatch(event);
+    }
+
+    boolean isCommandEvent(Message event) {
         String text = event.getText();
 
         if (text != null && text.startsWith("/")) {
-            telepipe.emit(new CommandEvent(event));
-
             return true;
         }
 
         return false;
     }
 
-    @EventReactor
-    public void onCommand(CommandEvent event) {
-        comds.tryMatch(event);
-    }
+
 }
 

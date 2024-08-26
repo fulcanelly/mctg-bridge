@@ -1,8 +1,5 @@
 package me.fulcanelly.tgbridge.tools;
 
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-
 import lombok.ToString;
 import me.fulcanelly.tgbridge.utils.config.annotations.ConfigFile;
 import me.fulcanelly.tgbridge.utils.config.annotations.Optional;

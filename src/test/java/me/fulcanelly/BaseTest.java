@@ -1,6 +1,5 @@
 package me.fulcanelly;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -8,8 +7,6 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.Plugin;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.google.inject.AbstractModule;

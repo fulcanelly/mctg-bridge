@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import com.github.alexdlaird.ngrok.NgrokClient;
 import com.github.alexdlaird.ngrok.conf.JavaNgrokConfig;
+import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
@@ -55,7 +56,6 @@ import me.fulcanelly.tgbridge.tools.stats.StatCollector;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.config.ConfigManager;
 import me.fulcanelly.tgbridge.utils.database.SqliteConnectionProvider;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import static me.fulcanelly.tgbridge.tools.command.mc.parser.CommandBuilder.*;
 
 import me.fulcanelly.tgbridge.tools.command.mc.parser.CommandSchema;
@@ -103,8 +103,8 @@ public class TelegramModule extends AbstractModule {
     }
 
     @Provides @Singleton
-    TGBot provideTGBot(MainConfig config, EventPipe ePipe) {
-        return new TGBot(config.getApiToken(), ePipe);
+    TGBot provideTGBot(MainConfig config, EventBus bus) {
+        return new TGBot(config.getApiToken(), bus);
     }
 
     @Provides @Singleton
@@ -228,6 +228,9 @@ public class TelegramModule extends AbstractModule {
             UptimeCommand.class
         ).forEach(cmd -> commandMultibinder.addBinding().to(cmd).in(Scopes.SINGLETON));
 
+        bind(EventBus.class)
+            .in(Scopes.SINGLETON);
+
         bind(TabExecutor.class)
             .to(CommandProcessor.class)
             .in(Scopes.SINGLETON);
@@ -235,8 +238,8 @@ public class TelegramModule extends AbstractModule {
         bind(StatCollector.class)
             .in(Scopes.SINGLETON);
 
-        bind(EventPipe.class)
-            .in(Scopes.SINGLETON);
+        // bind(EventPipe.class)
+        //     .in(Scopes.SINGLETON);
 
         bind(SignupLoginReception.class)
             .in(Scopes.SINGLETON);
