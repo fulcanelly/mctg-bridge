@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.bukkit.ChatColor;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import me.fulcanelly.tgbridge.tapi.Message;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -13,15 +14,14 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import java.awt.image.BufferedImage;
 
+@RequiredArgsConstructor
 public class EventFormatter {
 
     final Message message;
+    final Boolean enableDithering;
+
     PhotoFormatter imger = new PhotoFormatter(100);
 
-    public EventFormatter(Message event) {
-        this.message = event;
-    } 
-    
     static class Template {
         public static final String defBeginning = ChatColor.BLUE + "[tg]" + ChatColor.YELLOW + "[%s]";
         public static final String defEnding = ChatColor.RESET + " %s";
@@ -47,11 +47,13 @@ public class EventFormatter {
         String beginning = null;
         String ending = null;
 
-        msg.getPhoto().stream()
-            .map(arr -> arr.get(0).load(msg.getBot()))
-            .map(this::photoToText)
-            .forEach(result::addExtra);
-           
+        if (enableDithering) {
+            msg.getPhoto().stream()
+                .map(arr -> arr.get(0).load(msg.getBot()))
+                .map(this::photoToText)
+                .forEach(result::addExtra);
+        }
+        
         if (text == null) {
             beginning = String.format(Template.unknownBeginning, name);
             ending = Template.unknownEnding;

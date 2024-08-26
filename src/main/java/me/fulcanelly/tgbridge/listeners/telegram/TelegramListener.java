@@ -66,7 +66,7 @@ public class TelegramListener  {
 
         } else if (rightChat && config.enable_chat) {          
 
-            broadcast(new EventFormatter(event).getText());
+            broadcast(new EventFormatter(event, config.enable_dithering).getText());
         }
     }
 

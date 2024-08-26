@@ -148,7 +148,7 @@ public class ConfigManager<T> {
         String name = field.unwrap().getName();
 
         if (!data.containsKey(name) && !field.optional) {
-            error("%s file don't contains variable variable %s", file.toString(), name);
+            error("%s file don't contains variable %s", file.toString(), name);
         }
 
         if (value != null) {

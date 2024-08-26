@@ -27,6 +27,9 @@ public class MainConfig {
     @Saveable
     public Boolean enable_chat = true;
 
+    @Saveable @Nullable @Optional
+    public Boolean enable_dithering = false;
+
     @Saveable @Nullable
     public String ngrok_auth;
 

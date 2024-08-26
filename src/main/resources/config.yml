@@ -3,4 +3,5 @@ chat_id: null
 login_manger: false
 log_status: true
 enable_chat: true
+enable_dithering: false
 ngrok_auth: ""
