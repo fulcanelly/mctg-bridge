@@ -5,8 +5,6 @@ import java.util.logging.Logger;
 
 import com.google.inject.Inject;
 
-import net.md_5.bungee.api.ChatColor;
-
 public class SecretCodeMediator {
 
     int secretTempCode;
@@ -21,13 +19,12 @@ public class SecretCodeMediator {
 
     public synchronized int generateSecretTempCode() {
         secretTempCode = random.nextInt() % 100000;
-        logger.info( 
-            ChatColor.GREEN + "secretTempCode is set to " + secretTempCode);
+        logger.warning("secretTempCode is set to " + secretTempCode);
         return secretTempCode;
     }
-    
+
     public boolean isSecretCodeMatch(int code) {
         return secretTempCode == code;
-    } 
-    
+    }
+
 }
