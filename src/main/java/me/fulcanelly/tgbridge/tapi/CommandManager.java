@@ -34,7 +34,7 @@ public class CommandManager {
 
 		boolean tryRunEventWith(CommandEvent event, Pattern pattern) {
 			Matcher matcher = pattern.matcher(
-				event.getText() );
+				event.getMessage().getText() );
 
 			if (matcher.find()) {
 				String arguments = matcher.group("arguments");
@@ -73,7 +73,7 @@ public class CommandManager {
 	}	
 
 	public CommandManager addCommand(String command, String answer) {
-		return new Command(command, msg -> msg.reply(answer)).getCommandManager();
+		return new Command(command, msg -> msg.getMessage().reply(answer)).getCommandManager();
 	}	
 
 	public CommandManager addCommand(String command, Supplier<String> strProducer) {
@@ -81,11 +81,11 @@ public class CommandManager {
 	}
 
 	Consumer<CommandEvent> makeConsumerFromSupplier(Supplier<String> strProducer) {
-		return event -> event.reply(strProducer.get());
+		return event -> event.getMessage().reply(strProducer.get());
 	}
 
 	Consumer<CommandEvent> makeConsumerFromFunction(Function<CommandEvent, String> function) {
-		return event -> event.reply(function.apply(event));
+		return event -> event.getMessage().reply(function.apply(event));
 	}
 
 	public CommandManager addCommand(String command, Function<CommandEvent, String> function) {
@@ -103,6 +103,7 @@ public class CommandManager {
 	public void tryMatch(CommandEvent event) {
 		
 		boolean is_private = event
+		.getMessage()
 			.getChat()
 			.isPrivate();
 

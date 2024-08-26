@@ -298,7 +298,7 @@ public class TGBot implements Stopable {
         for (Object updateObject : getUpdates()) {
             JSONObject update = (JSONObject) updateObject;
             updateWatcher((Long) update.get("update_id"));
-            this.updateLast(update);
+            updateLast(update);
 
             Object message = update.get("message");
 

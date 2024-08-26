@@ -21,7 +21,7 @@ public class AttachCommand implements CommandRegister {
         if (event.getArgs().isEmpty()) {
             return "Sepcify secret code";
         } else if (secode.isSecretCodeMatch(Integer.valueOf(event.args[0]))) {
-            cmanager.getConfig().setChatId(event.getChat().getId());
+            cmanager.getConfig().setChatId(event.getMessage().getChat().getId());
             cmanager.save();
             secode.generateSecretTempCode();
             return "OK, done. Reload plugin";

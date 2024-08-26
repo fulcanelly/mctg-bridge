@@ -36,7 +36,8 @@ public class ActualLoginHook {
         return manager.getPlayerSession(player);
     }
 
-    String removePassword(CommandEvent event) {
+    String removePassword(CommandEvent cmd) {
+        var event = cmd.getMessage();
         var player = reception.getPlayerByTg(event.getFrom().getId());
 
         if (player.isEmpty()) {
@@ -70,21 +71,22 @@ public class ActualLoginHook {
     }
     
 
-    String changePassword(CommandEvent event) {
+    String changePassword(CommandEvent cmd) {
+        var event = cmd.getMessage();
         var player = reception.getPlayerByTg(event.getFrom().getId());
 
         if (player.isEmpty()) {
             return "Your account not bound to minecraft one";
         }
 
-        if (event.getArgs().isEmpty()) {
+        if (cmd.getArgs().isEmpty()) {
             return "Not enough arguments, type new password";
         }
 
         var session = getSessionFor(player.get());
 
         var response = session.performAction(
-            new ChangePassAction(AuthService.ADMIN, null, event.getArgs().get(0))
+            new ChangePassAction(AuthService.ADMIN, null, cmd.getArgs().get(0))
         );
         
         if (response.isSuccess()) {

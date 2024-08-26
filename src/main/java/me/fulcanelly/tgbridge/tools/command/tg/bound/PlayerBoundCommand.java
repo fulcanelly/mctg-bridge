@@ -24,7 +24,7 @@ public abstract class PlayerBoundCommand implements CommandRegister {
     public abstract String getCommandName();
 
     public String onMessage(CommandEvent event) {
-        var id = event.getFrom().getId();
+        var id = event.getMessage().getFrom().getId();
         var playerName = reception.getPlayerByTg(id);
 
         if (playerName.isEmpty()) {

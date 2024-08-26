@@ -4,13 +4,18 @@ package me.fulcanelly.tgbridge.tapi.events;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import me.fulcanelly.tgbridge.tapi.Message;
 
-public class CommandEvent extends Message {
+@RequiredArgsConstructor @Data
+public class CommandEvent {
 
     public String [] args;
 
     List<String> cache;
+
+   final Message message;
     
     public List<String> getArgs() {
         if (cache == null) {
@@ -22,9 +27,6 @@ public class CommandEvent extends Message {
         }
         return cache;
     }
-    
-    public CommandEvent(Message msg) {
-        super(msg);
-    }
+
 
 }
