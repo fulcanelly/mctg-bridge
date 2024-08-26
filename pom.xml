@@ -125,7 +125,13 @@
             <version>05c429ae396f938092560da27c84d3f18ef90891</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.lenis0012.bukkit</groupId>
+            <artifactId>loginsecurity</artifactId>
+            <version>3.1.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/loginsec/target/loginsecurity-3.1.1-SNAPSHOT.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-multibindings</artifactId>
