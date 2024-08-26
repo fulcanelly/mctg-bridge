@@ -1,13 +1,12 @@
 package me.fulcanelly.tgbridge.tapi.events;
 
-import me.fulcanelly.tgbridge.utils.events.pipe.EventObject;
 
 import java.util.Arrays;
 import java.util.List;
 
 import me.fulcanelly.tgbridge.tapi.Message;
 
-public class CommandEvent extends Message implements EventObject {
+public class CommandEvent extends Message {
 
     public String [] args;
 

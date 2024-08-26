@@ -1,5 +1,6 @@
 package me.fulcanelly.tgbridge.listeners.telegram;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
@@ -9,8 +10,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
+import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
-import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.ActualLastMessageObserver;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
@@ -29,6 +30,8 @@ public class TelegramListener  {
     final ActualLastMessageObserver msgobserv;  
     final CommandManager comds;
     
+    final EventBus eventBus;
+
     void broadcast(TextComponent component) {
         
         for (var player : Bukkit.getOnlinePlayers()) {
@@ -44,7 +47,7 @@ public class TelegramListener  {
             .sendMessage(component);
     }
 
-    boolean isRightChat(MessageEvent event) {
+    boolean isRightChat(Message event) {
         return event.getChat()
             .getId()
             .toString()
@@ -53,7 +56,7 @@ public class TelegramListener  {
     }
 
     @Subscribe
-    public void onMessage(MessageEvent event) {
+    public void onMessage(Message event) {
         var rightChat = this.isRightChat(event);
 
         if (rightChat) {
@@ -73,12 +76,11 @@ public class TelegramListener  {
         comds.tryMatch(event);
     }
 
-    boolean isCommandEvent(MessageEvent event) {
+    boolean isCommandEvent(Message event) {
         String text = event.getText();
 
         if (text != null && text.startsWith("/")) {
-            telepipe.emit(new CommandEvent(event));
-
+            eventBus.post(new CommandEvent(event));
             return true;
         }
 

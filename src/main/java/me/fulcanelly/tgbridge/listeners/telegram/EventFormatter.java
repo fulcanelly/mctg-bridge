@@ -5,11 +5,8 @@ import java.io.ByteArrayOutputStream;
 import org.bukkit.ChatColor;
 
 import lombok.SneakyThrows;
-import me.fulcanelly.dither.handlers.ErrorDiffusionFacade;
 import me.fulcanelly.tgbridge.tapi.Message;
-import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -21,7 +18,7 @@ public class EventFormatter {
     final Message message;
     PhotoFormatter imger = new PhotoFormatter(100);
 
-    public EventFormatter(MessageEvent event) {
+    public EventFormatter(Message event) {
         this.message = event;
     } 
     

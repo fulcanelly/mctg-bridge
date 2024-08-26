@@ -228,6 +228,9 @@ public class TelegramModule extends AbstractModule {
             UptimeCommand.class
         ).forEach(cmd -> commandMultibinder.addBinding().to(cmd).in(Scopes.SINGLETON));
 
+        bind(EventBus.class)
+            .in(Scopes.SINGLETON);
+
         bind(TabExecutor.class)
             .to(CommandProcessor.class)
             .in(Scopes.SINGLETON);

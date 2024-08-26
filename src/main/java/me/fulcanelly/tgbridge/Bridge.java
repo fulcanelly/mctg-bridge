@@ -2,6 +2,7 @@ package me.fulcanelly.tgbridge;
 
 import java.util.Set;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -15,14 +16,12 @@ import me.fulcanelly.tgbridge.listeners.spigot.ActionListener;
 import me.fulcanelly.tgbridge.listeners.telegram.TelegramListener;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
-import me.fulcanelly.tgbridge.tapi.events.MessageEvent;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
 import me.fulcanelly.tgbridge.tools.TelegramLogger;
 import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.hooks.ForeignPluginHook;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 
 @Getter
 public class Bridge extends JavaPlugin {
@@ -44,12 +43,8 @@ public class Bridge extends JavaPlugin {
     Injector injector;
 
     @Inject
-    void setupTelegramBotListeners(TGBot bot, EventPipe tgpipe, TelegramListener listener) {
-        bot.getDetectorManager()
-                .addDetector(MessageEvent.detector);
-
-        tgpipe
-                .registerListener(listener);
+    void setupTelegramBotListeners(EventBus bus, TelegramListener listener) {
+        bus.register(listener);
     }
 
     @Inject
