@@ -1,11 +1,59 @@
 # MCTG-bridge
-
+![GitHub Tag](https://img.shields.io/github/v/tag/fulcanelly/mctg-bridge)
 <a href="https://github.com/fulcanelly/mctg-bridge/releases/"><img src="https://img.shields.io/github/downloads/fulcanelly/mctg-bridge/total.svg" alt="GitHub All Releases"/></a>
 <img src="https://img.shields.io/github/stars/fulcanelly/mctg-bridge"/>
-<img src="https://img.shields.io/github/workflow/status/fulcanelly/mctg-bridge/CI"/>
+![GitHub Build](https://img.shields.io/github/actions/workflow/status/fulcanelly/mctg-bridge/main.yml?branch=master)
+
+
+<a><img src="https://img.shields.io/badge/MC-1.17.*-brightgreen.svg" alt="Minecraft"/></a>
+<img src="https://img.shields.io/badge/MC-1.18.*-brightgreen.svg" alt="Minecraft"/>
+<img src="https://img.shields.io/badge/MC-1.19.*-brightgreen.svg" alt="Minecraft"/>
+<img src="https://img.shields.io/badge/MC-1.20.*-brightgreen.svg" alt="Minecraft"/>
+<img src="https://img.shields.io/badge/MC-1.21.*-brightgreen.svg" alt="Minecraft"/>
+
 
 MCTG-bridge is a standalone working out of box plugin that creates a chat bridge between Telegram group and Minecraft chat.
 
+### How to use 
+- [Get jar file](#get-jar-file)
+- [Setup telegram bot](#setup-telegram-bot)
+- [Configure plugin](#configure-plugin)
+- Configure additional modules
+   - ngrok proxy tunnel
+   - LoginSecurity plugin
+   - Invite system
+
+### Get jar file
+- Download stable version - you can download compiled package from releases [page](https://github.com/fulcanelly/mctg-bridge/releases)
+
+- Download experimental-automatiacly-built version from [github actions](https://github.com/fulcanelly/mctg-bridge/actions)
+
+- Build by yourself - `mvn clean install`
+
+### Setup telegram bot 
+
+- Head to https://t.me/BotFather
+- Use command `/newbot` and follow instructions
+- Use `/setprivacy` and set it to `DISABLED` if you want bot to see messages in chats
+- Remember API token
+
+
+### Configure plugin
+ - Copy jar file to server's `plugins` folder
+ - Start server to generate config for plugins
+ - Put bot's API token to ```plugins/tg-bridge/config.yml``` at `api_token` column 
+ - Restart server - at startup you should see message like this
+```log
+[17:10:59 WARN]: [tg-bridge] chat_id is null, use /attach <secretTempCode> to pin one
+[17:10:59 WARN]: [tg-bridge] secretTempCode is set to -72683
+```
+After that add bot to target chat and execute that command in it:
+```
+/attach secretTempCode
+```
+Now you need to make final restart and plugin is ready to use 
+
+- Adjust other config options by your needs
 ### Preview 
 
 ![image](https://github.com/user-attachments/assets/4c6339c9-be85-4c71-bdbf-b8c2af984cb7)
@@ -20,20 +68,8 @@ MCTG-bridge is a standalone working out of box plugin that creates a chat bridge
 ![image](https://github.com/user-attachments/assets/7be1055c-c16a-4c6b-9ad3-d3d17319efc2)
 
 
-### Setup 
-1) [Get plugin binary](#how-to-build)
-2) [Bot setup](#seting-up-telegram-bot)
-3) Copy .jar file to the server `plugins/` folder.
-4) Configure plugin by editing `tg-bridge/config.yml` file or following console hints.
 
-After that, you have to restart your server, and then bot should be working.
-
-
-### Seting up telegram bot
-
-Head to [@BotFather](https://t.me/BotFather) and create bot using /newbot command
-
-Then add this command hints using /setcommands
+### Telegram bot commands
 
 Base command set
 
@@ -69,21 +105,6 @@ To setup ngrok or telegram `/tunnel` command you need to put you ngrok auth to c
 
 you can get one from https://ngrok.com
 
-### How to build
-
-- Build by yourself
-
-  After cloning and entering repo directory run this
-  ```
-  mvn
-  ```
-  Then you should get tg-brgidge*.jar in `target` directory
-
-- Download stable version. 
-
-  You can download compiled package from releases [page](https://github.com/fulcanelly/mctg-bridge/releases), but it could be little outdated 
-
-- Download experimental automatiacly built version from [github actions](https://github.com/fulcanelly/mctg-bridge/actions)
 
 ### What's Left to be Added/Fixed
 - The Following Ideas
