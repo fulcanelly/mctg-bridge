@@ -14,6 +14,8 @@ import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.common.eventbus.EventBus;
+
 import lombok.SneakyThrows;
 
 import java.nio.charset.StandardCharsets;
@@ -75,17 +77,20 @@ public class TGBot implements Stopable {
     }
 
     String apiToken;
-    EventDetectorManager<JSONObject, TGBot> detector;
+    // EventDetectorManager<JSONObject, TGBot> detector;
     long last_update_id = -1;
 
-    public TGBot(String apiToken, EventPipe pipe) {
-        detector = new EventDetectorManager<>(pipe);
+    EventBus bus;
+    
+    public TGBot(String apiToken, EventBus bus) {
+        // detector = new EventDetectorManager<>(pipe);
+        this.bus = bus;
         this.apiToken = apiToken;
     }
     
-    public EventDetectorManager<JSONObject, TGBot> getDetectorManager() {
-        return detector;
-    }
+    // public EventDetectorManager<JSONObject, TGBot> getDetectorManager() {
+    //     return detector;
+    // }
 
     class MethodCaller {
 

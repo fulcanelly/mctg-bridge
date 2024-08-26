@@ -1,5 +1,6 @@
 package me.fulcanelly.tgbridge.listeners.telegram;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
 import org.bukkit.Bukkit;
@@ -14,18 +15,16 @@ import me.fulcanelly.tgbridge.tools.ActualLastMessageObserver;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventPipe;
-import me.fulcanelly.tgbridge.utils.events.pipe.EventReactor;
-import me.fulcanelly.tgbridge.utils.events.pipe.Listener;
+
 
 import net.md_5.bungee.api.chat.TextComponent;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
-public class TelegramListener implements Listener {
+public class TelegramListener  {
 
     final ConsoleCommandSender console;
     final ChatSettings chatSetting;
-    final EventPipe telepipe;
+    // final EventPipe telepipe;
     final MainConfig config;
     final ActualLastMessageObserver msgobserv;  
     final CommandManager comds;
@@ -53,7 +52,7 @@ public class TelegramListener implements Listener {
                 config.getChatId());
     }
 
-    @EventReactor
+    @Subscribe
     public void onMessage(MessageEvent event) {
         var rightChat = this.isRightChat(event);
 
@@ -69,6 +68,11 @@ public class TelegramListener implements Listener {
         }
     }
 
+    @Subscribe
+    public void onCommand(CommandEvent event) {
+        comds.tryMatch(event);
+    }
+
     boolean isCommandEvent(MessageEvent event) {
         String text = event.getText();
 
@@ -81,9 +85,6 @@ public class TelegramListener implements Listener {
         return false;
     }
 
-    @EventReactor
-    public void onCommand(CommandEvent event) {
-        comds.tryMatch(event);
-    }
+
 }
 
