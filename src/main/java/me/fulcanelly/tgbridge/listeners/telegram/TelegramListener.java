@@ -62,7 +62,8 @@ public class TelegramListener  {
         }
 
         if (isCommandEvent(event)) {
-            return;
+            eventBus.post(new CommandEvent(event));
+
         } else if (rightChat && config.enable_chat) {          
 
             broadcast(new EventFormatter(event).getText());
@@ -78,7 +79,6 @@ public class TelegramListener  {
         String text = event.getText();
 
         if (text != null && text.startsWith("/")) {
-            eventBus.post(new CommandEvent(event));
             return true;
         }
 
