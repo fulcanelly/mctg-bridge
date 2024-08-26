@@ -1,13 +1,7 @@
 package me.fulcanelly.tgbridge.listeners.telegram;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.File;
-
-import javax.imageio.ImageIO;
-
 import io.raffi.drawille.Canvas;
 import lombok.SneakyThrows;
 

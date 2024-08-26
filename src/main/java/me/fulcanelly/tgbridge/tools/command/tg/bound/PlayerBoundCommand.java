@@ -3,9 +3,6 @@ package me.fulcanelly.tgbridge.tools.command.tg.bound;
 
 import com.google.inject.Inject;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import lombok.Data;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;

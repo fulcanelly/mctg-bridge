@@ -2,14 +2,7 @@ package me.fulcanelly.tgbridge.tools.twofactor.register;
 
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
-
-import javax.management.RuntimeErrorException;
-
 import com.google.inject.Inject;
-
-import lombok.val;
-import me.fulcanelly.tgbridge.tapi.Message;
 
 public class SignupLoginReception {
     

@@ -1,14 +1,9 @@
 package me.fulcanelly.tgbridge.tools.compact.message;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 import lombok.Data;
-import me.fulcanelly.tgbridge.tapi.Message;
-import me.fulcanelly.tgbridge.tools.compact.context.CompactionContext;
-import me.fulcanelly.tgbridge.tools.compact.context.NoteMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.visitor.CompactableVisitor;
 import me.fulcanelly.tgbridge.utils.data.DuplicateLessList;
 import me.fulcanelly.tgbridge.utils.time.TimeoutManager;

@@ -5,7 +5,6 @@ import static me.fulcanelly.tgbridge.tools.command.mc.parser.CommandBuilder.name
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class EnumeratedCommandBuilder {
 

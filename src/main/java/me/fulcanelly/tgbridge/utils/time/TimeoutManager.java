@@ -1,7 +1,5 @@
 package me.fulcanelly.tgbridge.utils.time;
 
-import java.util.concurrent.TimeUnit;
-
 public class TimeoutManager {
     
     long last_update = System.currentTimeMillis();

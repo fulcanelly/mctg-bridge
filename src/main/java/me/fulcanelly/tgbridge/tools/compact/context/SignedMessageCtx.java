@@ -1,10 +1,6 @@
 package me.fulcanelly.tgbridge.tools.compact.context;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import lombok.ToString;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.compact.message.CompactableMessage;
 import me.fulcanelly.tgbridge.tools.compact.message.PlayerMessage;

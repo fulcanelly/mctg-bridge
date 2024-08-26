@@ -7,8 +7,6 @@ import me.fulcanelly.dither.handlers.BayerDitheringFacade;
 import me.fulcanelly.dither.handlers.ErrorDiffusionFacade;
 import me.fulcanelly.dither.handlers.ImageHandler;
 
-import java.awt.Color;
-
 
 
 public class Main {

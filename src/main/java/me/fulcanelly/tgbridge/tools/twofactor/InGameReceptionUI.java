@@ -1,19 +1,14 @@
 package me.fulcanelly.tgbridge.tools.twofactor;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.bukkit.Color;
 import org.bukkit.entity.Player;
 
-import lombok.RequiredArgsConstructor;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.StringUtils;
 import me.fulcanelly.tgbridge.utils.data.LazyValue;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;

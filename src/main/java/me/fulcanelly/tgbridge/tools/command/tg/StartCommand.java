@@ -1,7 +1,5 @@
 package me.fulcanelly.tgbridge.tools.command.tg;
 
-import java.util.function.Function;
-
 import com.google.inject.Inject;
 
 import me.fulcanelly.tgbridge.tapi.CommandManager;

@@ -1,21 +1,11 @@
 package me.fulcanelly.tgbridge.tools.command.mc.parser;
 
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
-import javax.management.RuntimeErrorException;
 
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import lombok.Builder;
-import lombok.Builder.Default;
-import me.fulcanelly.tgbridge.view.NamedTabExecutor;
-
-
 
 //todo
 //* redo parsing by adding parsing result holding error or/and resulting command

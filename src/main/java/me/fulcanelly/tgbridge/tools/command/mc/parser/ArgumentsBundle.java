@@ -3,7 +3,6 @@ package me.fulcanelly.tgbridge.tools.command.mc.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import lombok.Data;

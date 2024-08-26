@@ -2,8 +2,6 @@ package me.fulcanelly.tgbridge.utils.data;
 
 import java.util.function.Supplier;
 
-import lombok.RequiredArgsConstructor;
-
 public class LazyValue<T> {
     
     Supplier<T> supplier;

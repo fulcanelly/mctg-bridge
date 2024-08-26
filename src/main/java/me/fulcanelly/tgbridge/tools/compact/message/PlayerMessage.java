@@ -1,16 +1,11 @@
 package me.fulcanelly.tgbridge.tools.compact.message;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.StringJoiner;
 
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.ToString;
-import me.fulcanelly.tgbridge.tapi.Message;
-import me.fulcanelly.tgbridge.tools.compact.context.CompactionContext;
-import me.fulcanelly.tgbridge.tools.compact.context.SignedMessageCtx;
 import me.fulcanelly.tgbridge.tools.compact.visitor.CompactableVisitor;
 import me.fulcanelly.tgbridge.utils.time.TimeoutManager;
 

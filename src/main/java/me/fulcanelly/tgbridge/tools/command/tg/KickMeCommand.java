@@ -6,12 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
-import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
-import me.fulcanelly.tgbridge.tools.command.tg.base.ReplierBuilder;
 import me.fulcanelly.tgbridge.tools.command.tg.bound.OnlinePlayerBoundCommand;
-import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 
 public class KickMeCommand extends OnlinePlayerBoundCommand {
 

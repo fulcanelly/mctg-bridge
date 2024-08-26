@@ -70,7 +70,7 @@ public class ActionListener implements Listener {
     @EventHandler
     void onDeath(PlayerDeathEvent event) {
         sender.sendNote(
-            UsefulStuff.formatMarkdown(
+            UsefulStuff.escapeMarkdown(
                 event.getDeathMessage().replaceAll("§\\w", "")
             )
         );
@@ -101,7 +101,7 @@ public class ActionListener implements Listener {
 
         reception.getTgByUser(list.get(1)).stream()
             .forEach(target -> 
-                bot.sendMessage(target, UsefulStuff.formatMarkdown("private message from " + event.getPlayer().getName() + ":\n\n" + msg))
+                bot.sendMessage(target, UsefulStuff.escapeMarkdown("private message from " + event.getPlayer().getName() + ":\n\n" + msg))
             );
     }
 
@@ -117,7 +117,7 @@ public class ActionListener implements Listener {
         if (event.isCancelled()) {
             return;
         } else {
-            sender.sendAsPlayer(player_name, UsefulStuff.formatMarkdown(message));
+            sender.sendAsPlayer(player_name, UsefulStuff.escapeMarkdown(message));
         }
     }
 }

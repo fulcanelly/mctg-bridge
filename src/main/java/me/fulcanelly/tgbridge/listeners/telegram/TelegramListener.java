@@ -8,13 +8,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.Message;
 import me.fulcanelly.tgbridge.tapi.events.CommandEvent;
 import me.fulcanelly.tgbridge.tools.ActualLastMessageObserver;
 import me.fulcanelly.tgbridge.tools.MainConfig;
-import me.fulcanelly.tgbridge.tools.compact.MessageCompactableSender;
 import me.fulcanelly.tgbridge.tools.mastery.ChatSettings;
 
 
