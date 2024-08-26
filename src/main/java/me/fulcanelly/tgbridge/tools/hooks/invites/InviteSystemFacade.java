@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.fulcanelly.insyscore.InviteSysCore;
 import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tools.command.tg.InvitePersonCommand;
 import me.fulcanelly.tgbridge.tools.hooks.ForeignPluginHook;
