@@ -118,12 +118,12 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <version>1.28</version>
         </dependency>
+
         <dependency>
-            <groupId>me.fulcanelly</groupId>
-            <artifactId>InviteSystemCore</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/invitesys/core/target/InviteSystemCore-1.0.jar</systemPath>
+            <groupId>com.github.fulcanelly</groupId>
+            <artifactId>invite-system-mc</artifactId>
+            <version>05c429ae396f938092560da27c84d3f18ef90891</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

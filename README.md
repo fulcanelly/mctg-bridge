@@ -65,8 +65,6 @@ you can get one from https://ngrok.com
 
   After cloning and entering repo directory run this
   ```
-  git submodule update --init lib/invitesys
-  cd lib/invitesys/core && mvn && cd - # optional -- if you want fresh version of invitesys
   mvn
   ```
   Then you should get tg-brgidge*.jar in `target` directory
