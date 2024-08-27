@@ -9,9 +9,9 @@ import java.io.InputStream;
 import me.fulcanelly.clsql.stop.Stopable;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import java.util.logging.Logger;
 
 import com.google.common.eventbus.EventBus;
 
@@ -73,20 +73,18 @@ public class TGBot implements Stopable {
     }
 
     String apiToken;
-    // EventDetectorManager<JSONObject, TGBot> detector;
     long last_update_id = -1;
 
     EventBus bus;
+    Logger logger;
 
-    public TGBot(String apiToken, EventBus bus) {
-        // detector = new EventDetectorManager<>(pipe);
+    public TGBot(String apiToken, EventBus bus, java.util.logging.Logger logger) {
         this.bus = bus;
         this.apiToken = apiToken;
+        this.logger = logger;
     }
 
-    // public EventDetectorManager<JSONObject, TGBot> getDetectorManager() {
-    // return detector;
-    // }
+
 
     class MethodCaller {
 
@@ -284,7 +282,12 @@ public class TGBot implements Stopable {
     @SneakyThrows
     void loop(Runnable func) {
         while (true && alive) {
-            func.run();
+            try {
+                func.run();
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+                e.printStackTrace();   
+            }
             Thread.sleep(30);
         }
     }

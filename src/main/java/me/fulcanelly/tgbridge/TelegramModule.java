@@ -103,8 +103,8 @@ public class TelegramModule extends AbstractModule {
     }
 
     @Provides @Singleton
-    TGBot provideTGBot(MainConfig config, EventBus bus) {
-        return new TGBot(config.getApiToken(), bus);
+    TGBot provideTGBot(MainConfig config, EventBus bus, @Named("spigot.logger") Logger logger) {
+        return new TGBot(config.getApiToken(), bus, logger);
     }
 
     @Provides @Singleton

@@ -60,7 +60,7 @@ public class Bridge extends JavaPlugin {
             return;
         }
 
-        var bot = new TGBot(apiToken, null);
+        var bot = new TGBot(apiToken, null, getLogger());
 
         try {
             bot.getMe();
