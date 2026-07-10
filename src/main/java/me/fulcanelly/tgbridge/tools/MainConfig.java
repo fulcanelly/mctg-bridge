@@ -1,5 +1,7 @@
 package me.fulcanelly.tgbridge.tools;
 
+import java.util.Map;
+
 import lombok.ToString;
 import me.fulcanelly.tgbridge.utils.config.annotations.ConfigFile;
 import me.fulcanelly.tgbridge.utils.config.annotations.Optional;
@@ -29,6 +31,12 @@ public class MainConfig {
 
     @Saveable @Nullable @Optional
     public Boolean enable_dithering = false;
+
+    @Saveable @Nullable @Optional
+    public String language;
+
+    @Saveable @Nullable @Optional
+    public Map<String, Map<String, String>> registration_messages;
 
     @Saveable @Nullable
     public String ngrok_auth;

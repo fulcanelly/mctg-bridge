@@ -1,6 +1,7 @@
 package me.fulcanelly.tgbridge.utils.config;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,8 @@ public class ConfigManager<T> {
     Map<String, Object> data = new HashMap<>();
     T instance;
     File file;
+    Plugin plugin;
+    String fileName;
   
     public T getConfig() {
         return instance;
@@ -101,6 +104,7 @@ public class ConfigManager<T> {
     @SneakyThrows
     public ConfigManager(T config, Plugin plugin) {      
         instance = config;
+        this.plugin = plugin;
   
         yaml = setUpYaml();
 
@@ -111,7 +115,8 @@ public class ConfigManager<T> {
             throw new RuntimeException("Wrong class");
         }
 
-        file = findOrLoadFromResource(plugin, cfile.file());
+        fileName = cfile.file();
+        file = findOrLoadFromResource(plugin, fileName);
 
         fields = Stream.of(klass.getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(Saveable.class))
@@ -131,9 +136,59 @@ public class ConfigManager<T> {
         }
 
         data = yaml.load(new FileReader(file));
+        if (data == null) {
+            data = new HashMap<>();
+        }
+
+        var changed = mergeMissingResourceDefaults();
 
         fields.forEach(this::fieldSetter);
+        if (changed) {
+            save();
+        }
         return instance;
+    }
+
+    @SneakyThrows
+    boolean mergeMissingResourceDefaults() {
+        try (var resource = plugin.getResource(fileName)) {
+            if (resource == null) {
+                return false;
+            }
+
+            Map<String, Object> defaults = yaml.load(new InputStreamReader(resource, StandardCharsets.UTF_8));
+            if (defaults == null) {
+                return false;
+            }
+
+            return mergeMissing(data, defaults);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    boolean mergeMissing(Map<String, Object> target, Map<String, Object> defaults) {
+        var changed = false;
+
+        for (var entry : defaults.entrySet()) {
+            var key = entry.getKey();
+            var defaultValue = entry.getValue();
+
+            if (!target.containsKey(key)) {
+                target.put(key, defaultValue);
+                changed = true;
+                continue;
+            }
+
+            var targetValue = target.get(key);
+            if (targetValue instanceof Map && defaultValue instanceof Map) {
+                changed |= mergeMissing(
+                    (Map<String, Object>) targetValue,
+                    (Map<String, Object>) defaultValue
+                );
+            }
+        }
+
+        return changed;
     }
 
     void error(String template, Object... data) {

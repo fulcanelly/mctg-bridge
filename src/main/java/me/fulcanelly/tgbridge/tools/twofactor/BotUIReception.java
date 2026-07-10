@@ -2,6 +2,7 @@ package me.fulcanelly.tgbridge.tools.twofactor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.inject.Inject;
 
@@ -13,13 +14,17 @@ public class BotUIReception {
     @Inject
     SignupLoginReception reception;
 
-    public boolean onPrivateStartCommand(long userId, String code) {
+    public Optional<String> onPrivateStartCommand(long userId, String code) {
         var nameAndCode = new LinkedList<>(
             List.of(StringUtils.decodeBase64(code).split(":"))
         );
         var player = nameAndCode.getFirst();
         var clearcode = nameAndCode.getLast();
 
-        return reception.cofirmRegistration(userId, player, clearcode);
+        if (reception.cofirmRegistration(userId, player, clearcode)) {
+            return Optional.of(player);
+        } else {
+            return Optional.empty();
+        }
     }
 }
