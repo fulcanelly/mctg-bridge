@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.json.simple.JSONObject;
 
@@ -40,7 +39,8 @@ public class BaseMocksModule extends AbstractModule {
 
         var tg = mock(TGBot.class);
 
-        doAnswer((args) -> {
+        doAnswer(args -> {
+            System.out.println(args);
             Random rand = new Random();
             JSONObject object = new JSONObject(Map.of("message_id", rand.nextLong()));
             return new Message(object, getTgBot());
@@ -48,7 +48,8 @@ public class BaseMocksModule extends AbstractModule {
                 .when(tg)
                 .sendMessage(anyLong(), anyString());
 
-        doAnswer((args) -> {
+        doAnswer(args -> {
+            System.out.println(args);
             Random rand = new Random();
             JSONObject object = new JSONObject(Map.of("message_id", rand.nextLong()));
             return new Message(object, getTgBot());

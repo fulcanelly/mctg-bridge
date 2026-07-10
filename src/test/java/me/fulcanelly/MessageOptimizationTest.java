@@ -19,6 +19,36 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.junit.jupiter.api.Test;
 
+class BetterStringBuilder {
+    StringBuilder builder = new StringBuilder();
+
+    static BetterStringBuilder _$() {
+        return new BetterStringBuilder();
+    }
+
+    BetterStringBuilder line() {
+        builder.append("\n");
+        return this;
+    }
+
+    BetterStringBuilder line(String text) {
+        builder.append(text);
+        builder.append("\n");
+        return this;
+    }
+
+    BetterStringBuilder endline(String text) {
+        builder.append(text);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return builder.toString();
+    }
+
+}
+
 public class MessageOptimizationTest extends BaseTest {
     @Inject
     ActionListener listener;
