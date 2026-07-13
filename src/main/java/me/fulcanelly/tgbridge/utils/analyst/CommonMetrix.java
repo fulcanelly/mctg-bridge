@@ -8,12 +8,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
+import com.google.inject.Inject;
+
+import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
 public class CommonMetrix {
     
     MemoryUsageDiagramDrawer drawer = new MemoryUsageDiagramDrawer(40, 20);
+    SignupLoginReception reception;
+
+    @Inject
+    public CommonMetrix(SignupLoginReception reception) {
+        this.reception = reception;
+        drawer.start();
+    }
 
     public CommonMetrix() {
         drawer.start();
@@ -44,11 +55,21 @@ public class CommonMetrix {
     public List<String> getOnlineList() {
         return Bukkit.getOnlinePlayers().stream()
             .map(player -> switch ((int) player.getHealth()) {
-                case 0 -> String.format("* %s  ⚰️",  player.getName());
-                default -> String.format("* %s   ♥️ %.2f",  player.getName(), player.getHealth());
+                case 0 -> String.format("\\* %s  ⚰️", formatPlayerName(player));
+                default -> String.format("\\* %s   ♥️ %.2f", formatPlayerName(player), player.getHealth());
             })
-            .map(username -> UsefulStuff.escapeMarkdown(username))
             .collect(Collectors.toList());
+    }
+
+    private String formatPlayerName(Player player) {
+        var name = player.getName();
+        if (reception == null) {
+            return UsefulStuff.escapeMarkdown(name);
+        }
+
+        return reception.getTgByUser(name)
+            .map(tg -> UsefulStuff.telegramUserLink(name, tg))
+            .orElseGet(() -> UsefulStuff.escapeMarkdown(name));
     }
 
 }

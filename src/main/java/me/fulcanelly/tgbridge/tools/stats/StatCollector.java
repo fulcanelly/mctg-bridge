@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import me.fulcanelly.clsql.async.tasks.AsyncTask;
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.tgbridge.tools.twofactor.register.SignupLoginReception;
+import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
 import com.google.inject.Inject;
 
@@ -17,7 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 
 public class StatCollector extends StatsDatabase implements Listener {
-    
+
     SignupLoginReception reception;
 
     @Inject
@@ -41,7 +42,7 @@ public class StatCollector extends StatsDatabase implements Listener {
                 if (stats.isEmpty()) {
                     return addUserStats(new UserStats(name));
                 }
-        
+
                 return stats.get();
             });
     }
@@ -78,7 +79,7 @@ public class StatCollector extends StatsDatabase implements Listener {
             stats.updateTable(this);
         });
     }
-    
+
     double getGreatestDeathPeriod() {
         var result = qhandler
             .executeQuery("SELECT * FROM user_stats ORDER BY total_time / (deaths + 1.0) DESC")
@@ -105,19 +106,25 @@ public class StatCollector extends StatsDatabase implements Listener {
         void builder(UserStats stats) {
 
             double alive_coef = stats.getAliveCoefficient(max_death_period);
-            
+
             String online_sign = isPlayerOnline(stats.name) ? "❇️" : "";
             String tg_bound_sign = reception.getTgByUser(stats.name)
                 .map(__ -> "💦")
                 .orElse("");
 
             result += String.format(
-                " 🏳️‍🌈 `%s` " + online_sign + tg_bound_sign +'\n' +
-                "  played time — %s\n" + 
+                " 🏳️‍🌈 %s " + online_sign + tg_bound_sign +'\n' +
+                "  played time — %s\n" +
                 "  deaths — %d\n" +
-                "  survival rate — %.3f\n\n", 
-                stats.name, stats.toString(), stats.deaths, alive_coef 
+                "  survival rate — %.3f\n\n",
+                formatPlayerName(stats.name), stats.toString(), stats.deaths, alive_coef
             );
+        }
+
+        String formatPlayerName(String name) {
+            return reception.getTgByUser(name)
+                .map(tg -> UsefulStuff.telegramUserLink(name, tg))
+                .orElseGet(() -> UsefulStuff.escapeMarkdown(name));
         }
 
         String getString() {
@@ -129,7 +136,7 @@ public class StatCollector extends StatsDatabase implements Listener {
 
     public String getMessage() {
 
-        if (this.getCount() == 0) { 
+        if (this.getCount() == 0) {
             return "No one played yet ...";
         }
 
