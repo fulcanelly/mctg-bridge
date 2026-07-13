@@ -48,7 +48,13 @@ public class UsefulStuff {
     }
 
     public static String telegramUserLink(String label, long userId) {
-        return String.format("[%s](tg://user?id=%d)", escapeMarkdown(label), userId);
+        return String.format("[%s](tg://user?id=%d)", escapeMarkdownLinkLabel(label), userId);
+    }
+
+    private static String escapeMarkdownLinkLabel(String input) {
+        return input
+            .replace("[", "(")
+            .replace("]", ")");
     }
 
 
