@@ -31,20 +31,20 @@ public class InGameReceptionUI {
         var code = reception.requestRegistrationCodeFor(player.getName());
 
         if (code.isEmpty()) {
-            player.sendMessage(messages.color(player.getLocale(), "already_bound"));
+            player.sendMessage(messages.format(player.getLocale(), "already_bound"));
             return;
         }
 
-        var fullcode = StringUtils.encodeBase64(player.getName() + ":" + code.get());
+        var fullcode = StringUtils.encodeBase64(code.get());
         var url = String.format("https://t.me/%s?start=%s", botname.get(), fullcode);
 
 
         TextComponent comp = new TextComponent();
 
-        comp.addExtra(messages.color(player.getLocale(), "register_prefix"));
+        comp.addExtra(messages.format(player.getLocale(), "register_prefix"));
 
 
-        var link = new TextComponent(messages.color(player.getLocale(), "register_link"));
+        var link = new TextComponent(messages.format(player.getLocale(), "register_link"));
 
         link.setClickEvent(
             new ClickEvent(
@@ -55,7 +55,7 @@ public class InGameReceptionUI {
 
         link.setHoverEvent(
             new HoverEvent(
-                HoverEvent.Action.SHOW_TEXT, new Text(messages.color(player.getLocale(), "link_hover", url))
+                HoverEvent.Action.SHOW_TEXT, new Text(messages.format(player.getLocale(), "link_hover", url))
             )
         );
 
@@ -64,7 +64,7 @@ public class InGameReceptionUI {
         );
 
         comp.addExtra(
-            messages.color(player.getLocale(), "register_suffix")
+            messages.format(player.getLocale(), "register_suffix", botname.get(), code.get())
         );
 
 

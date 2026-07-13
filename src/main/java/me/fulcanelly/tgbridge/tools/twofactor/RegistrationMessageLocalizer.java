@@ -19,16 +19,16 @@ public class RegistrationMessageLocalizer {
         this.config = config;
     }
 
-    public String color(String locale, String key) {
+    public String format(String locale, String key) {
         return ChatColor.translateAlternateColorCodes('&', raw(locale, key));
     }
 
-    public String color(String locale, String key, Object... args) {
-        return String.format(color(locale, key), args);
+    public String format(String locale, String key, Object... args) {
+        return String.format(format(locale, key), args);
     }
 
     public String englishPlain(String key) {
-        return ChatColor.stripColor(color(DEFAULT_LANGUAGE, key));
+        return ChatColor.stripColor(format(DEFAULT_LANGUAGE, key));
     }
 
     private String raw(String locale, String key) {

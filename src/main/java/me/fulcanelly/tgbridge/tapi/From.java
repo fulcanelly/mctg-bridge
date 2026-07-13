@@ -35,7 +35,7 @@ public class From  {
         return false;
     }
 
-    boolean isPrivate() {
+    public boolean isPrivate() {
         Object type = from.get("type");
         if(type != null) {
             return type.equals("private");

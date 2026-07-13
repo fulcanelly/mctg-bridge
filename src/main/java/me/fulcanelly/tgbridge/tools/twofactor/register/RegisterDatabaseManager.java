@@ -1,5 +1,6 @@
 package me.fulcanelly.tgbridge.tools.twofactor.register;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
@@ -8,11 +9,11 @@ import lombok.SneakyThrows;
 import me.fulcanelly.clsql.databse.SQLQueryHandler;
 
 public class RegisterDatabaseManager {
-    
+
     @Inject
     SQLQueryHandler sql;
 
-    long annihilationTime = TimeUnit.MINUTES.toMillis(15);
+    long annihilationTime = TimeUnit.HOURS.toMillis(2);
 
     @Inject
     public void setupTable() {
@@ -24,13 +25,18 @@ public class RegisterDatabaseManager {
             ")");
     }
 
-    public void insertNew(String player, String code) {
+    public boolean insertNewIfCodeIsFree(String player, String code) {
         forgetOld();
+        if (isCodeRegistered(code)) {
+            return false;
+        }
+
         sql.syncExecuteUpdate("INSERT INTO registration(code, player, creation_time) VALUES(?, ?, ?)", code, player, System.currentTimeMillis());
+        return true;
     }
 
-    public void delete(String player, String code) {
-        sql.syncExecuteUpdate("DELETE FROM registration WHERE player = ? AND code = ?", player, code);
+    public void delete(String code) {
+        sql.syncExecuteUpdate("DELETE FROM registration WHERE code = ?", code);
     }
 
     public void forgetOld() {
@@ -38,8 +44,19 @@ public class RegisterDatabaseManager {
     }
 
     @SneakyThrows
-    public boolean isValidCode(String player, String code) {
+    public boolean isCodeRegistered(String code) {
         forgetOld();
-        return sql.syncExecuteQuery("SELECT * FROM registration WHERE code = ? AND player = ?", code, player).next();
+        return sql.syncExecuteQuery("SELECT * FROM registration WHERE code = ?", code).next();
+    }
+
+    @SneakyThrows
+    public Optional<String> getPlayerByCode(String code) {
+        forgetOld();
+        var result = sql.syncExecuteQuery("SELECT * FROM registration WHERE code = ?", code);
+        if (result.next()) {
+            return Optional.of((String) sql.parseMapOfResultSet(result).get("player"));
+        }
+
+        return Optional.empty();
     }
 }
