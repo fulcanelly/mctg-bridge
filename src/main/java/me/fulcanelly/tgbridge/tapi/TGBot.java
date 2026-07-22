@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.io.InputStream;
 
 import me.fulcanelly.clsql.stop.Stopable;
+import me.fulcanelly.tgbridge.tapi.events.CallbackQueryEvent;
 import me.fulcanelly.tgbridge.utils.UsefulStuff;
 
 import org.json.simple.JSONArray;
@@ -28,7 +29,8 @@ enum Method {
     UPDATES,
     GET_ME,
     PIN,
-    GET_FILE
+    GET_FILE,
+    ANSWER_CALLBACK
 }
 
 public class TGBot implements Stopable {
@@ -106,6 +108,8 @@ public class TGBot implements Stopable {
                     return "deleteMessage";
                 case GET_FILE:
                     return "getFile";
+                case ANSWER_CALLBACK:
+                    return "answerCallbackQuery";
             }
             throw new RuntimeException("Unknown method");
         }
@@ -192,6 +196,12 @@ public class TGBot implements Stopable {
         return parseResponse(page);
     }
 
+    public Message sendMessage(Long chat_id, String text, String replyMarkup) {
+        String page = defaultCaller(Method.SEND, text, chat_id)
+                .put("reply_markup", replyMarkup).call();
+        return parseResponse(page);
+    }
+
     public Message sendMessage(Long chat_id, String text, Long reply_to_message_id) {
         String page = defaultCaller(Method.SEND, text, chat_id)
                 .put("reply_to_message_id", reply_to_message_id.toString()).call();
@@ -211,6 +221,21 @@ public class TGBot implements Stopable {
                 .put("message_id", message_id.toString()).call();
 
         return parseResponse(page);
+    }
+
+    public Message editMessage(Long chat_id, Long message_id, String text, String replyMarkup) {
+        String page = defaultCaller(Method.EDIT, text, chat_id)
+                .put("message_id", message_id.toString())
+                .put("reply_markup", replyMarkup).call();
+
+        return parseResponse(page);
+    }
+
+    public void answerCallbackQuery(String callbackQueryId, String text) {
+        new MethodCaller(Method.ANSWER_CALLBACK)
+                .put("callback_query_id", callbackQueryId)
+                .put("text", text)
+                .call();
     }
 
     public JSONObject loadLast() {
@@ -307,6 +332,12 @@ public class TGBot implements Stopable {
 
             if (message != null) {
                 bus.post(new Message(message, this));
+            }
+
+            Object callbackQuery = update.get("callback_query");
+
+            if (callbackQuery != null) {
+                bus.post(new CallbackQueryEvent(callbackQuery, this));
             }
 
         }
