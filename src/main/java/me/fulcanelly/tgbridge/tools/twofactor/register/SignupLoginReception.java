@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import com.google.inject.Inject;
 
+import me.fulcanelly.tgbridge.tools.MainConfig;
+
 public class SignupLoginReception {
 
     private static final int CODE_LENGTH = 5;
@@ -14,6 +16,9 @@ public class SignupLoginReception {
 
     @Inject 
     AccountDatabaseManager acdb;
+
+    @Inject
+    MainConfig config;
 
     private String generateSecretCode() {
         var num = Integer.toHexString(ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE));
@@ -35,13 +40,20 @@ public class SignupLoginReception {
         return Optional.empty();
     }
 
-    public Optional<String> confirmRegistration(long userId, String code) {
+    public RegistrationResult confirmRegistration(long userId, String code) {
         var player = rgdb.getPlayerByCode(code);
-        player.ifPresent(playerName -> {
-            rgdb.delete(code);
-            acdb.insertNew(userId, playerName);
-        });
-        return player;
+        if (player.isEmpty()) {
+            return RegistrationResult.codeNotFound();
+        }
+
+        int maxAccounts = config.getMaxMcAccountsPerTg();
+        if (maxAccounts > 0 && acdb.countUsernamesByTg(userId) >= maxAccounts) {
+            return RegistrationResult.tooManyAccounts();
+        }
+
+        rgdb.delete(code);
+        acdb.insertNew(userId, player.get());
+        return RegistrationResult.success(player.get());
     }
 
     public Optional<String> getPlayerByTg(long userId) {

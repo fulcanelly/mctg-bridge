@@ -35,6 +35,9 @@ public class MainConfig {
     @Saveable @Nullable @Optional
     public String language;
 
+    @Saveable @Optional
+    public Integer max_mc_accounts_per_tg = 2;
+
     @Saveable @Nullable @Optional
     public Map<String, Map<String, String>> registration_messages;
 
@@ -55,6 +58,10 @@ public class MainConfig {
 
     public boolean isLoginManagerEnabled() {
         return login_manger;
+    }
+
+    public int getMaxMcAccountsPerTg() {
+        return max_mc_accounts_per_tg == null ? 2 : max_mc_accounts_per_tg;
     }
 
     public <T>void setChatId(T chat_id) {

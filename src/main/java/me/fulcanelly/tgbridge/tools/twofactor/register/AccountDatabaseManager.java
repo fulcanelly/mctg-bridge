@@ -30,6 +30,12 @@ public class AccountDatabaseManager {
         sql.syncExecuteUpdate("INSERT INTO mctg_accounts_mapping(user_id, player) VALUES(?, ?)", userId, player);
     }
 
+    @SneakyThrows
+    public int countUsernamesByTg(long userId) {
+        var result = sql.syncExecuteQuery("SELECT COUNT(*) FROM mctg_accounts_mapping WHERE user_id = ?", userId);
+        return result.next() ? result.getInt(1) : 0;
+    }
+
     //todo
     void delete() {
 

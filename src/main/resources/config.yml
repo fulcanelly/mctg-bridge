@@ -5,6 +5,7 @@ log_status: true
 enable_chat: true
 enable_dithering: false
 language: ru
+max_mc_accounts_per_tg: 2
 registration_messages:
   eng:
     already_bound: "&cIt seems like your account is already bound to Telegram."
@@ -13,6 +14,7 @@ registration_messages:
     register_suffix: "&e or PM &c@%s&e this code: &c%s&e. &7Do not share it with anyone."
     signup_success: "&aYou are signed up now."
     signup_failed: "&cSomething went wrong."
+    too_many_accounts: "This Telegram account is already linked to the maximum number of Minecraft accounts."
     link_hover: "&7Telegram - %s"
   ru:
     already_bound: "&cПохоже, ваш аккаунт уже привязан к Telegram."
@@ -21,6 +23,7 @@ registration_messages:
     register_suffix: "&e или отправьте боту &c@%s&e в ЛС код: &c%s&e. &7Никому его не передавайте."
     signup_success: "&aВы успешно зарегистрированы."
     signup_failed: "&cЧто-то пошло не так."
+    too_many_accounts: "Этот Telegram аккаунт уже привязан к максимальному количеству Minecraft аккаунтов."
     link_hover: "&7Telegram - %s"
   ua:
     already_bound: "&cЗдається, ваш акаунт вже прив'язаний до Telegram."
@@ -29,5 +32,6 @@ registration_messages:
     register_suffix: "&e або надішліть боту &c@%s&e в приватні повідомлення код: &c%s&e. &7Нікому його не передавайте."
     signup_success: "&aВи успішно зареєструвалися."
     signup_failed: "&cЩось пішло не так."
+    too_many_accounts: "Цей Telegram акаунт уже прив'язаний до максимальної кількості Minecraft акаунтів."
     link_hover: "&7Telegram - %s"
 ngrok_auth: ""
