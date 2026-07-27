@@ -1,7 +1,5 @@
 package me.fulcanelly.tgbridge.tools.command.tg;
 
-import java.util.Optional;
-
 import org.bukkit.Bukkit;
 
 import com.google.common.eventbus.EventBus;
@@ -15,6 +13,7 @@ import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.command.tg.base.ReplierBuilder;
 import me.fulcanelly.tgbridge.tools.twofactor.BotUIReception;
 import me.fulcanelly.tgbridge.tools.twofactor.RegistrationMessageLocalizer;
+import me.fulcanelly.tgbridge.tools.twofactor.register.RegistrationResult;
 
 public class StartCommand implements CommandRegister {
 
@@ -52,18 +51,21 @@ public class StartCommand implements CommandRegister {
         message.reply(completeSignup(reception.onPrivateCodeMessage(tgUserId, text), "hm?"));
     }
 
-    private String completeSignup(Optional<String> playerName, String fallback) {
-        return playerName
-                .stream()
-                .map(name -> {
-                    Optional.ofNullable(Bukkit.getPlayer(name))
-                            .ifPresent(player -> player
-                                    .sendMessage(messages.format(player.getLocale(), "signup_success")));
+    private String completeSignup(RegistrationResult result, String fallback) {
+        if (result.status() == RegistrationResult.Status.TOO_MANY_ACCOUNTS) {
+            return messages.englishPlain("too_many_accounts");
+        }
 
-                    return messages.englishPlain("signup_success");
-                })
-                .findFirst()
-                .orElse(fallback);
+        if (result.status() != RegistrationResult.Status.SUCCESS) {
+            return fallback;
+        }
+
+        result.player().stream()
+                .map(Bukkit::getPlayer)
+                .filter(player -> player != null && player.isOnline())
+                .forEach(player -> player.sendMessage(messages.format(player.getLocale(), "signup_success")));
+
+        return messages.englishPlain("signup_success");
     }
 
     @Override
