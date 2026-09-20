@@ -1,4 +1,5 @@
-# MCTG-bridge
+# mctg-bridge — Minecraft <-> Telegram Chat Bridge
+
 ![GitHub Tag](https://img.shields.io/github/v/tag/fulcanelly/mctg-bridge)
 <a href="https://github.com/fulcanelly/mctg-bridge/releases/"><img src="https://img.shields.io/github/downloads/fulcanelly/mctg-bridge/total.svg" alt="GitHub All Releases"/></a>
 <img src="https://img.shields.io/github/stars/fulcanelly/mctg-bridge"/>
@@ -11,109 +12,141 @@
 <img src="https://img.shields.io/badge/MC-1.20.*-brightgreen.svg" alt="Minecraft"/>
 <img src="https://img.shields.io/badge/MC-1.21.*-brightgreen.svg" alt="Minecraft"/>
 
+MCTG-bridge is a Minecraft Telegram bridge plugin for Spigot and Paper servers. It synchronizes Minecraft chat with a Telegram group in both directions and includes server management commands, account linking, and optional plugin integrations.
 
-MCTG-bridge is a standalone working out of box plugin that creates a chat bridge between Telegram group and Minecraft chat.
-
-### How to use 
-- [Get jar file](#get-jar-file)
-- [Setup telegram bot](#setup-telegram-bot)
-- [Configure plugin](#configure-plugin)
-- Configure additional modules
-   - ngrok proxy tunnel
-   - LoginSecurity plugin
-   - Invite system
-
-### Get jar file
-- Download stable version - you can download compiled package from releases [page](https://github.com/fulcanelly/mctg-bridge/releases)
-
-- Download experimental-automatiacly-built version from [github actions](https://github.com/fulcanelly/mctg-bridge/actions)
-
-- Build by yourself - `mvn clean install`
-
-### Setup telegram bot 
-
-- Head to https://t.me/BotFather
-- Use command `/newbot` and follow instructions
-- Use `/setprivacy` and set it to `DISABLED` if you want bot to see messages in chats
-- Remember API token
-
-
-### Configure plugin
- - Copy jar file to server's `plugins` folder
- - Start server to generate config for plugins
- - Put bot's API token to ```plugins/tg-bridge/config.yml``` at `api_token` column 
- - Restart server - at startup you should see message like this
-```log
-[17:10:59 WARN]: [tg-bridge] chat_id is null, use /attach <secretTempCode> to pin one
-[17:10:59 WARN]: [tg-bridge] secretTempCode is set to -72683
-```
-After that add bot to target chat and execute that command in it:
-```
-/attach secretTempCode
-```
-Now you need to make final restart and plugin is ready to use 
-
-- Adjust other config options by your needs
 ### Preview 
 
 ![image](https://github.com/user-attachments/assets/4c6339c9-be85-4c71-bdbf-b8c2af984cb7)
 
-
 ![image](https://github.com/user-attachments/assets/c424be96-3a73-4c80-a5f0-0e54234a5cd7)
 
- 
-![image](https://github.com/user-attachments/assets/a4e52cd1-e1a9-4790-a018-8ec457bb3a71)
+## Features
 
+Compared with simple relay-only plugins, MCTG-bridge provides:
+
+- Two-way Telegram group <-> Minecraft chat communication.
+- Built-in Telegram commands for server status, players, uptime, memory, statistics, and top statistics.
+- Optional account linking from Minecraft to Telegram.
+- Optional hooks for LoginSecurity and InviteSystem; they activate only when those plugins are installed.
+- Per-player chat visibility and message compaction.
+- Telegram image rendering with optional dithering.
+- Optional ngrok support for a tunnel started from Telegram.
+- Configuration stored in the plugin folder; no separate bridge service is required.
+
+## Requirements
+
+- Spigot, Paper, or a compatible fork running Minecraft 1.17–1.21.
+- Java 17+ for building the plugin.
+- A Telegram bot and a Telegram group.
+
+## Quick start
+
+1. Download the latest JAR.
+2. Put it into `plugins/`.
+3. Start the server once to generate the config.
+4. Create a Telegram bot with @BotFather and disable privacy mode.
+5. Add `api_token` to `plugins/tg-bridge/config.yml`.
+6. Run `/attach <code>` in your Telegram group.
+7. Restart the server.
+
+## Full detailed setup
+### 1. Telegram setup
+
+1. Open [@BotFather](https://t.me/BotFather) in Telegram.
+2. Run `/newbot` and follow the prompts.
+3. Copy the bot API token. Keep it private.
+4. Run `/setprivacy`, select the bot, and set privacy to `Disabled` so it can receive group messages.
+5. Add the bot to the target Telegram group. Give it the permissions needed to read and send messages.
+
+### 2. Minecraft server setup
+
+1. Download the latest stable JAR from [Releases](https://github.com/fulcanelly/mctg-bridge/releases/).
+2. Copy it to the server's `plugins/` directory.
+3. Start the server once. The plugin creates `plugins/tg-bridge/config.yml`.
+4. Put the token into `api_token`:
+
+```yaml
+api_token: "123456:replace-with-your-token"
+```
+
+5. Restart the server. The console prints a temporary code, for example:
+
+```text
+[tg-bridge] chat_id is null, use /attach <secretTempCode> to pin one
+[tg-bridge] secretTempCode is set to -72683
+```
+
+6. In the target Telegram group, send `/attach -72683` using the code printed by your server.
+7. Restart the server again. The bridge is ready.
+
+Never publish `api_token` or the temporary attach code.
+
+## Usage examples
+
+### Telegram group commands
+
+```text
+/list       Online Minecraft players
+/ping       Check that the bot responds
+/uptime     Show server uptime
+/memory     Show allocated memory
+/stats      Show player statistics
+/top        Show top statistics
+/kickme     Kick your linked Minecraft account
+```
+
+
+ ### Preview 
+
+![image](https://github.com/user-attachments/assets/a4e52cd1-e1a9-4790-a018-8ec457bb3a71)
 
 ![image](https://github.com/user-attachments/assets/7be1055c-c16a-4c6b-9ad3-d3d17319efc2)
 
 
+Available when the matching plugin is installed:
 
-### Telegram bot commands
-
-Base command set
-
-```
-memory - show allocated memory
-list - list online players
-ping - pong
-uptime - show uptime
-stats - player stats
-top - get top stats
-kickme - kicks you...
+```text
+/invite     Invite a person to the server (InviteSystem)
+/removepass Remove your password (LoginSecurity)
+/changepass Change your password (LoginSecurity)
 ```
 
-From ivite system
-```
-invite - invite person to server (optional)
-```
+### Minecraft commands
 
-From login security
-```
-removepass - remove account password
-changepass - change account password
+```text
+/tg chat show
+/tg chat hide
+/tg account register
 ```
 
-For now all they by default enabled (except last ones since they depedns from corresponding plugin presence)
+`/tg chat hide` hides bridged Telegram messages for the executing player. `/tg account register` starts the Telegram account-linking flow.
 
-todo: add configurability and scripting 
+## Settings
 
+Edit `plugins/tg-bridge/config.yml`, then restart the server.
 
-### How to setup ngrok (`/tunnel` command)
+| Setting | Purpose |
+| --- | --- |
+| `api_token` | Telegram bot token. Required. |
+| `chat_id` | Linked Telegram group. Set automatically by `/attach`. |
+| `enable_chat` | Enable or disable Telegram-to-Minecraft chat. |
+| `enable_dithering` | Enable image dithering for Telegram photos. |
+| `language` | Default registration-message language. |
+| `max_mc_accounts_per_tg` | Maximum Minecraft accounts linked to one Telegram account. |
+| `log_status` | Control status logging. |
+| `ngrok_auth` | ngrok auth token for `/tunnel`. |
 
-To setup ngrok or telegram `/tunnel` command you need to put you ngrok auth to config file field `ngrok_auth`
+To use the optional tunnel, place the ngrok auth token in `ngrok_auth`, then send `/tunnel` in Telegram. Get the token from [ngrok](https://ngrok.com/).
 
-you can get one from https://ngrok.com
+## Build from source
 
+```bash
+mvn clean install
+```
 
-### What's Left to be Added/Fixed
-- The Following Ideas
-  - [x] Message reduction
-  - [x] Message merging
-  - [x] Login via telegram
-    - [x] Hook with existing login plugin
-  - [x] Flexible configurtation
-  - [x] Ingore switch
-  - [ ] Custom localization
-  - [ ] Config editor
-  - [ ] Reply by click
+The built plugin JAR is produced in `target/`.
+
+## Links
+
+- [Stable releases](https://github.com/fulcanelly/mctg-bridge/releases/)
+- [Experimental builds](https://github.com/fulcanelly/mctg-bridge/actions/)
