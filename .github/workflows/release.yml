@@ -1,0 +1,76 @@
+name: Release
+
+# to trigger release do:
+# git tag vX.X.X
+# git push
+# git push --tags
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate tag is on master
+        run: |
+          git branch -r --contains "$GITHUB_SHA" | grep -q 'origin/master$' || {
+            echo "::error::Tag must point to a commit on master"
+            exit 1
+          }
+
+      - name: Validate tag version
+        shell: bash
+        run: |
+          current="${GITHUB_REF_NAME#v}"
+
+          previous=$(
+            git tag --list '*' --sort=-v:refname \
+              | grep -v "^${GITHUB_REF_NAME}$" \
+              | head -1
+          )
+
+          [[ -z "$previous" ]] && exit 0
+
+          previous="${previous#v}"
+
+          highest=$(printf '%s\n%s\n' "$previous" "$current" | sort -V | tail -1)
+
+          if [[ "$highest" != "$current" || "$current" == "$previous" ]]; then
+            echo "::error::Version v$current must be greater than v$previous"
+            exit 1
+          fi
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Runs a set of commands using the runners shell
+      - name: Build
+        run: |
+          mvn package
+
+      - name: Create release + upload
+        run: gh release create "$GITHUB_REF_NAME" target/tg-bridge-*.jar --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
