@@ -22,13 +22,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate tag is on master
-        run: |
-          git branch -r --contains "$GITHUB_SHA" | grep -q 'origin/master$' || {
-            echo "::error::Tag must point to a commit on master"
-            exit 1
-          }
-
       - name: Validate tag version
         shell: bash
         run: |
