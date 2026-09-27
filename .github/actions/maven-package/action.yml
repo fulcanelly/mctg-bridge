@@ -1,6 +1,12 @@
 name: Maven package
 description: Set up Java, cache Maven dependencies, and package the project
 
+inputs:
+  revision:
+    description: Maven project version to build
+    required: false
+    default: ''
+
 runs:
   using: composite
 
@@ -21,4 +27,11 @@ runs:
 
     - name: Build
       shell: bash
-      run: mvn package
+      env:
+        MAVEN_REVISION: ${{ inputs.revision }}
+      run: |
+        if [[ -n "$MAVEN_REVISION" ]]; then
+          mvn package "-Drevision=$MAVEN_REVISION"
+        else
+          mvn package
+        fi

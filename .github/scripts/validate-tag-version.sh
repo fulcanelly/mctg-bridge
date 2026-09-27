@@ -12,14 +12,16 @@ while IFS= read -r tag; do
   fi
 done < <(git tag --list '*' --sort=-v:refname)
 
-if [[ -z "$previous" ]]; then
-  exit 0
+if [[ -n "$previous" ]]; then
+  previous="${previous#v}"
+  highest=$(printf '%s\n%s\n' "$previous" "$current" | sort -V | tail -n 1)
+
+  if [[ "$highest" != "$current" || "$current" == "$previous" ]]; then
+    echo "::error::Version v$current must be greater than v$previous" >&2
+    exit 1
+  fi
 fi
 
-previous="${previous#v}"
-highest=$(printf '%s\n%s\n' "$previous" "$current" | sort -V | tail -n 1)
-
-if [[ "$highest" != "$current" || "$current" == "$previous" ]]; then
-  echo "::error::Version v$current must be greater than v$previous" >&2
-  exit 1
+if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+  printf 'revision=%s\n' "$current" >> "$GITHUB_OUTPUT"
 fi
