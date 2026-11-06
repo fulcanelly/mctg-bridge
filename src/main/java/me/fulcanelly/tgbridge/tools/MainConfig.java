@@ -26,6 +26,9 @@ public class MainConfig {
     @Saveable
     public Boolean log_status;
 
+    @Saveable @Optional
+    public Boolean notify_admin_server_status = true;
+
     @Saveable
     public Boolean enable_chat = true;
 
@@ -58,6 +61,10 @@ public class MainConfig {
 
     public boolean isLoginManagerEnabled() {
         return login_manger;
+    }
+
+    public boolean isNotifyAdminServerStatusEnabled() {
+        return !Boolean.FALSE.equals(notify_admin_server_status);
     }
 
     public int getMaxMcAccountsPerTg() {

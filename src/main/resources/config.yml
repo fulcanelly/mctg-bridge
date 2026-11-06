@@ -2,6 +2,7 @@ api_token: ""
 chat_id: null
 login_manger: false
 log_status: true
+notify_admin_server_status: true
 enable_chat: true
 enable_dithering: false
 language: ru

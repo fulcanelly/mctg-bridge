@@ -20,7 +20,7 @@ import me.fulcanelly.tgbridge.tapi.CommandManager;
 import me.fulcanelly.tgbridge.tapi.TGBot;
 import me.fulcanelly.tgbridge.tools.MainConfig;
 import me.fulcanelly.tgbridge.tools.SecretCodeMediator;
-import me.fulcanelly.tgbridge.tools.TelegramLogger;
+import me.fulcanelly.tgbridge.tools.ServerStatusNotifier;
 import me.fulcanelly.tgbridge.tools.command.tg.base.CommandRegister;
 import me.fulcanelly.tgbridge.tools.hooks.ForeignPluginHook;
 import me.fulcanelly.tgbridge.tools.stats.StatCollector;
@@ -30,11 +30,14 @@ public class Bridge extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        // null if onEnable failed before injection finished
+        if (statusNotifier != null) {
+            statusNotifier.notifyStopped();
+        }
     }
 
     @Inject
-    TelegramLogger tlog;
+    ServerStatusNotifier statusNotifier;
 
     @Inject
     TGBot bot;
@@ -131,7 +134,7 @@ public class Bridge extends JavaPlugin {
                     injector.getInstance(StatCollector.class),
                     injector.getInstance(ActionListener.class));
 
-            tlog.sendToPinnedChat("Plugin started");
+            statusNotifier.notifyStarted();
             if (canStartBot) {
                 bot.start();
             }
